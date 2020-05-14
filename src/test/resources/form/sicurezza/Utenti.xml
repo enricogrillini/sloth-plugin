@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Form Title="Accounts" PageType="EDITABLE_MASTER_DETAIL" xmlns="http://form.jaxb.sloth.eg.it" xmlns:xsi="http://www.w3.org/2001/XMLSchema">
+
+ <Fields Name="Filtri">
+  <Input Name="Nominativo" Description="Nominativo" DataType="STRING" MaxLength="100" ViewModality="MODIFICA" />
+  <ComboBox Name="Codruolo" Description="Ruolo" DataType="STRING" />
+ </Fields>
+
+ <Grid Name="Master" DeleteButtonHidden="true" Table="sec_utenti">
+  <Input Name="Nome" Description="Nome" DataType="STRING" MaxLength="100" />
+  <Input Name="Cognome" Description="Cognome" DataType="STRING" MaxLength="100" />
+  <ComboBox Name="Codruolo" Description="Codruolo" DataType="STRING" />
+ </Grid>
+
+ <Fields Name="Detail">
+  <Text Name="Idutente" Description="Idutente" DataType="INTEGER" />
+  <Input Name="Nome" Description="Nome" DataType="STRING" MaxLength="100" Required="true" />
+  <Input Name="Cognome" Description="Cognome" DataType="STRING" MaxLength="100" Required="true" />
+  <ComboBox Name="Codruolo" Description="Codruolo" DataType="STRING" Required="true" />
+  <Input Name="Userid" Description="Userid" DataType="STRING" MaxLength="10" Required="true" />
+  <Input Name="Password" Description="Password" DataType="STRING" MaxLength="10" Required="true" />
+  <Input Name="Email" Description="Email" DataType="STRING" MaxLength="100" />
+  <Input Name="Emailpassword" Description="Email password" DataType="STRING" MaxLength="100" />
+ </Fields>
+
+</Form>
+
+

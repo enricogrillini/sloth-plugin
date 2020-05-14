@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Form Title="Schedulatore" PageType="EDITABLE_GRID" xmlns="http://form.jaxb.sloth.eg.it" xmlns:xsi="http://www.w3.org/2001/XMLSchema">
+ <Fields Name="Utility">
+  <Button Name="start" Description="Start" />
+  <Button Name="stop" Description="Stop" />
+  <Text Name="status" Description="Status" DataType="STRING" />
+ </Fields>
+
+ <Grid Name="Anagrafica">
+  <ComboBox Name="jobname" Description="Nome Job" DataType="STRING" Required="true" />
+  <Input Name="minuti" Description="Minuti" DataType="STRING" Required="true" />
+  <Input Name="ore" Description="Ore" DataType="STRING" Required="true" />
+  <Input Name="giornoDelMese" Description="giorno (Mese)" DataType="STRING" Required="true" />
+  <Input Name="mese" Description="Mese" DataType="STRING" Required="true" />
+  <Input Name="giornoDellaSettimana" Description="giorno (Settimana)" DataType="STRING" Required="true" />
+ </Grid>
+</Form>
+
+

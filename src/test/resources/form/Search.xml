@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Form Title="Search" xmlns="http://form.jaxb.sloth.eg.it" xmlns:xsi="http://www.w3.org/2001/XMLSchema">
+ <Fields Name="Search">
+  <Input Name="textSearch" Description="textSearch" DataType="STRING" ViewModality="MODIFICA" />
+  <Input Name="idArticolo" Description="idArticolo" DataType="INTEGER" ViewModality="MODIFICA" />
+  <Input Name="quantita" Description="quantita" DataType="INTEGER" ViewModality="MODIFICA" />
+  <Input Name="idCliente" Description="idCliente" DataType="INTEGER" ViewModality="MODIFICA" />
+  <Button Name="CarrelloArticolo" Description="Carrello" />
+  <Button Name="CarrelloCliente" Description="Carrello" />
+ </Fields>
+</Form>
+
+

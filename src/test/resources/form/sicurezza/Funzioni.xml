@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Form Title="Funzioni" PageType="EDITABLE_GRID" xmlns="http://form.jaxb.sloth.eg.it" xmlns:xsi="http://www.w3.org/2001/XMLSchema">
+ <Fields Name="Filtri">
+  <Input Name="Funzione" Description="Funzione" DataType="STRING" ViewModality="MODIFICA" />
+  <ComboBox Name="CodtipofunzioneFiltro" Description="Tipo" DataType="STRING" ViewModality="MODIFICA" />
+ </Fields>
+
+ <Grid Name="Anagrafica" Table="Sec_dec_funzioni">
+  <Input Name="Codfunzione" Description="Codice" DataType="STRING" MaxLength="100" Required="true" />
+  <Input Name="Descrizionebreve" Description="Descr. breve" DataType="STRING" MaxLength="20" Required="true" />
+  <Input Name="Descrizionelunga" Description="Descrizione" DataType="STRING" MaxLength="100" Required="true" />
+  <Input Name="Posizione" Description="Posizione" DataType="DECIMAL" Required="true" />
+  <CheckBox Name="Flagvalido" Description="Valido" DataType="STRING" />
+  <Input Name="Codfunzionepadre" Description="Codice padre" DataType="STRING" MaxLength="100" />
+  <ComboBox Name="Codtipofunzione" Description="Tipo" DataType="STRING" />
+  <Input Name="Urlimg" Description="Urlimg" DataType="STRING" MaxLength="100" />
+  <Input Name="Link" Description="Link" DataType="STRING" MaxLength="200" />
+  <Text Name="Ruoli" Description="Ruoli" DataType="STRING" />
+ </Grid>
+
+
+ <Fields Name="Utility">
+  <Button Name="Normalizza" Description="Normalizza" />
+  <Button Name="Clona" Description="Clona" />
+  <ComboBox Name="CodRuolo" Description="Ruolo" DataType="STRING" ViewModality="MODIFICA" Required="true"/>
+  <Button Name="AddRuolo" Description="Add Ruolo" />
+ </Fields>
+</Form>
+
+

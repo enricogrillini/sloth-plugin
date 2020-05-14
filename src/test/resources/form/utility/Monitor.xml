@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Form Title="Monitor" PageType="EDITABLE_GRID" xmlns="http://form.jaxb.sloth.eg.it" xmlns:xsi="http://www.w3.org/2001/XMLSchema">
+
+ <Fields Name="SystemData">
+  <Text Name="Startup" Description="Startup" DataType="DATETIME" />
+  <Text Name="Sysdate" Description="Sysdate" DataType="DATETIME" />
+  <Text Name="JavaVersion" Description="JavaVersion" DataType="STRING" />
+  <Text Name="usedMemory" Description="Used memory" DataType="DECIMAL" Format="#,### 'MB'" />
+  <Text Name="freeMemory" Description="Free memory" DataType="DECIMAL" Format="#,### 'MB'" />
+  <Text Name="totalMemory" Description="Total memory" DataType="DECIMAL" Format="#,### 'MB'" />
+  <Text Name="maxMemory" Description="Max memory" DataType="DECIMAL" Format="#,### 'MB'" />
+  <Text Name="defaultCharset" Description="Default charset" DataType="STRING" />
+  <Text Name="fileEncoding" Description="File encoding" DataType="STRING" />
+  <Text Name="language" Description="Language" DataType="STRING" />
+  <Text Name="country" Description="Country" DataType="STRING" />
+  <Text Name="sessionTimeout" Description="Timeout" Tooltip="Session Timeout (sec)" DataType="INTEGER" />
+ </Fields>
+
+ <Fields Name="Utility">
+  <Button Name="garbage" Description="Garbage" />
+  <Button Name="clearCache" Description="Clear cache" />
+  <Button Name="start" Description="Start" />
+  <Button Name="stop" Description="Stop" />
+  <Text Name="status" Description="Status" DataType="STRING" />
+ </Fields>
+
+ <Grid Name="MemoryDetail" Description="MemoryDetail">
+  <Text Name="memory" Description="Memory" DataType="STRING" />
+  <Text Name="type" Description="Type" DataType="STRING" />
+  <Text Name="init" Description="Init" DataType="DECIMAL" Format="#,### 'MB'" />
+  <Text Name="used" Description="Used" DataType="DECIMAL" Format="#,### 'MB'" />
+  <Text Name="committed" Description="Committed" DataType="DECIMAL" Format="#,### 'MB'" />
+  <Text Name="max" Description="Max" DataType="DECIMAL" Format="#,### 'MB'" />
+  <Text Name="peakUsed" Description="Peak used" DataType="DECIMAL" Format="#,### 'MB'" />
+  <Text Name="peakCommitted" Description="Peak committed" DataType="DECIMAL" Format="#,### 'MB'" />
+ </Grid>
+ 
+ <Fields Name="MonitorDataFilter">
+  <Input Name="ModitorDataDa" Description="Data Da" DataType="DATE" ViewModality="MODIFICA" MaxLength="10" />
+  <Input Name="ModitorDataA" Description="Data A" DataType="DATE" ViewModality="MODIFICA" MaxLength="10" />
+  <Button Name="Filtra" Description="Filtra" />
+ </Fields>
+
+ <Grid Name="MonitorData" Description="MonitorData">
+  <Text Name="group" Description="Gruppo" DataType="STRING" />
+  <Text Name="nome" Alias="name" Description="Nome" DataType="STRING" />
+  <TextTotalizer Name="duration" Description="Duration" DataType="DECIMAL" />
+  <TextTotalizer Name="executions" Description="Executions" DataType="INTEGER" Format="#,###" />
+  <Text Name="average" Description="Average" DataType="DECIMAL" />
+  <Text Name="max" Description="Max" DataType="DECIMAL" />
+ </Grid>
+
+ <SimpleChart Name="TrendData" ChartType="LINE">
+  <Ticks Name="hour" Description="Ora" DataType="DATE" Format="dd/MM HH" Rotation="-75" />
+  <Series Name="executions" Description="Executions" DataType="INTEGER" />
+ </SimpleChart>
+
+ <Grid Name="LogFile" Description="Log File">
+  <Text Name="fileName" Description="File name" DataType="STRING" />
+  <Text Name="size" Description="Size" DataType="DECIMAL" Format="#,### 'KB'" />
+  <Text Name="date" Description="Date" DataType="DATE" />
+  <Button Name="downloadFile" Description="Download" ClassName="excel" />
+ </Grid>
+
+
+ <TabSheet Name="Tabs">
+  <Tab Name="Trend" Description="Trend" />
+  <Tab Name="Memory" Description="Memory" />
+  <Tab Name="Task" Description="Task" />
+  <Tab Name="LogFile" Description="Log file" />
+ </TabSheet>
+
+</Form>
+
+
+

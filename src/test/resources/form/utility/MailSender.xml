@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Form Title="Mail sender" PageType="SIMPLE_NAVIGATION" xmlns="http://form.jaxb.sloth.eg.it" xmlns:xsi="http://www.w3.org/2001/XMLSchema">
+
+ <Grid Name="Master" Description="Mail da inviare">
+  <Text Name="SubmitTime" Description="SubmitTime" DataType="DATETIME" />
+  <Text Name="From" Description="From" DataType="STRING" />
+  <Text Name="To" Description="To" DataType="STRING" />
+  <Text Name="Subject" Description="Subject" DataType="STRING" />
+  <Text Name="LastTry" Description="Last try" DataType="DATETIME" />
+  <Text Name="SendError" Description="Send Error" DataType="STRING" />
+ </Grid>
+
+ <Fields Name="Utility">
+  <Button Name="Refresh" Description="Refresh" />
+  <Button Name="Send" Description="Send" />
+  <LinkButton Name="Clear" Description="Clear" ConfirmMessage="Se si procede tutte le mail in coda saranno eliminate. Confermi?"/>
+ </Fields>
+
+ <SimpleChart Name="GraficoInvii" ChartType="LINE" Title="Invii">
+  <Ticks Name="Ora" Description="Ora" DataType="DATE" Format="dd/MM HH" Rotation="-75" />
+  <Series Name="success" Description="Success" DataType="INTEGER" />
+  <Series Name="fail" Description="Fail" DataType="INTEGER" />
+ </SimpleChart>
+
+</Form>
+
+

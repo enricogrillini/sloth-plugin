@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Form Title="Log Elaborazioni" PageType="MASTER_DETAIL" xmlns="http://form.jaxb.sloth.eg.it" xmlns:xsi="http://www.w3.org/2001/XMLSchema">
+ <Fields Name="Filtri">
+  <Input Name="DataDa" Description="Dal" DataType="DATE" ViewModality="MODIFICA" />
+  <Input Name="DataA" Description="Al" DataType="DATE" ViewModality="MODIFICA" />
+  <Input Name="Elaborazione" Description="Elaborazione" DataType="STRING" ViewModality="MODIFICA" />
+  <ComboBox Name="Stato" Description="Stato" DataType="STRING" ViewModality="MODIFICA" />
+ </Fields>
+
+ <Grid Name="Master" Description="Log elaborazioni" Table="LogElaborazioni">
+  <Text Name="Idlogelaborazione" Description="Id" DataType="INTEGER" />
+  <Text Name="Datainizio" Description="Inizio" DataType="DATETIME" />
+  <Text Name="Datafine" Description="Fine" DataType="TIME" />
+  <Text Name="Durata" Description="Durata" DataType="TIME" />
+  <Text Name="Dataaggiornamento" Description="Aggiornamento" DataType="TIME" />
+  <Text Name="Elaborazione" Description="Elaborazione" DataType="STRING" />
+  <Text Name="Stato" Description="Stato" DataType="STRING" />
+  <Text Name="Percentuale" Description="Percentuale" DataType="PERC" />
+ </Grid>
+
+ <Fields Name="Detail">
+  <Text Name="Idlogelaborazione" Description="Id" DataType="INTEGER" />
+  <Text Name="Datainizio" Description="Inizio" DataType="DATETIME" />
+  <Text Name="Datafine" Description="Fine" DataType="TIME" />
+  <Text Name="Durata" Description="Durata" DataType="TIME" />
+  <Text Name="Dataaggiornamento" Description="Aggiornamento" DataType="TIME" />
+  <Text Name="Elaborazione" Description="Elaborazione" DataType="STRING" />
+  <Text Name="Stato" Description="Stato" DataType="STRING" />
+  <Text Name="Percentuale" Description="Percentuale" DataType="PERC" />
+  <Text Name="Messaggio" Description="Messaggio" DataType="STRING" />
+  <Button Name="Refresh" Description="Refresh" />
+  <LinkButton Name="DownloadDetail" Description="Download detail" />
+ </Fields>
+
+ <Grid Name="DetailLog" Description="Dettaglio Log">
+  <Input Name="Data" Description="Data" DataType="DATETIME" MaxLength="10" />
+  <Input Name="Stato" Description="Stato" DataType="STRING" MaxLength="1" />
+  <Input Name="Messaggio" Description="Messaggio" DataType="STRING" MaxLength="4000" />
+ </Grid>
+
+
+</Form>
+
+

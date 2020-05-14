@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Form Title="Report" PageType="REPORT" xmlns="http://form.jaxb.sloth.eg.it" xmlns:xsi="http://www.w3.org/2001/XMLSchema">
+
+ <Skipper Name="SkipHRMS" />
+
+ <Fields Name="SiaeFiltri">
+  <Input Name="Trimestre" Description="Trimestre" DataType="DATE" Required="true" ViewModality="MODIFICA" />
+ </Fields>
+
+ <Grid Name="SiaeGrid" Description="Report SIAE" InsertButtonHidden="true" UpdateButtonHidden="true" DeleteButtonHidden="true">
+  <Text Name="Trimestre" Description="Trimestre" DataType="DATE" />
+  <Text Name="Nazione" Description="Nazione" DataType="STRING" />
+  <Text Name="Categoriasiae" Description="Categoriasiae" DataType="STRING" />
+  <Text Name="Capienza" Description="Capienza" DataType="INTEGER" />
+  <Text Name="Quantita" Description="Quantita" DataType="INTEGER" />
+  <TextTotalizer Name="Importosiae" Description="Importo siae" DataType="CURRENCY" />
+ </Grid>
+
+ <Fields Name="SellOutFiltri">
+  <AutoComplete Name="idProduttore" Description="Produttore" DataType="INTEGER" ViewModality="MODIFICA" />
+  <Input Name="DataDa" Description="Data da" DataType="DATE" ViewModality="MODIFICA" />
+  <Input Name="DataA" Description="Data a" DataType="DATE" ViewModality="MODIFICA" />
+ </Fields>
+
+ <Grid Name="SellOutGrid" Description="Sell Out Kingston" InsertButtonHidden="true" UpdateButtonHidden="true" DeleteButtonHidden="true">
+  <Text Name="data" Description="INVOICE DATE" DataType="DATE" />
+  <Text Name="ragionesociale" Description="RESELLER NAME" DataType="STRING" />
+  <Text Name="indirizzo" Description="RESELLER ADDRESS" DataType="STRING" />
+  <Text Name="cap" Description="RESELLER POST CODE" DataType="STRING" />
+  <Text Name="nominativo" Description="RESELLER CITY" DataType="STRING" />
+  <Text Name="nazione" Description="RESELLER COUNTRY" DataType="STRING" />
+  <Text Name="codiceProduttore" Description="PART NUMBER" DataType="STRING" />
+  <Text Name="quantita" Description="QUANTITY" DataType="INTEGER" />
+  <Text Name="Prezzo" Description="UNIT COST" DataType="DECIMAL" />
+  <Text Name="Partitaiva" Description="VAT NUMBER" DataType="STRING" />
+ </Grid>
+
+ <Fields Name="LicenzeFiltri">
+  <Input Name="DataScadenzaDa" Description="Scadenza da" Tooltip="Data scadenza licenza da" DataType="DATE" ViewModality="MODIFICA" />
+  <Input Name="DataScadenzaA" Description="Scadenza a" Tooltip="Data scadenza licenza a" DataType="DATE" ViewModality="MODIFICA" />
+  <Input Name="DataDa" Description="Ordine da" Tooltip="Data ordine da" DataType="DATE" ViewModality="MODIFICA" />
+  <Input Name="DataA" Description="Ordine a" Tooltip="Data ordine a" DataType="DATE" ViewModality="MODIFICA" />
+  <AutoComplete Name="idProduttore" Description="Produttore" DataType="INTEGER" ViewModality="MODIFICA" />
+ </Fields>
+
+ <Grid Name="LicenzeGrid" Description="Licenze" InsertButtonHidden="true" UpdateButtonHidden="true" DeleteButtonHidden="true">
+  <Text Name="data" Description="Data Ordine" DataType="DATE" />
+  <Text Name="scadenza" Description="Data Scadenza" DataType="DATE" />
+  <Text Name="ragionesociale" Description="Ragione sociale" DataType="STRING" />
+  <Text Name="quantitaordinata" Description="Quantità ordinata" DataType="STRING" />
+  <Text Name="codicesillaro" Description="Cod. Interno" DataType="STRING" />
+  <Text Name="descrizione" Description="Descrizione" DataType="STRING" />
+  <DecodedText Name="coddurata" Description="Durata" DataType="STRING" />
+  <Text Name="licenza" Description="Licenza" DataType="STRING" />
+ </Grid>
+
+ <Fields Name="DwhOrdinatoTrimestraleFiltri">
+  <Input Name="DataOrdineDa" Description="Data da" Tooltip="Data da" DataType="DATE" ViewModality="MODIFICA" />
+  <Input Name="DataOrdineA" Description="Data a" Tooltip="Data a" DataType="DATE" ViewModality="MODIFICA" />
+ </Fields>
+
+ <Grid Name="DwhOrdinatoTrimestraleGrid" Description="Ordinato trimestrale" InsertButtonHidden="true" UpdateButtonHidden="true" DeleteButtonHidden="true">
+  <Text Name="anno" Description="Data Ordine" DataType="DATE" Format="yyyy" />
+  <Text Name="Q1" Description="Q1" DataType="CURRENCY" />
+  <Text Name="Q2" Description="Q2" DataType="CURRENCY" />
+  <Text Name="Q3" Description="Q3" DataType="CURRENCY" />
+  <Text Name="Q4" Description="Q4" DataType="CURRENCY" />
+ </Grid>
+
+ <Fields Name="DwhOrdinatoMensileProduttoreFiltri">
+  <AutoComplete Name="IdProduttore" Description="Produttore" Tooltip="Produttore" DataType="INTEGER" ViewModality="MODIFICA" />
+  <Input Name="DataOrdineDa" Description="Data da" Tooltip="Data da" DataType="DATE" ViewModality="MODIFICA" />
+  <Input Name="DataOrdineA" Description="Data a" Tooltip="Data a" DataType="DATE" ViewModality="MODIFICA" />
+ </Fields>
+
+ <Grid Name="DwhOrdinatoMensileProduttoreGrid" Description="Ordinato trimestrale" InsertButtonHidden="true" UpdateButtonHidden="true" DeleteButtonHidden="true">
+  <Text Name="Mese" Description="Mese" DataType="MONTH" />
+  <Text Name="Produttore" Description="Produttore" DataType="STRING" />
+  <TextTotalizer Name="Importo" Description="Importo" DataType="CURRENCY" />
+  <TextTotalizer Name="Quantita" Description="Quantita" DataType="INTEGER" />
+ </Grid>
+
+ <Fields Name="DwhOrdinatoStoricoFiltri">
+  <Input Name="DataOrdineDa" Description="Data da" Tooltip="Data da" DataType="DATE" ViewModality="MODIFICA" />
+  <Input Name="DataOrdineA" Description="Data a" Tooltip="Data a" DataType="DATE" ViewModality="MODIFICA" />
+ </Fields>
+
+ <Grid Name="DwhOrdinatoStoricoGrid" Description="Andamento storico ordini" InsertButtonHidden="true" UpdateButtonHidden="true" DeleteButtonHidden="true">
+  <Text Name="mese" Description="Mese" DataType="MONTH" />
+  <Text Name="Clientiserviti" Description="Clienti serviti" DataType="INTEGER" />
+  <Text Name="NumeroOrdini" Description="Numero acquisiti" DataType="INTEGER" />
+  <Text Name="ImportoMedio" Description="Importo medio ordine" DataType="CURRENCY" />
+  <Text Name="ImportoTotale" Description="Caricato mensile" DataType="CURRENCY" />
+ </Grid>
+
+ <Grid Name="ArticoliObsoletiInGiacenzaGrid" Description="Articoli obsoleti in giacenza" InsertButtonHidden="true" UpdateButtonHidden="true" DeleteButtonHidden="true">
+  <Text Name="codicesillaro" Description="Cod. Interno" DataType="STRING" />
+  <Text Name="codiceproduttore" Description="Cod. produttore" DataType="STRING" />
+  <Text Name="descrizione" Description="Descrizione" DataType="STRING" />
+  <Text Name="giacenza" Description="Giacenza" DataType="INTEGER" />
+ </Grid>
+
+ <Fields Name="NominativiClientiFiltri">
+  <ComboBox Name="idIncarico" Description="Incarico" Tooltip="Incarico" DataType="INTEGER" ViewModality="MODIFICA" />
+ </Fields>
+
+ <Grid Name="NominativiClienti" Description="Nominativi clienti" InsertButtonHidden="true" UpdateButtonHidden="true" DeleteButtonHidden="true">
+  <Semaforo Name="codStatoCliente" Description="Stato" DataType="STRING" />
+  <Text Name="IdGamma" Description="Id" DataType="STRING" />
+  <Text Name="RagioneSociale" Description="Ragione Sociale" DataType="STRING" />
+  <!-- ecodedText Name="idRegione" Description="Regione" DataType="INTEGER" /> <DecodedText Name="idProvincia" Description="Provincia" DataType="INTEGER" /> <Text Name="Localita" Description="Localita" DataType="STRING" /> <Text Name="Indirizzo" Description="Indirizzo" DataType="STRING" / -->
+  <Text Name="Telefono" Description="Tel." DataType="STRING" />
+  <Text Name="UltimoOrdine" Description="Ult Acq" Tooltip="Ultimo acquisto" DataType="DATE" />
+  <Text Name="UltimaOfferta" Description="Ult Off" Tooltip="Ultima offerta" DataType="DATE" />
+  <Text Name="UltimoContatto" Description="Ult Cont" Tooltip="Ultimo contatto" DataType="DATE" />
+  <Text Name="FatturatoAnno_2" Description="Fatt.Anno-2" DataType="CURRENCY" />
+  <Text Name="FatturatoAnno_1" Description="Fatt.Anno-1" DataType="CURRENCY" />
+  <Text Name="FatturatoAnno" Description="Fatt.Anno" DataType="CURRENCY" />
+  <CheckBox Name="Registrato" Description="Reg." DataType="STRING" />
+  <Text Name="UltimoLogin" Description="Ultimo Login" DataType="DATE" />
+  <DecodedText Name="idIncarico" Description="Incarico" DataType="INTEGER" />
+  <Text Name="Nominativo" Description="Nominativo" DataType="STRING" />
+  <Text Name="PostaelettronicaNominativo" Description="email" DataType="STRING" />
+ </Grid>
+
+ <Fields Name="HRMSFiltri">
+  <Input Name="Mese" Description="Mese" DataType="MONTH" ViewModality="MODIFICA" />
+  <Button Name="RapportinoPresenze" Description="Rapportino Presenze" />
+  <Button Name="RapportinoSpeseInBusta" Description="Spese in Busta" Tooltip="Rapportino Spese liquidate in busta" />
+ </Fields>
+
+ <TabSheet Name="Tabs" TabType="NONE">
+  <Tab Name="SiaeTab" Description="SIAE" />
+  <Tab Name="SellOutTab" Description="Sell out" />
+  <Tab Name="LicenzeTab" Description="Licenze" />
+
+  <Tab Name="DwhOrdinatoTrimestraleTab" Description="Ordinato trimestrale" />
+  <Tab Name="DwhOrdinatoMensileProduttoreTab" Description="Ordinato mensile" />
+  <Tab Name="DwhOrdinatoStoricoTab" Description="Andamento storico ordini" />
+
+  <Tab Name="NominativiClientiTab" Description="Nominativi Clienti" />
+
+  <Tab Name="ArticoliObsoletiInGiacenzaTab" Description="Articoli obsoleti in giacenza" />
+
+  <Tab Name="HRMSTab" Description="HRMS (Human Resource Management Systems)" />
+ </TabSheet>
+</Form>
+
