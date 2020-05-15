@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Form Title="Menu" PageType="EDITABLE_GRID" xmlns="http://form.jaxb.sloth.eg.it" xmlns:xsi="http://www.w3.org/2001/XMLSchema">
+
+ <Grid Name="Anagrafica" Table="Sec_dec_menu">
+  <Input Name="Codmenu" Description="Codice" DataType="STRING" MaxLength="100" Required="true" />
+  <Input Name="Descrizionebreve" Description="Desc. breve" DataType="STRING" MaxLength="20" Required="true" />
+  <Input Name="Descrizionelunga" Description="Desc. lunga" DataType="STRING" MaxLength="100" Required="true" />
+  <Input Name="Posizione" Description="Pos." DataType="INTEGER" Required="true" />
+  <CheckBox Name="Flagvalido" Description="Valido" DataType="STRING" />
+  <ComboBox Name="Codtipovoce" Description="Codtipovoce" DataType="STRING" Required="true" />
+  <Input Name="Livello" Description="Liv." DataType="INTEGER" Required="true" />
+  <Input Name="Imghtml" Description="Html" DataType="STRING" MaxLength="100" />
+  <Input Name="Link" Description="Link" DataType="STRING" MaxLength="200" />
+  <Text Name="Ruoli" Description="Ruoli" DataType="STRING" />
+ </Grid>
+
+ <Fields Name="Utility">
+  <Button Name="Normalizza" Description="Normalizza" />
+  <Button Name="Clona" Description="Clona" />
+ </Fields>
+</Form>
+
+

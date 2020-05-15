@@ -8,6 +8,21 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Project: sloth-framework
+ * Copyright (C) 2019-2020 Enrico Grillini
+ * <p>
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * <p>
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+ * <p>
+ * You should have received a copy of the GNU General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * @author Enrico Grillini
+ *
+ */
 public class ViewBeanWriter {
     private static final String DECODE_BEAN = ".bean.decode";
     private static final String VIEW_BEAN = ".bean.viewbean";
@@ -306,7 +321,7 @@ public class ViewBeanWriter {
         testo.append("import it.eg.sloth.db.datasource.row.DbRow;\n");
         testo.append("import it.eg.sloth.db.datasource.row.column.Column;\n");
         testo.append("import it.eg.sloth.db.datasource.row.lob.BLobData;\n");
-        testo.append("import it.eg.sloth.framework.utility.stream.StreamUtil;\n");
+        testo.append("import org.apache.commons.io.IOUtils;\n");
         testo.append("import it.eg.sloth.db.manager.DataConnectionManager;\n");
         testo.append("import java.io.ByteArrayInputStream;\n");
         testo.append("\n");

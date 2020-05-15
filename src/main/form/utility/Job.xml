@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Form Title="Job" PageType="EDITABLE_MASTER_DETAIL" xmlns="http://form.jaxb.sloth.eg.it" xmlns:xsi="http://www.w3.org/2001/XMLSchema">
+ <Skipper Name="skipStart" />
+ <Skipper Name="skipStandby" />
+
+ <Grid Name="Master" Title="Job" Table="Batch_Job">
+  <Text Name="Classname" Description="Class name" DataType="STRING" />
+  <Text Name="Jobname" Description="Job name" DataType="STRING" />
+  <Text Name="Groupname" Description="Group name" DataType="STRING" />
+ </Grid>
+
+ <Fields Name="Detail">
+  <Input Name="Classname" Description="Class name" DataType="STRING" MaxLength="100" Required="true" />
+  <Input Name="Jobname" Description="Job name" DataType="STRING" MaxLength="50" Required="true" />
+  <Input Name="Groupname" Description="Group name" DataType="STRING" MaxLength="50" Required="true" />
+ </Fields>
+
+ <Grid Name="RunningJob" Title="RunningJob">
+  <Text Name="FireInstanceId" Description="Fire instance Id" DataType="STRING" />
+  <Text Name="JobName" Description="Job name" DataType="STRING" />
+  <Text Name="GroupName" Description="Group name" DataType="STRING" />
+  <Text Name="FireTime" Description="Fire time" DataType="DATETIME" />
+  <Text Name="NextFireTime" Description="Next fire time" DataType="DATETIME" />
+ </Grid>
+
+ <Fields Name="Utility">
+  <Button Name="runJob" Description="run" />
+  <Button Name="start" Description="Start" />
+  <Button Name="standby" Description="StandBy" />
+
+  <Button Name="refresh" Description="" Tooltip="Refresh" Type="btn-link" ImgHtml="&lt;i class=&quot;fas fa-sync&quot;&gt;&lt;/i&gt;" />
+
+  <Text Name="scheduler" Description="Scheduler" DataType="STRING" />
+  <Text Name="job" Description="job" DataType="INTEGER" />
+  <Text Name="trigger" Description="Trigger" DataType="INTEGER" />
+  <Text Name="runningJob" Description="Running Job" DataType="INTEGER" />
+  <Text Name="totalExecutions" Description="Total executions" DataType="INTEGER" />
+ </Fields>
+
+ <Grid Name="CronTrigger" Title="Trigger" Table="Batch_Crontrigger">
+  <Input Name="minuti" Description="Minuti" DataType="STRING" Required="true" />
+  <Input Name="ore" Description="Ore" DataType="STRING" Required="true" />
+  <Input Name="giornoDelMese" Description="Giorno (Mese)" DataType="STRING" Required="true" />
+  <Input Name="mese" Description="Mese" DataType="STRING" Required="true" />
+  <Input Name="giornoDellaSettimana" Description="Giorno (Settimana)" DataType="STRING" Required="true" />
+ </Grid>
+
+ <TabSheet Name="Tabs">
+  <Tab Name="TabTrigger" Description="Trigger" />
+  <Tab Name="TabLog" Description="Log" />
+ </TabSheet>
+
+</Form>
+
+

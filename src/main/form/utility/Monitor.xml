@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Form Title="Monitor" PageType="EDITABLE_GRID" xmlns="http://form.jaxb.sloth.eg.it" xmlns:xsi="http://www.w3.org/2001/XMLSchema">
+<Form Title="Monitor" PageType="SIMPLE_NAVIGATION" xmlns="http://form.jaxb.sloth.eg.it" xmlns:xsi="http://www.w3.org/2001/XMLSchema">
 
  <Fields Name="SystemData">
   <Text Name="Startup" Description="Startup" DataType="DATETIME" />
@@ -34,7 +34,7 @@
   <Text Name="peakUsed" Description="Peak used" DataType="DECIMAL" Format="#,### 'MB'" />
   <Text Name="peakCommitted" Description="Peak committed" DataType="DECIMAL" Format="#,### 'MB'" />
  </Grid>
- 
+
  <Fields Name="MonitorDataFilter">
   <Input Name="ModitorDataDa" Description="Data Da" DataType="DATE" ViewModality="MODIFICA" MaxLength="10" />
   <Input Name="ModitorDataA" Description="Data A" DataType="DATE" ViewModality="MODIFICA" MaxLength="10" />
@@ -50,24 +50,15 @@
   <Text Name="max" Description="Max" DataType="DECIMAL" />
  </Grid>
 
- <SimpleChart Name="TrendData" ChartType="LINE">
-  <Ticks Name="hour" Description="Ora" DataType="DATE" Format="dd/MM HH" Rotation="-75" />
+ <SimpleChart Name="TrendChart" ChartType="line">
+  <Labels Name="hour" Description="Ora" DataType="DATE" Format="dd/MM HH" Rotation="-75" />
   <Series Name="executions" Description="Executions" DataType="INTEGER" />
  </SimpleChart>
-
- <Grid Name="LogFile" Description="Log File">
-  <Text Name="fileName" Description="File name" DataType="STRING" />
-  <Text Name="size" Description="Size" DataType="DECIMAL" Format="#,### 'KB'" />
-  <Text Name="date" Description="Date" DataType="DATE" />
-  <Button Name="downloadFile" Description="Download" ClassName="excel" />
- </Grid>
-
 
  <TabSheet Name="Tabs">
   <Tab Name="Trend" Description="Trend" />
   <Tab Name="Memory" Description="Memory" />
   <Tab Name="Task" Description="Task" />
-  <Tab Name="LogFile" Description="Log file" />
  </TabSheet>
 
 </Form>

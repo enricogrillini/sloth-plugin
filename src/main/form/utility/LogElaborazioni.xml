@@ -29,7 +29,7 @@
   <Text Name="Percentuale" Description="Percentuale" DataType="PERC" />
   <Text Name="Messaggio" Description="Messaggio" DataType="STRING" />
   <Button Name="Refresh" Description="Refresh" />
-  <LinkButton Name="DownloadDetail" Description="Download detail" />
+  <Link Name="DownloadDetail" Description="Download detail" />
  </Fields>
 
  <Grid Name="DetailLog" Description="Dettaglio Log">

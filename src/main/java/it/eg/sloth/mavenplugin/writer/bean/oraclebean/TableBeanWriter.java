@@ -11,6 +11,21 @@ import it.eg.sloth.jaxb.dbschema.Table;
 import it.eg.sloth.jaxb.dbschema.TableColumn;
 import it.eg.sloth.mavenplugin.common.GenUtil;
 
+/**
+ * Project: sloth-framework
+ * Copyright (C) 2019-2020 Enrico Grillini
+ * <p>
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * <p>
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+ * <p>
+ * You should have received a copy of the GNU General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * @author Enrico Grillini
+ *
+ */
 public class TableBeanWriter {
   private static final String DECODE_BEAN = ".bean.decode";
   private static final String TABLE_BEAN = ".bean.tablebean";
@@ -415,7 +430,7 @@ public class TableBeanWriter {
         testo.append("          InputStream inputStream = new ByteArrayInputStream(get" + GenUtil.initCap(dbTableColumn.getName()) + "BLobData().getValue());\n");
         testo.append("          OutputStream outputStream = blob.setBinaryStream(0);\n");
         testo.append("\n");
-        testo.append("          StreamUtil.inputStreamToOutputStream(inputStream, outputStream);\n");
+        testo.append("          IOUtils.copy(inputStream, outputStream);\n");
         testo.append("\n");
         testo.append("          outputStream.close();\n");
         testo.append("          inputStream.close();\n");
@@ -442,7 +457,7 @@ public class TableBeanWriter {
         testo.append("          InputStream inputStream = new ByteArrayInputStream(get" + GenUtil.initCap(dbTableColumn.getName()) + "CLobData().getValue().getBytes());\n");
         testo.append("          OutputStream outputStream = clob.setAsciiStream(0);\n");
         testo.append("\n");
-        testo.append("          StreamUtil.inputStreamToOutputStream(inputStream, outputStream);\n");
+        testo.append("          IOUtils.copy(inputStream, outputStream);\n");
         testo.append("\n");
         testo.append("          outputStream.close();\n");
         testo.append("          inputStream.close();\n");
@@ -555,7 +570,7 @@ public class TableBeanWriter {
         .append("import it.eg.sloth.db.datasource.row.lob.BLobData;\n")
         .append("import it.eg.sloth.db.datasource.row.lob.CLobData;\n")
         .append("import it.eg.sloth.db.datasource.row.column.Column;\n")
-        .append("import it.eg.sloth.framework.utility.stream.StreamUtil;\n")
+        .append("import org.apache.commons.io.IOUtils;\n")
         .append("import it.eg.sloth.db.manager.DataConnectionManager;\n")
         .append("import java.io.ByteArrayInputStream;\n")
         .append("\n")

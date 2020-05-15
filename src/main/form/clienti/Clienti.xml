@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Form Title="Clienti" PageType="EDITABLE_MASTER_DETAIL" xmlns="http://form.jaxb.sloth.eg.it" xmlns:xsi="http://www.w3.org/2001/XMLSchema">
+
+ <Fields Name="DirectInput">
+  <Input Name="IdCliente" Description="Id cliente" DataType="INTEGER" />
+ </Fields>
+
+ <Fields Name="Filtri">
+  <Input Name="FiltroRagionesociale" Description="Ragione sociale" DataType="STRING" MaxLength="100" ViewModality="MODIFICA" />
+ </Fields>
+
+ <Grid Name="Master" Title="Clienti" Table="Clienti">
+  <Semaphore Description="Stato" Name="stato" DataType="STRING" />
+  <Text Name="Ragionesociale" Description="Ragione sociale" DataType="STRING" />
+  <DecodedText Name="Codtipocliente" Description="Tipo cliente" DataType="STRING" />
+  <Text Name="Dataultimoacquisto" Tooltip="Data ultimo acquisto" Description="Ultimo acq." DataType="DATE" />
+ </Grid>
+
+ <Fields Name="Detail">
+  <Input Name="Ragionesociale" Description="Ragione sociale" DataType="STRING" MaxLength="100" />
+  <Input Name="Indirizzo" Description="Indirizzo" DataType="STRING" MaxLength="100" />
+  <ComboBox Name="Codtipocliente" Description="Tipo cliente" DataType="STRING" />
+  <Input Name="Partitaiva" Description="Partita iva" DataType="STRING" MaxLength="16" />
+  <Input Name="Codicefiscale" Description="Codice fiscale" DataType="STRING" MaxLength="16" />
+  <Input Name="Dataultimoacquisto" Tooltip="Data ultimo acquisto" Description="Ultimo acq." DataType="DATE" MaxLength="10" />
+  <TextArea Name="Note" Description="Note" DataType="STRING" MaxLength="1000" />
+ </Fields>
+
+ <Grid Name="Ordini" Title="Clienti" Table="Ordini">
+  <Text Name="Idordine" Description="Numero Ordine" DataType="INTEGER" BaseLink="OrdiniPage.html?idOrdine="/>
+  <Input Name="Descrizione" Description="Descrizione" DataType="STRING" />
+  <Input Name="Data" Description="Data" Tooltip="Data ordine" DataType="DATE" />
+  <InputTotalizer Name="Importo" Description="Importo" DataType="CURRENCY" />
+ </Grid>
+ 
+ <TabSheet Name="Tabs">
+  <Tab Name="TabOrdini" Description="Ordini" />
+ </TabSheet>
+
+
+</Form>
+
+

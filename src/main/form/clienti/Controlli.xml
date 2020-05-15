@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Form Title="Controlli" PageType="EDITABLE_PAGE" xmlns="http://form.jaxb.sloth.eg.it" xmlns:xsi="http://www.w3.org/2001/XMLSchema">
+
+ <Fields Name="InputPalette">
+  <Input Name="inputDATE" Alias="textDATE" Description="inputDATE" DataType="DATE" />
+  <Input Name="inputDATETIME" Alias="textDATETIME" Description="inputDATETIME" DataType="DATETIME" />
+  <Input Name="inputTIME" Alias="textTIME" Description="inputTIME" DataType="TIME" />
+  <Input Name="inputHOUR" Alias="textHOUR" Description="inputHOUR" DataType="HOUR" />
+  <Input Name="inputMONTH" Alias="textMONTH" Description="inputMONTH" DataType="MONTH" />
+
+  <Input Name="inputDECIMAL" Alias="textDECIMAL" Description="inputDECIMAL" DataType="DECIMAL" />
+  <Input Name="inputINTEGER" Alias="textINTEGER" Description="inputINTEGER" DataType="INTEGER" />
+  <Input Name="inputCURRENCY" Alias="textCURRENCY" Description="inputCURRENCY" DataType="CURRENCY" />
+  <Input Name="inputPERC" Alias="textPERC" Description="inputPERC" DataType="PERC" />
+  <Input Name="inputNUMBER" Alias="textNUMBER" Description="inputNUMBER" DataType="NUMBER" />
+ </Fields>
+
+ <Fields Name="TextPalette">
+  <Text Name="textDATE" Alias="textDATE" Description="textDATE" DataType="DATE" />
+  <Text Name="textDATETIME" Alias="textDATETIME" Description="textDATETIME" DataType="DATETIME" />
+  <Text Name="textTIME" Alias="textTIME" Description="textTIME" DataType="TIME" />
+  <Text Name="textHOUR" Alias="textHOUR" Description="textHOUR" DataType="HOUR" />
+  <Text Name="textMONTH" Alias="textMONTH" Description="textMONTH" DataType="MONTH" />
+
+  <Text Name="textDECIMAL" Alias="textDECIMAL" Description="textDECIMAL" DataType="DECIMAL" />
+  <Text Name="textINTEGER" Alias="textINTEGER" Description="textINTEGER" DataType="INTEGER" />
+  <Text Name="textCURRENCY" Alias="textCURRENCY" Description="textCURRENCY" DataType="CURRENCY" />
+  <Text Name="textPERC" Alias="textPERC" Description="textPERC" DataType="PERC" />
+  <Text Name="textNUMBER" Alias="textNUMBER" Description="textNUMBER" DataType="NUMBER" />
+ </Fields>
+
+
+ <Fields Name="Utility">
+  <Button Name="Italy" Description="Italy" />
+  <Button Name="US" Description="US" />
+  <Button Name="Clear" Description="Clear" />
+ </Fields>
+
+</Form>
+
+
