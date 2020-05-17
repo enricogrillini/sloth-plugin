@@ -13,7 +13,7 @@ import java.io.File;
 
 
 /**
- * Project: sloth-framework
+ * Project: sloth-plugin
  * Copyright (C) 2019-2020 Enrico Grillini
  * <p>
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by
@@ -24,7 +24,7 @@ import java.io.File;
  * <p>
  * You should have received a copy of the GNU General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * <p>
- * Goal : che crea le classi di configurazione spring
+ * Goal che crea le classi di configurazione spring
  *
  * @author Enrico Grillini
  */

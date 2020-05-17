@@ -25,7 +25,7 @@ import it.eg.sloth.mavenplugin.writer.spring.model.ControllerProperties;
 import it.eg.sloth.mavenplugin.writer.spring.model.JspProperties;
 
 /**
- * Project: sloth-framework
+ * Project: sloth-plugin
  * Copyright (C) 2019-2020 Enrico Grillini
  * <p>
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by
@@ -82,7 +82,7 @@ public class SpringControllerWriter {
     }
 
     private List<JspProperties> scanJsp() {
-        File pathToScan = new File(webappDirectory.getAbsolutePath() + "/jsp");
+        File pathToScan = new File(webappDirectory.getAbsolutePath() + "/WEB-INF/views");
 
         Collection<File> files = FileUtils.listFiles(pathToScan, new ExtensionFilter(".jsp"), new DirectoryFilter());
         List<JspProperties> list = new ArrayList<>();
