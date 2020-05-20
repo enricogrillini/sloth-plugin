@@ -4,6 +4,7 @@ import it.eg.sloth.db.datasource.DataRow;
 import it.eg.sloth.db.datasource.row.Row;
 import it.eg.sloth.db.query.query.Query;
 import it.eg.sloth.framework.common.base.BaseFunction;
+import it.eg.sloth.framework.common.exception.FrameworkException;
 import it.eg.sloth.jaxb.dbschema.*;
 import it.eg.sloth.jaxb.dbschema.Package;
 import it.eg.sloth.mavenplugin.common.GenUtil;
@@ -433,7 +434,7 @@ public class OracleDb extends AbstractDb {
         }
     }
 
-    private List<Source> loadSourceList(String type) throws SQLException, IOException {
+    private List<Source> loadSourceList(String type) throws SQLException, IOException, FrameworkException {
         it.eg.sloth.db.datasource.table.Table sqlSource = new it.eg.sloth.db.datasource.table.Table();
 
         Query query = new Query(getSqlStatement(_sqlSource));
@@ -461,7 +462,7 @@ public class OracleDb extends AbstractDb {
         return list;
     }
 
-    public Constants getConstants(String entityName, String keyName) throws SQLException, IOException {
+    public Constants getConstants(String entityName, String keyName) throws SQLException, IOException, FrameworkException {
         final int MAX_CONSTANTS = 100;
         Map<String, Integer> nameCache = new HashMap<>();
 
@@ -510,7 +511,7 @@ public class OracleDb extends AbstractDb {
 
 
     @Override
-    public Tables loadTables(String tableName) throws SQLException, IOException {
+    public Tables loadTables(String tableName) throws SQLException, IOException, FrameworkException {
         Map<String, Table> tableCache = new HashMap<>();
         Map<String, TableColumn> columnCache = new HashMap<>();
 
@@ -812,7 +813,7 @@ public class OracleDb extends AbstractDb {
     }
 
     @Override
-    public Packages loadPackages() throws SQLException, IOException {
+    public Packages loadPackages() throws SQLException, IOException, FrameworkException {
         Map<String, Package> packageCache = new HashMap<>();
 
         // Spec
@@ -900,7 +901,7 @@ public class OracleDb extends AbstractDb {
     }
 
     @Override
-    public Views loadViews() throws SQLException, IOException {
+    public Views loadViews() throws SQLException, IOException, FrameworkException {
         Map<String, View> viewCache = new HashMap<>();
 
         // View
@@ -1055,7 +1056,7 @@ public class OracleDb extends AbstractDb {
 //    }
 //
     @Override
-    public Sequences loadSequences() throws SQLException, IOException {
+    public Sequences loadSequences() throws SQLException, IOException, FrameworkException {
         // Sequences
         it.eg.sloth.db.datasource.table.Table sqlDbSequences = new it.eg.sloth.db.datasource.table.Table();
 

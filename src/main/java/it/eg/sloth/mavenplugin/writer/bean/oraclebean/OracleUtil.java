@@ -18,7 +18,6 @@ import java.util.*;
  * You should have received a copy of the GNU General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @author Enrico Grillini
- *
  */
 public class OracleUtil {
 
@@ -186,8 +185,7 @@ public class OracleUtil {
             testo.append("\n");
 
             if (isTable) {
-                testo.append("  public byte[] get" + GenUtil.initCap(column.getName()) + "(Connection connection) {\n");
-                testo.append("    try {\n");
+                testo.append("  public byte[] get" + GenUtil.initCap(column.getName()) + "(Connection connection) throws SQLException, FrameworkException, IOException {\n");
                 testo.append("      if (get" + GenUtil.initCap(column.getName()) + "BLobData().getStatus() != BLobData.OFF_LINE) {\n");
                 testo.append("        return get" + GenUtil.initCap(column.getName()) + "BLobData().getValue();\n");
                 testo.append("      }\n");
@@ -197,12 +195,8 @@ public class OracleUtil {
                 testo.append("      }\n");
                 testo.append("\n");
                 testo.append("      if (connection == null) {\n");
-                testo.append("        try {\n");
-                testo.append("          connection = DataConnectionManager.getInstance().getConnection();\n");
-                testo.append("          return get" + GenUtil.initCap(column.getName()) + "(connection);\n");
-                testo.append("\n");
-                testo.append("        } finally {\n");
-                testo.append("          DataConnectionManager.release(connection);\n");
+                testo.append("        try (Connection newConnection = DataConnectionManager.getInstance().getDataSource().getConnection()) {\n");
+                testo.append("          return get" + GenUtil.initCap(column.getName()) + "(newConnection);\n");
                 testo.append("        }\n");
                 testo.append("      } else {\n");
                 testo.append("        DataRow row = selectQuery().selectRow(connection);\n");
@@ -211,17 +205,14 @@ public class OracleUtil {
                 testo.append("\n");
                 testo.append("        return bLobData.getValue();\n");
                 testo.append("      }\n");
-                testo.append("    } catch (Throwable t) {\n");
-                testo.append("      throw new RuntimeException(t);\n");
-                testo.append("    }\n");
                 testo.append("  }\n");
                 testo.append("\n");
-                testo.append("  public byte[] get" + GenUtil.initCap(column.getName()) + "() {\n");
+                testo.append("  public byte[] get" + GenUtil.initCap(column.getName()) + "() throws SQLException, FrameworkException, IOException {\n");
                 testo.append("    return get" + GenUtil.initCap(column.getName()) + "(null);\n");
                 testo.append("  }\n");
                 testo.append("\n");
             } else {
-                testo.append("  public byte[] get" + GenUtil.initCap(column.getName()) + "() {\n");
+                testo.append("  public byte[] get" + GenUtil.initCap(column.getName()) + "() throws SQLException, FrameworkException, IOException {\n");
                 testo.append("    return get" + GenUtil.initCap(column.getName()) + "BLobData().getValue();\n");
                 testo.append("  }\n");
                 testo.append("\n");
@@ -247,50 +238,46 @@ public class OracleUtil {
             testo.append("\n");
 
             if (isTable) {
-                testo.append("  public String get" + GenUtil.initCap(column.getName()) + "(Connection connection) {\n");
-                testo.append("    try {\n");
-                testo.append("      if (get" + GenUtil.initCap(column.getName()) + "CLobData().getStatus() != CLobData.OFF_LINE) {\n");
-                testo.append("        return get" + GenUtil.initCap(column.getName()) + "CLobData().getValue();\n");
-                testo.append("      }\n");
-                testo.append("\n");
-                testo.append("      if (this.getStatus() == RowStatus.INSERTED || this.getStatus() == RowStatus.INCONSISTENT) {\n");
-                testo.append("        return null;\n");
-                testo.append("      }\n");
-                testo.append("\n");
-                testo.append("      if (connection == null) {\n");
-                testo.append("        try {\n");
-                testo.append("          connection = DataConnectionManager.getInstance().getConnection();\n");
-                testo.append("          return get" + GenUtil.initCap(column.getName()) + "(connection);\n");
-                testo.append("\n");
-                testo.append("        } finally {\n");
-                testo.append("          DataConnectionManager.release(connection);\n");
-                testo.append("        }\n");
-                testo.append("      } else {\n");
-                testo.append("        DataRow row = selectQuery().selectRow(connection);\n");
-                testo.append("        CLobData cLobData = new CLobData(true, (Clob) row.getObject(" + column.getName().toUpperCase() + "));\n");
-                testo.append("        set" + GenUtil.initCap(column.getName()) + "CLobData(cLobData);\n");
-                testo.append("        return cLobData.getValue();\n");
-                testo.append("      }\n");
-                testo.append("    } catch (Throwable t) {\n");
-                testo.append("      throw new RuntimeException(t);\n");
-                testo.append("    }\n");
-                testo.append("  }\n");
-                testo.append("\n");
-                testo.append("  public String get" + GenUtil.initCap(column.getName()) + "() {\n");
-                testo.append("    return get" + GenUtil.initCap(column.getName()) + "(null);\n");
-                testo.append("  }\n");
-                testo.append("\n");
+                testo.append("  public String get" + GenUtil.initCap(column.getName()) + "(Connection connection) throws SQLException, FrameworkException, IOException {\n")
+                        .append("    try {\n")
+                        .append("      if (get" + GenUtil.initCap(column.getName()) + "CLobData().getStatus() != CLobData.OFF_LINE) {\n")
+                        .append("        return get" + GenUtil.initCap(column.getName()) + "CLobData().getValue();\n")
+                        .append("      }\n")
+                        .append("\n")
+                        .append("      if (this.getStatus() == RowStatus.INSERTED || this.getStatus() == RowStatus.INCONSISTENT) {\n")
+                        .append("        return null;\n")
+                        .append("      }\n")
+                        .append("\n")
+                        .append("      if (connection == null) {\n")
+                        .append("        try (Connection newConnection = DataConnectionManager.getInstance().getDataSource().getConnection()) {\n")
+                        .append("          return get" + GenUtil.initCap(column.getName()) + "(newConnection);\n")
+                        .append("        }\n")
+                        .append("      } else {\n")
+                        .append("        DataRow row = selectQuery().selectRow(connection);\n")
+                        .append("        CLobData cLobData = new CLobData(true, (Clob) row.getObject(" + column.getName().toUpperCase() + "));\n")
+                        .append("        set" + GenUtil.initCap(column.getName()) + "CLobData(cLobData);\n")
+                        .append("        return cLobData.getValue();\n")
+                        .append("      }\n")
+                        .append("    } catch (Throwable t) {\n")
+                        .append("      throw new RuntimeException(t);\n")
+                        .append("    }\n")
+                        .append("  }\n")
+                        .append("\n")
+                        .append("  public String get" + GenUtil.initCap(column.getName()) + "() throws SQLException, FrameworkException, IOException {\n")
+                        .append("    return get" + GenUtil.initCap(column.getName()) + "(null);\n")
+                        .append("  }\n")
+                        .append("\n");
             } else {
-                testo.append("  public String get" + GenUtil.initCap(column.getName()) + "() {\n");
-                testo.append("    return get" + GenUtil.initCap(column.getName()) + "CLobData().getValue();\n");
-                testo.append("  }\n");
-                testo.append("\n");
+                testo.append("  public String get" + GenUtil.initCap(column.getName()) + "() throws SQLException, FrameworkException, IOException {\n")
+                        .append("    return get" + GenUtil.initCap(column.getName()) + "CLobData().getValue();\n")
+                        .append("  }\n")
+                        .append("\n");
             }
 
-            testo.append("  public void set" + GenUtil.initCap(column.getName()) + "(String " + column.getName().toLowerCase() + ") {\n");
-            testo.append("    get" + GenUtil.initCap(column.getName()) + "CLobData().setValue(" + column.getName().toLowerCase() + ");\n");
-            testo.append("  }\n");
-            testo.append("\n");
+            testo.append("  public void set" + GenUtil.initCap(column.getName()) + "(String " + column.getName().toLowerCase() + ") {\n")
+                    .append("    get" + GenUtil.initCap(column.getName()) + "CLobData().setValue(" + column.getName().toLowerCase() + ");\n")
+                    .append("  }\n")
+                    .append("\n");
 
         }
 

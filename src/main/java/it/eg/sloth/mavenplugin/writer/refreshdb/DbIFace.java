@@ -1,5 +1,6 @@
 package it.eg.sloth.mavenplugin.writer.refreshdb;
 
+import it.eg.sloth.framework.common.exception.FrameworkException;
 import it.eg.sloth.jaxb.dbschema.Packages;
 import it.eg.sloth.jaxb.dbschema.Sequences;
 import it.eg.sloth.jaxb.dbschema.Tables;
@@ -27,12 +28,12 @@ public interface DbIFace {
 
     public String getOwner();
 
-    public Tables loadTables(String tableName) throws SQLException, IOException;
+    public Tables loadTables(String tableName) throws SQLException, IOException, FrameworkException;
 
-    public Views loadViews() throws SQLException, IOException;
+    public Views loadViews() throws SQLException, IOException, FrameworkException;
 
-    public Packages loadPackages() throws SQLException, IOException;
+    public Packages loadPackages() throws SQLException, IOException, FrameworkException;
 
-    public Sequences loadSequences() throws SQLException, IOException;
+    public Sequences loadSequences() throws SQLException, IOException, FrameworkException;
 
 }

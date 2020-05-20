@@ -17,7 +17,7 @@ import org.apache.maven.project.MavenProject;
 import it.eg.sloth.framework.common.base.StringUtil;
 import it.eg.sloth.framework.common.base.TimeStampUtil;
 import it.eg.sloth.framework.common.casting.DataTypes;
-import it.eg.sloth.framework.common.exception.BusinessException;
+import it.eg.sloth.framework.common.exception.FrameworkException;
 import it.eg.sloth.mavenplugin.common.GenUtil;
 import it.eg.sloth.mavenplugin.common.files.DirectoryFilter;
 import it.eg.sloth.mavenplugin.common.files.ExtensionFilter;
@@ -37,7 +37,6 @@ import it.eg.sloth.mavenplugin.writer.spring.model.JspProperties;
  * You should have received a copy of the GNU General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @author Enrico Grillini
- *
  */
 public class SpringControllerWriter {
 
@@ -52,7 +51,7 @@ public class SpringControllerWriter {
 
     File constant;
 
-    public SpringControllerWriter(File javaDirectory, File webappDirectory, String controllerPackage,  File outputJavaDirectory, String genPackage, MavenProject project, Log log) {
+    public SpringControllerWriter(File javaDirectory, File webappDirectory, String controllerPackage, File outputJavaDirectory, String genPackage, MavenProject project, Log log) {
         this.javaDirectory = javaDirectory;
         this.webappDirectory = webappDirectory;
         this.controllerPackage = controllerPackage;
@@ -93,7 +92,7 @@ public class SpringControllerWriter {
         return list;
     }
 
-    public void write() throws IOException, JAXBException, BusinessException {
+    public void write() throws IOException, JAXBException, FrameworkException {
         List<ControllerProperties> controllerPropertiesList = scanController();
         List<JspProperties> jspPropertiesList = scanJsp();
 
@@ -136,7 +135,7 @@ public class SpringControllerWriter {
         GenUtil.writeFile(properties.getOutputClassFile(), stringBuilder.toString());
     }
 
-    public void writeConstant(List<ControllerProperties> controllerPropertiesList, List<JspProperties> jspPropertiesList) throws IOException, JAXBException, BusinessException {
+    public void writeConstant(List<ControllerProperties> controllerPropertiesList, List<JspProperties> jspPropertiesList) throws IOException, FrameworkException {
         Timestamp date = TimeStampUtil.sysdate();
         String version = project.getVersion();
 
@@ -175,7 +174,7 @@ public class SpringControllerWriter {
             }
         }
         stringBuilder.append("  }\n");
-        
+
         stringBuilder.append("}\n");
 
         GenUtil.writeFile(constant, stringBuilder.toString());
