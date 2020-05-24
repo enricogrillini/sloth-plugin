@@ -7,6 +7,8 @@ import lombok.Data;
 
 import java.io.File;
 import java.io.IOException;
+import java.sql.CallableStatement;
+import java.sql.SQLException;
 
 /**
  * Project: sloth-plugin
@@ -108,19 +110,16 @@ public class PackageBeanWriter {
             // Metodo con connection
             if (dbMethod.getType() == MethodType.FUNCTION) {
                 Argument dbArgument = dbMethod.getArguments().getArgument().get(0);
-
                 stringBuilder.append("  public static " + OracleUtil.getJavaClass(dbArgument.getType()) + " " + dbMethod.getName() + " (Connection connection");
                 stringBuilder.append(parameterList2 == "" ? "" : ", " + parameterList2);
-                stringBuilder.append(") {\n");
+                stringBuilder.append(") throws SQLException {\n");
             } else {
                 stringBuilder.append("  public static void " + dbMethod.getName() + " (Connection connection");
                 stringBuilder.append(parameterList2 == "" ? "" : ", " + parameterList2);
-                stringBuilder.append(") {\n");
+                stringBuilder.append(") throws SQLException {\n");
             }
 
-            stringBuilder.append("    CallableStatement callableStatement = null;\n");
-            stringBuilder.append("    try {\n");
-            stringBuilder.append("      callableStatement = connection.prepareCall(" + dbMethod.getName() + "Statement" + dbMethod.getOverload() + ");\n");
+            stringBuilder.append("    try (CallableStatement callableStatement = connection.prepareCall(" + dbMethod.getName() + "Statement" + dbMethod.getOverload() + ")) {\n");
             int j = 0;
             for (Argument dbArgument : dbMethod.getArguments().getArgument()) {
                 if (dbArgument.getName() == null && dbArgument.getPosition() > 0)
@@ -149,10 +148,6 @@ public class PackageBeanWriter {
                 stringBuilder.append("      return value;\n");
             } else {
             }
-            stringBuilder.append("    } catch (SQLException e) {\n");
-            stringBuilder.append("      throw new RuntimeException(e);\n");
-            stringBuilder.append("    } finally {\n");
-            stringBuilder.append("      DataConnectionManager.release(callableStatement);\n");
             stringBuilder.append("    }\n");
             stringBuilder.append("  }\n");
             stringBuilder.append("\n");

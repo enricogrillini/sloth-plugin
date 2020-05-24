@@ -2,9 +2,11 @@ package it.eg.sloth.mavenplugin.writer.bean.oraclebean;
 
 import java.io.File;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import it.eg.sloth.framework.common.exception.FrameworkException;
 import it.eg.sloth.jaxb.dbschema.Column;
 import it.eg.sloth.jaxb.dbschema.Constant;
 import it.eg.sloth.jaxb.dbschema.Table;
@@ -85,12 +87,15 @@ public class TableBeanWriter {
     }
 
     public StringBuilder getTableBean() {
-        StringBuilder testo = new StringBuilder()
+        return new StringBuilder()
                 .append("package " + tableBeanPackageName + ";\n")
                 .append("\n")
                 .append("import it.eg.sloth.db.query.SelectQueryInterface;\n")
+                .append("import it.eg.sloth.framework.common.exception.FrameworkException;\n")
                 .append("import it.eg.sloth.db.datasource.table.DbTable;\n")
+                .append("import java.io.IOException;\n")
                 .append("import java.sql.Connection;\n")
+                .append("import java.sql.SQLException;\n")
                 .append("\n")
                 .append("/**\n")
                 .append(" * TableBean per la tabella " + table.getName() + "\n")
@@ -115,46 +120,44 @@ public class TableBeanWriter {
                 .append("    return new " + tableBeanClassName + "();\n")
                 .append("  }\n")
                 .append("\n")
-                .append("  public void load(" + rowBeanClassName + " " + GenUtil.initLow(rowBeanClassName) + ") {\n")
+                .append("  public void load(" + rowBeanClassName + " " + GenUtil.initLow(rowBeanClassName) + ") throws SQLException, IOException, FrameworkException {\n")
                 .append("    load(SELECT, " + rowBeanClassName + ".columns, " + GenUtil.initLow(rowBeanClassName) + ");\n")
                 .append("  }\n")
                 .append("\n")
-                .append("  public void load(" + rowBeanClassName + " " + GenUtil.initLow(rowBeanClassName) + ", Connection connection) {\n")
+                .append("  public void load(" + rowBeanClassName + " " + GenUtil.initLow(rowBeanClassName) + ", Connection connection) throws SQLException, IOException, FrameworkException {\n")
                 .append("    load(SELECT, " + rowBeanClassName + ".columns, " + GenUtil.initLow(rowBeanClassName) + ", connection);\n")
                 .append("  }\n")
                 .append("\n")
                 .append("  public static class Factory {\n")
                 .append("\n")
-                .append("    public static " + tableBeanClassName + " load(" + rowBeanClassName + " rowBean, int pageSize, Connection connection) {\n")
+                .append("    public static " + tableBeanClassName + " load(" + rowBeanClassName + " rowBean, int pageSize, Connection connection) throws SQLException, IOException, FrameworkException {\n")
                 .append("      " + tableBeanClassName + " tableBean = new " + tableBeanClassName + "();\n")
                 .append("      tableBean.load(rowBean, connection);\n")
                 .append("      tableBean.setPageSize(pageSize);\n")
                 .append("      return tableBean;\n")
                 .append("    }\n")
                 .append("\n")
-                .append("    public static " + tableBeanClassName + " load(" + rowBeanClassName + " rowBean, int pageSize) {\n")
+                .append("    public static " + tableBeanClassName + " load(" + rowBeanClassName + " rowBean, int pageSize)throws SQLException, IOException, FrameworkException {\n")
                 .append("      return load(rowBean, pageSize, null);\n")
                 .append("    }\n")
                 .append("\n")
-                .append("    public static " + tableBeanClassName + " load(" + rowBeanClassName + " rowBean) {\n")
+                .append("    public static " + tableBeanClassName + " load(" + rowBeanClassName + " rowBean) throws SQLException, IOException, FrameworkException {\n")
                 .append("      return load(rowBean, -1);\n")
                 .append("    }\n")
                 .append("\n")
-                .append("    public static " + tableBeanClassName + " loadFromQuery(SelectQueryInterface query, int pageSize) {\n")
+                .append("    public static " + tableBeanClassName + " loadFromQuery(SelectQueryInterface query, int pageSize) throws SQLException, IOException, FrameworkException {\n")
                 .append("      " + tableBeanClassName + " tableBean = new " + tableBeanClassName + "();\n")
                 .append("      tableBean.loadFromQuery(query);\n")
                 .append("      tableBean.setPageSize(pageSize);\n")
                 .append("      return tableBean;\n")
                 .append("    }\n")
                 .append("\n")
-                .append("    public static " + tableBeanClassName + " loadFromQuery(SelectQueryInterface query) {\n")
+                .append("    public static " + tableBeanClassName + " loadFromQuery(SelectQueryInterface query) throws SQLException, IOException, FrameworkException {\n")
                 .append("      return loadFromQuery (query, -1);\n")
                 .append("    }\n")
                 .append("  }\n")
                 .append("\n")
                 .append("}");
-
-        return testo;
     }
 
     private String getSelect() {
@@ -299,13 +302,13 @@ public class TableBeanWriter {
         if (primaryKeyColumnList.size() > 0) {
             testo.append("  public " + rowBeanClassName + " (");
             testo.append(OracleUtil.getPrimaryKeyParameters(primaryKeyColumnList, OracleUtil.FIELDS_GEN_TYPE.AS_PARAMETER));
-            testo.append(") {\n");
+            testo.append(") throws SQLException, IOException, FrameworkException {\n");
             testo.append("    this(null," + OracleUtil.getPrimaryKeyParameters(primaryKeyColumnList, OracleUtil.FIELDS_GEN_TYPE.AS_VARIABLE) + ");\n");
             testo.append("  }\n");
             testo.append("\n");
             testo.append("  public " + rowBeanClassName + " (Connection connection, ");
             testo.append(OracleUtil.getPrimaryKeyParameters(primaryKeyColumnList, OracleUtil.FIELDS_GEN_TYPE.AS_PARAMETER));
-            testo.append(") {\n");
+            testo.append(") throws SQLException, IOException, FrameworkException {\n");
             testo.append("    this();\n");
 
             for (TableColumn dbTableColumn : primaryKeyColumnList) {
@@ -403,10 +406,10 @@ public class TableBeanWriter {
         testo.append("  }\n");
 
         // Select
-        testo.append("  public boolean select(Connection connection)  {\n");
-        testo.append("    return loadFromQuery(selectQuery(), connection);\n");
-        testo.append("  }\n");
-        testo.append("\n");
+        testo.append("  public boolean select(Connection connection) throws SQLException, IOException, FrameworkException {\n")
+                .append("    return loadFromQuery(selectQuery(), connection);\n")
+                .append("  }\n")
+                .append("\n");
 
         // UpdateLob
         testo.append("  private void updateLob(Connection connection) {\n");
@@ -546,15 +549,15 @@ public class TableBeanWriter {
      * @param testo
      */
     private void writeFactory(StringBuilder testo) {
-        testo.append("  public static class Factory {\n");
-        testo.append("\n");
-        testo.append("    public static " + rowBeanClassName + " load(SelectQueryInterface selectQueryInterface) {\n");
-        testo.append("      " + rowBeanClassName + " " + GenUtil.initLow(rowBeanClassName) + " = new " + rowBeanClassName + "();\n");
-        testo.append("      " + GenUtil.initLow(rowBeanClassName) + ".loadFromQuery(selectQueryInterface);\n");
-        testo.append("      return " + GenUtil.initLow(rowBeanClassName) + ";\n");
-        testo.append("    }\n");
-        testo.append("\n");
-        testo.append("  }\n");
+        testo.append("  public static class Factory {\n")
+                .append("\n")
+                .append("    public static " + rowBeanClassName + " load(SelectQueryInterface selectQueryInterface) throws SQLException, IOException, FrameworkException {\n")
+                .append("      " + rowBeanClassName + " " + GenUtil.initLow(rowBeanClassName) + " = new " + rowBeanClassName + "();\n")
+                .append("      " + GenUtil.initLow(rowBeanClassName) + ".loadFromQuery(selectQueryInterface);\n")
+                .append("      return " + GenUtil.initLow(rowBeanClassName) + ";\n")
+                .append("    }\n")
+                .append("\n")
+                .append("  }\n");
     }
 
     public StringBuilder getRowBean() {
@@ -616,20 +619,22 @@ public class TableBeanWriter {
         String firstColumnJavaClass = OracleUtil.getJavaClass(firstColumn.getType());
         String firstColumnName = table.getColumns().getColumn().get(0).getName().toUpperCase();
 
-        testo.append("package " + decodeBeanPackageName + ";\n");
-        testo.append("\n");
-        testo.append("import it.eg.sloth.framework.common.cache.CacheSingleton;\n");
-        testo.append("import it.eg.sloth.db.decodemap.map.TableDecodeMap;\n");
-        testo.append("import " + tableBeanPackageName + "." + tableBeanClassName + ";\n");
-        testo.append("import " + rowBeanPackageName + "." + rowBeanClassName + ";\n");
-        testo.append("\n");
-        testo.append("import java.math.BigDecimal;\n");
-        testo.append("import java.sql.Timestamp;\n");
-        testo.append("import java.sql.SQLException;\n");
-        testo.append("\n");
-        testo.append("public class " + decodeBeanClassName + " extends TableDecodeMap<" + firstColumnJavaClass + ", " + rowBeanClassName + "> {\n");
-        testo.append("  \n");
-        testo.append("\n");
+        testo.append("package " + decodeBeanPackageName + ";\n")
+                .append("\n")
+                .append("import it.eg.sloth.framework.common.cache.CacheSingleton;\n")
+                .append("import it.eg.sloth.db.decodemap.map.TableDecodeMap;\n")
+                .append(" import it.eg.sloth.framework.common.exception.FrameworkException;\n")
+                .append("import " + tableBeanPackageName + "." + tableBeanClassName + ";\n")
+                .append("import " + rowBeanPackageName + "." + rowBeanClassName + ";\n")
+                .append("\n")
+                .append("import java.math.BigDecimal;\n")
+                .append("import java.sql.Timestamp;\n")
+                .append("import java.io.IOException;\n")
+                .append("import java.sql.SQLException;\n")
+                .append("\n")
+                .append("public class " + decodeBeanClassName + " extends TableDecodeMap<" + firstColumnJavaClass + ", " + rowBeanClassName + "> {\n")
+                .append("  \n")
+                .append("\n");
 
         // Costanti
         for (Constant constant : table.getConstants().getConstant()) {
@@ -639,7 +644,7 @@ public class TableBeanWriter {
         // Metodi
         testo.append("\n");
         String comma = OracleUtil.getFlags(table.getColumns().getColumn()).size() > 0 ? ", " : "";
-        testo.append("  public " + decodeBeanClassName + "(boolean onlyValid, boolean fullDescription " + comma + OracleUtil.getFlagsForDecodeKey(table.getColumns().getColumn(), OracleUtil.FIELDS_GEN_TYPE.AS_PARAMETER, false) + ") {\n");
+        testo.append("  public " + decodeBeanClassName + "(boolean onlyValid, boolean fullDescription " + comma + OracleUtil.getFlagsForDecodeKey(table.getColumns().getColumn(), OracleUtil.FIELDS_GEN_TYPE.AS_PARAMETER, false) + ") throws SQLException, IOException, FrameworkException {\n");
         testo.append("    super();\n"); // $NON-NLS-5$
         testo.append("\n");
         testo.append("    " + rowBeanClassName + " row = new " + rowBeanClassName + "();\n");
@@ -661,25 +666,25 @@ public class TableBeanWriter {
         // Factory
         testo.append("  public static class Factory {\n");
         testo.append("\n");
-        testo.append("    public static " + decodeBeanClassName + " getFromDb() {\n");
+        testo.append("    public static " + decodeBeanClassName + " getFromDb() throws SQLException, IOException, FrameworkException {\n");
         testo.append("      return new " + decodeBeanClassName + "(false, true " + comma + OracleUtil.getFlagsForDecodeKey(table.getColumns().getColumn(), OracleUtil.FIELDS_GEN_TYPE.AS_VARIABLE, true) + ");\n");
         testo.append("    }\n");
         testo.append("\n");
-        testo.append("    public static " + decodeBeanClassName + " getFromDb(boolean onlyValid, boolean fullDescription) {\n");
+        testo.append("    public static " + decodeBeanClassName + " getFromDb(boolean onlyValid, boolean fullDescription) throws SQLException, IOException, FrameworkException {\n");
         testo.append("      return new " + decodeBeanClassName + "(onlyValid, fullDescription " + comma + OracleUtil.getFlagsForDecodeKey(table.getColumns().getColumn(), OracleUtil.FIELDS_GEN_TYPE.AS_VARIABLE, true) + ");\n");
         testo.append("    }\n");
         testo.append("\n");
         if (OracleUtil.getFlags(table.getColumns().getColumn()).size() > 0) {
-            testo.append("    public static " + decodeBeanClassName + " getFromDb(" + OracleUtil.getFlagsForDecodeKey(table.getColumns().getColumn(), OracleUtil.FIELDS_GEN_TYPE.AS_PARAMETER, false) + ") {\n");
+            testo.append("    public static " + decodeBeanClassName + " getFromDb(" + OracleUtil.getFlagsForDecodeKey(table.getColumns().getColumn(), OracleUtil.FIELDS_GEN_TYPE.AS_PARAMETER, false) + ") throws SQLException, IOException, FrameworkException {\n");
             testo.append("      return new " + decodeBeanClassName + "(false, true, " + OracleUtil.getFlagsForDecodeKey(table.getColumns().getColumn(), OracleUtil.FIELDS_GEN_TYPE.AS_VARIABLE, false) + ");\n");
             testo.append("    }\n");
             testo.append("\n");
-            testo.append("    public static " + decodeBeanClassName + " getFromDb(boolean onlyValid, boolean fullDescription " + comma + OracleUtil.getFlagsForDecodeKey(table.getColumns().getColumn(), OracleUtil.FIELDS_GEN_TYPE.AS_PARAMETER, false) + ") throws SQLException {\n");
+            testo.append("    public static " + decodeBeanClassName + " getFromDb(boolean onlyValid, boolean fullDescription " + comma + OracleUtil.getFlagsForDecodeKey(table.getColumns().getColumn(), OracleUtil.FIELDS_GEN_TYPE.AS_PARAMETER, false) + ") throws SQLException, IOException, FrameworkException {\n");
             testo.append("      return new " + decodeBeanClassName + "(onlyValid, fullDescription, " + OracleUtil.getFlagsForDecodeKey(table.getColumns().getColumn(), OracleUtil.FIELDS_GEN_TYPE.AS_VARIABLE, false) + ");\n");
             testo.append("    }\n");
             testo.append("\n");
         }
-        testo.append("    public static synchronized " + decodeBeanClassName + " getFromCache() {\n");
+        testo.append("    public static synchronized " + decodeBeanClassName + " getFromCache() throws SQLException, IOException, FrameworkException {\n");
         testo.append("      " + decodeBeanClassName + " decodeBean = (" + decodeBeanClassName + ") CacheSingleton.getInstance().get(" + decodeBeanClassName + ".class.getName());\n");
         testo.append("      if (decodeBean == null) {\n");
         testo.append("        decodeBean = getFromDb();\n");
@@ -689,11 +694,11 @@ public class TableBeanWriter {
         testo.append("      return decodeBean;\n");
         testo.append("    }\n");
         testo.append("\n");
-        testo.append("    public static String decode (String code) {\n");
+        testo.append("    public static String decode (String code) throws SQLException, IOException, FrameworkException {\n");
         testo.append("      return getFromDb().decode(code);\n");
         testo.append("    }\n");
         testo.append("\n");
-        testo.append("    public static  " + rowBeanClassName + " getRowBean (String code) {\n");
+        testo.append("    public static  " + rowBeanClassName + " getRowBean (String code) throws SQLException, IOException, FrameworkException {\n");
         testo.append("      return getFromDb().getRowBean(code);\n");
         testo.append("    }\n");
         testo.append("  }\n");
