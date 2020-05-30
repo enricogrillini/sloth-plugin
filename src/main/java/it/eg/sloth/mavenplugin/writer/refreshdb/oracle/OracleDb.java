@@ -491,10 +491,12 @@ public class OracleDb extends AbstractDb {
 
                     // Gestisco i nomi duplicati
                     if (nameCache.containsKey(name)) {
-                        int suff = nameCache.get(name);
-                        nameCache.put(name, suff + 1);
+                        int suff = nameCache.get(name) + 1;
+                        nameCache.put(name, suff);
 
                         name = name + "_" + suff;
+                    } else {
+                        nameCache.put(name, 0);
                     }
 
                     Constant constant = new Constant();

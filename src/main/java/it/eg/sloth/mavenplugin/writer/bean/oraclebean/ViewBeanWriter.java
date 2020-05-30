@@ -62,9 +62,9 @@ public class ViewBeanWriter {
         rowBeanClassFile = GenUtil.getClassFile(outputJavaDirectory, rowBeanPackageName, rowBeanClassName);
 
         decodeBeanClassName = GenUtil.initCap(view.getName()) + "DecodeBean";
-        decodeBeanFullClassName = genPackage + DECODE_BEAN + "." + rowBeanClassName;
+        decodeBeanFullClassName = genPackage + DECODE_BEAN + "." + decodeBeanClassName;
         decodeBeanPackageName = genPackage + DECODE_BEAN;
-        decodeBeanClassFile = GenUtil.getClassFile(outputJavaDirectory, decodeBeanFullClassName, decodeBeanClassName);
+        decodeBeanClassFile = GenUtil.getClassFile(outputJavaDirectory, decodeBeanPackageName, decodeBeanClassName);
 
         // lobColumnList
         lobColumnList = new ArrayList<>();
@@ -315,6 +315,7 @@ public class ViewBeanWriter {
         StringBuilder testo = new StringBuilder()
                 .append("package " + rowBeanPackageName + ";\n")
                 .append("\n")
+                .append("import it.eg.sloth.db.datasource.row.lob.CLobData;\n")
                 .append("import it.eg.sloth.db.query.SelectQueryInterface;\n")
                 .append("import it.eg.sloth.db.query.query.Query;\n")
                 .append("import it.eg.sloth.framework.common.exception.FrameworkException;\n")
@@ -358,20 +359,22 @@ public class ViewBeanWriter {
     }
 
     public StringBuilder getViewDecodeBean() {
-        StringBuilder testo = new StringBuilder();
         String code = view.getColumns().getColumn().get(0).getName().toUpperCase();
-        testo.append("package " + decodeBeanPackageName + ";\n");
-        testo.append("\n");
-        testo.append("import it.eg.sloth.db.decodemap.tabledecodeMap.TableDecodeMap;\n");
-        testo.append("import it.eg.sloth.db.decodemap.tabledecodeMap.TableDecodeValue;\n");
-        testo.append("import " + rowBeanPackageName + "." + rowBeanClassName + ";\n");
-        testo.append("import " + tableBeanPackageName + "." + rowBeanClassName + ";\n");
-        testo.append("\n");
-        testo.append("import java.sql.Timestamp;\n");
-        testo.append("import java.sql.SQLException;\n");
-        testo.append("\n");
-        testo.append("public class " + decodeBeanClassName + " extends TableDecodeMap {");
-        testo.append("\n");
+        StringBuilder testo = new StringBuilder()
+                .append("package " + decodeBeanPackageName + ";\n")
+                .append("\n")
+                .append("import it.eg.sloth.db.decodemap.map.TableDecodeMap;\n")
+                .append("import it.eg.sloth.db.decodemap.value.TableDecodeValue;\n")
+                .append("import it.eg.sloth.framework.common.exception.FrameworkException;\n")
+                .append("import " + rowBeanPackageName + "." + rowBeanClassName + ";\n")
+                .append("import " + tableBeanPackageName + "." + tableBeanClassName + ";\n")
+                .append("import java.io.IOException;\n")
+                .append("import java.math.BigDecimal;\n")
+                .append("import java.sql.Timestamp;\n")
+                .append("import java.sql.SQLException;\n")
+                .append("\n")
+                .append("public class " + decodeBeanClassName + " extends TableDecodeMap {")
+                .append("\n");
 
         // Costanti
         for (Constant constant : view.getConstants().getConstant()) {
@@ -381,8 +384,8 @@ public class ViewBeanWriter {
         // Metodi
         testo.append("\n");
         String comma = OracleUtil.getFlags(view.getColumns().getColumn()).size() > 0 ? ", " : "";
-        testo.append("  public " + decodeBeanClassName + "(boolean onlyValid, boolean fullDescription " + comma + OracleUtil.getFlagsForDecodeKey(view.getColumns().getColumn(), OracleUtil.FIELDS_GEN_TYPE.AS_PARAMETER, false) + ") {\n");
-        testo.append("    super(" + rowBeanClassName + "." + code + ",  fullDescription ? " + rowBeanClassName + ".DESCRIZIONELUNGA : " + rowBeanClassName + ".DESCRIZIONEBREVE);\n");     //$NON-NLS-5$
+        testo.append("  public " + decodeBeanClassName + "(boolean onlyValid, boolean fullDescription " + comma + OracleUtil.getFlagsForDecodeKey(view.getColumns().getColumn(), OracleUtil.FIELDS_GEN_TYPE.AS_PARAMETER, false) + ") throws SQLException, IOException, FrameworkException {\n");
+        testo.append("    super();\n");     //$NON-NLS-5$
         testo.append("\n");
         testo.append("    " + rowBeanClassName + " row = new " + rowBeanClassName + "();\n");
         testo.append("    row.setFlagvalido(onlyValid ? \"S\" : null);\n");
@@ -391,12 +394,12 @@ public class ViewBeanWriter {
             testo.append("    row.set" + column.getName() + "(" + column.getName() + ");\n");
         }
 
-        testo.append("    " + rowBeanClassName + " table = " + rowBeanClassName + ".Factory.load(row);\n");
+        testo.append("    " + tableBeanClassName + " table = " + tableBeanClassName + ".Factory.load(row);\n");
         testo.append("    table.addSortingRule(" + rowBeanClassName + ".POSIZIONE);\n");
         testo.append("    table.addSortingRule(fullDescription ? " + rowBeanClassName + ".DESCRIZIONELUNGA : " + rowBeanClassName + ".DESCRIZIONEBREVE);\n");
         testo.append("    table.applySort();\n");
         testo.append("\n");
-        testo.append("    load(table);\n");
+        testo.append("    load(table, "  + rowBeanClassName + "." + code + ",  fullDescription ? " + rowBeanClassName + ".DESCRIZIONELUNGA : " + rowBeanClassName + ".DESCRIZIONEBREVE);\n");
         testo.append("  }\n");
         testo.append("\n");
         testo.append("  public " + rowBeanClassName + " getRowBean(Object code) {\n");
@@ -409,25 +412,25 @@ public class ViewBeanWriter {
         testo.append("  public static class Factory {\n");
         testo.append("    private static " + decodeBeanClassName + " decodeBean = null;\n");
         testo.append("\n");
-        testo.append("    public static " + decodeBeanClassName + " getFromDb() throws SQLException {\n");
+        testo.append("    public static " + decodeBeanClassName + " getFromDb() throws SQLException, IOException, FrameworkException  {\n");
         testo.append("      return new " + decodeBeanClassName + "(false, true " + comma + OracleUtil.getFlagsForDecodeKey(view.getColumns().getColumn(), OracleUtil.FIELDS_GEN_TYPE.AS_VARIABLE, true) + ");\n");
         testo.append("    }\n");
         testo.append("\n");
-        testo.append("    public static " + decodeBeanClassName + " getFromDb(boolean onlyValid, boolean fullDescription) throws SQLException {\n");
+        testo.append("    public static " + decodeBeanClassName + " getFromDb(boolean onlyValid, boolean fullDescription) throws SQLException, IOException, FrameworkException  {\n");
         testo.append("      return new " + decodeBeanClassName + "(onlyValid, fullDescription " + comma + OracleUtil.getFlagsForDecodeKey(view.getColumns().getColumn(), OracleUtil.FIELDS_GEN_TYPE.AS_VARIABLE, true) + ");\n");
         testo.append("    }\n");
         testo.append("\n");
         if (OracleUtil.getFlags(view.getColumns().getColumn()).size() > 0) {
-            testo.append("    public static " + decodeBeanClassName + " getFromDb(" + OracleUtil.getFlagsForDecodeKey(view.getColumns().getColumn(), OracleUtil.FIELDS_GEN_TYPE.AS_PARAMETER, false) + ") throws SQLException {\n");
+            testo.append("    public static " + decodeBeanClassName + " getFromDb(" + OracleUtil.getFlagsForDecodeKey(view.getColumns().getColumn(), OracleUtil.FIELDS_GEN_TYPE.AS_PARAMETER, false) + ") throws SQLException, IOException, FrameworkException {\n");
             testo.append("      return new " + decodeBeanClassName + "(false, true, " + OracleUtil.getFlagsForDecodeKey(view.getColumns().getColumn(), OracleUtil.FIELDS_GEN_TYPE.AS_VARIABLE, false) + ");\n");
             testo.append("    }\n");
             testo.append("\n");
-            testo.append("    public static " + decodeBeanClassName + " getFromDb(boolean onlyValid, boolean fullDescription," + OracleUtil.getFlagsForDecodeKey(view.getColumns().getColumn(), OracleUtil.FIELDS_GEN_TYPE.AS_PARAMETER, false) + ") throws SQLException {\n");
+            testo.append("    public static " + decodeBeanClassName + " getFromDb(boolean onlyValid, boolean fullDescription," + OracleUtil.getFlagsForDecodeKey(view.getColumns().getColumn(), OracleUtil.FIELDS_GEN_TYPE.AS_PARAMETER, false) + ") throws SQLException, IOException, FrameworkException  {\n");
             testo.append("      return new " + decodeBeanClassName + "(onlyValid, fullDescription, " + OracleUtil.getFlagsForDecodeKey(view.getColumns().getColumn(), OracleUtil.FIELDS_GEN_TYPE.AS_VARIABLE, false) + ");\n");
             testo.append("    }\n");
             testo.append("\n");
         }
-        testo.append("    public static synchronized " + decodeBeanClassName + " getFromCache() throws SQLException {\n");
+        testo.append("    public static synchronized " + decodeBeanClassName + " getFromCache() throws SQLException, IOException, FrameworkException  {\n");
         testo.append("      if (decodeBean == null) {\n");
         testo.append("        return decodeBean = getFromDb();\n");
         testo.append("      } else {\n");
@@ -435,7 +438,7 @@ public class ViewBeanWriter {
         testo.append("      }\n");
         testo.append("    }\n");
         testo.append("\n");
-        testo.append("    public static String decode (String code) throw SQLException {\n");
+        testo.append("    public static String decode (String code) throws SQLException, IOException, FrameworkException  {\n");
         testo.append("      return getFromDb().decode(code);\n");
         testo.append("    }\n");
         testo.append("  }\n");

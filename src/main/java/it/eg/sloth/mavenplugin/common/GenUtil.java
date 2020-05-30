@@ -23,7 +23,6 @@ import it.eg.sloth.framework.common.base.StringUtil;
  * You should have received a copy of the GNU General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @author Enrico Grillini
- *
  */
 public class GenUtil {
 
@@ -108,6 +107,22 @@ public class GenUtil {
 
         return stringBuilder.toString();
 
+    }
+
+    public static String stringToJava(String value) {
+        if (value == null) {
+            return "null";
+        } else {
+            return "\"" + StringUtil.replace(value, "\"", "\\\"") + "\"";
+        }
+    }
+
+    public static String booleanToJava(Boolean value) {
+        if (value == null) {
+            return "false";
+        } else {
+            return "" + value;
+        }
     }
 
 }
