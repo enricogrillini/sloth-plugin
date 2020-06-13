@@ -1,19 +1,5 @@
 package it.eg.sloth.mavenplugin.writer.spring;
 
-import java.io.File;
-import java.io.IOException;
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Locale;
-
-import javax.xml.bind.JAXBException;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.maven.plugin.logging.Log;
-import org.apache.maven.project.MavenProject;
-
 import it.eg.sloth.framework.common.base.StringUtil;
 import it.eg.sloth.framework.common.base.TimeStampUtil;
 import it.eg.sloth.framework.common.casting.DataTypes;
@@ -23,6 +9,17 @@ import it.eg.sloth.mavenplugin.common.files.DirectoryFilter;
 import it.eg.sloth.mavenplugin.common.files.ExtensionFilter;
 import it.eg.sloth.mavenplugin.writer.spring.model.ControllerProperties;
 import it.eg.sloth.mavenplugin.writer.spring.model.JspProperties;
+import org.apache.commons.io.FileUtils;
+import org.apache.maven.plugin.logging.Log;
+import org.apache.maven.project.MavenProject;
+
+import java.io.File;
+import java.io.IOException;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Locale;
 
 /**
  * Project: sloth-plugin
@@ -92,7 +89,7 @@ public class SpringControllerWriter {
         return list;
     }
 
-    public void write() throws IOException, JAXBException, FrameworkException {
+    public void write() throws IOException, FrameworkException {
         List<ControllerProperties> controllerPropertiesList = scanController();
         List<JspProperties> jspPropertiesList = scanJsp();
 

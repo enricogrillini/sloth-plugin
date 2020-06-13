@@ -3,10 +3,7 @@ package it.eg.sloth.mavenplugin.writer.bean;
 
 import it.eg.sloth.jaxb.dbschema.*;
 import it.eg.sloth.jaxb.dbschema.Package;
-import it.eg.sloth.mavenplugin.writer.bean.oraclebean.PackageBeanWriter;
-import it.eg.sloth.mavenplugin.writer.bean.oraclebean.SequenceDaoWriter;
-import it.eg.sloth.mavenplugin.writer.bean.oraclebean.TableBeanWriter;
-import it.eg.sloth.mavenplugin.writer.bean.oraclebean.ViewBeanWriter;
+import it.eg.sloth.mavenplugin.writer.bean.oraclebean.*;
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
 
@@ -66,9 +63,12 @@ public class BeanWriter {
         }
 
         log.info("  Table bean");
+        VelocityTableBeanWriter velocityTableBeanWriter = new VelocityTableBeanWriter(outputJavaDirectory, genPackage);
         for (Table table : dbToolProject.getDataBase().getTables().getTable()) {
             TableBeanWriter writer = new TableBeanWriter(outputJavaDirectory, genPackage, table);
             writer.write();
+
+            velocityTableBeanWriter.write(table);
         }
 
         log.info("  Sequence Dao");

@@ -1,12 +1,13 @@
 package it.eg.sloth.mavenplugin.writer.bean.oraclebean;
 
-import it.eg.sloth.framework.common.exception.FrameworkException;
-import it.eg.sloth.jaxb.dbschema.*;
+import it.eg.sloth.jaxb.dbschema.Column;
+import it.eg.sloth.jaxb.dbschema.Constant;
+import it.eg.sloth.jaxb.dbschema.View;
+import it.eg.sloth.jaxb.dbschema.ViewColumn;
 import it.eg.sloth.mavenplugin.common.GenUtil;
 
 import java.io.File;
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 

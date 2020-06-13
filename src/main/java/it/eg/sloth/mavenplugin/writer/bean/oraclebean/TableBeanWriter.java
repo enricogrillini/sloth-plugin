@@ -1,17 +1,19 @@
 package it.eg.sloth.mavenplugin.writer.bean.oraclebean;
 
-import java.io.File;
-import java.io.IOException;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-
-import it.eg.sloth.framework.common.exception.FrameworkException;
 import it.eg.sloth.jaxb.dbschema.Column;
 import it.eg.sloth.jaxb.dbschema.Constant;
 import it.eg.sloth.jaxb.dbschema.Table;
 import it.eg.sloth.jaxb.dbschema.TableColumn;
 import it.eg.sloth.mavenplugin.common.GenUtil;
+import org.apache.velocity.Template;
+import org.apache.velocity.VelocityContext;
+import org.apache.velocity.app.VelocityEngine;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Project: sloth-plugin
@@ -709,7 +711,7 @@ public class TableBeanWriter {
 
     public void write() throws IOException {
         // Table Bean
-        GenUtil.writeFile(tableBeanClassFile, getTableBean().toString());
+        //GenUtil.writeFile(tableBeanClassFile, getTableBean().toString());
 
         // Row Bean
         GenUtil.writeFile(rowBeanClassFile, getRowBean().toString());
@@ -719,4 +721,20 @@ public class TableBeanWriter {
             GenUtil.writeFile(decodeBeanClassFile, getDecodeBean().toString());
         }
     }
+
+    public void writeTableBean() throws IOException {
+        VelocityEngine ve = new VelocityEngine();
+        ve.init();
+
+        Template t = ve.getTemplate("templates/datapage.vm");
+
+        VelocityContext vc = new VelocityContext();
+        vc.put("username", "John");
+
+        try (FileWriter fileWriter = new FileWriter(tableBeanClassFile)) {
+            t.merge(vc, fileWriter);
+        }
+    }
+
+
 }

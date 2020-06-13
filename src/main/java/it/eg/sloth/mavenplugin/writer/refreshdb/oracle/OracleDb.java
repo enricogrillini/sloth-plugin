@@ -467,7 +467,6 @@ public class OracleDb extends AbstractDb {
         Map<String, Integer> nameCache = new HashMap<>();
 
         Constants constants = new Constants();
-        int nameSuff;
         if (entityName.toUpperCase().contains("DEC_")) {
 
             // Verifico quanti record sono presenti nella tabella

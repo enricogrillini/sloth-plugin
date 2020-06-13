@@ -88,6 +88,15 @@
    <artifactId>ojdbc6</artifactId>
    <version>11.2.0.4</version>
   </dependency>
+
+  <!-- https://mvnrepository.com/artifact/org.apache.velocity/velocity-engine-core -->
+  <dependency>
+   <groupId>org.apache.velocity</groupId>
+   <artifactId>velocity-engine-core</artifactId>
+   <version>2.2</version>
+  </dependency>
+
+
  </dependencies>
 
  <build>
@@ -130,6 +139,7 @@
      <artifactId>maven-invoker-plugin</artifactId>
      <version>3.1.0</version>
     </plugin>
+
 
    </plugins>
   </pluginManagement>
