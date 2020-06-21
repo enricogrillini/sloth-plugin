@@ -473,27 +473,33 @@ public class FieldFactory {
             } else if (element instanceof Labels) {
                 Labels labels = (Labels) element;
                 stringBuilder
-                        .append("      addChild(" + StringUtil.toJavaObjectName(labels.getName()) + " = new Labels" + getGenerics(labels.getDataType()) + " (")
-                        .append("_" + StringUtil.toJavaConstantName(labels.getName()) + ", ")
-                        .append((labels.getAlias() == null ? "null" : " \"" + labels.getAlias() + "\"") + ", ")
-                        .append((labels.getDescription() == null ? "null" : " \"" + labels.getDescription() + "\"") + ", ")
-                        .append((labels.getTooltip() == null ? "null" : " \"" + labels.getTooltip() + "\"") + ", ")
-                        .append((labels.getDataType() == null ? "null" : " DataTypes." + labels.getDataType()) + ", ")
-                        .append((labels.getFormat() == null ? "null" : " \"" + labels.getFormat() + "\"") + ", ")
-                        .append((labels.getBaseLink() == null ? "null" : " \"" + labels.getBaseLink() + "\"") + ", ")
-                        .append(labels.getRotation() + "));\n");
+                        .append("\n")
+                        .append("      " + StringUtil.toJavaObjectName(element.getName()) + " = Labels." + getGenerics(labels.getDataType()) + "builder()\n")
+                        .append("        .name(_" + StringUtil.toJavaConstantName(labels.getName()) + ")\n")
+                        .append("        .alias(" + GenUtil.stringToJava(labels.getAlias()) + ")\n")
+                        .append("        .description(" + GenUtil.stringToJava(labels.getDescription()) + ")\n")
+                        .append("        .tooltip(" + GenUtil.stringToJava(labels.getTooltip()) + ")\n")
+                        .append("        .dataType(" + (labels.getDataType() == null ? "null" : "DataTypes." + labels.getDataType()) + ")\n")
+                        .append("        .format(" + GenUtil.stringToJava(labels.getFormat()) + ")\n")
+                        .append("        .baseLink(" + GenUtil.stringToJava(labels.getBaseLink()) + ")\n")
+                        .append("        .rotation(" + labels.getRotation() + ")\n")
+                        .append("        .build();\n")
+                        .append("      addChild(" + StringUtil.toJavaObjectName(labels.getName()) + ");\n");
 
             } else if (element instanceof Series) {
                 Series series = (Series) element;
                 stringBuilder
-                        .append("      addChild(" + StringUtil.toJavaObjectName(series.getName()) + " = new Series (")
-                        .append("_" + StringUtil.toJavaConstantName(series.getName()) + ", ")
-                        .append((series.getAlias() == null ? "null" : " \"" + series.getAlias() + "\"") + ", ")
-                        .append((series.getDescription() == null ? "null" : " \"" + series.getDescription() + "\"") + ", ")
-                        .append((series.getTooltip() == null ? "null" : " \"" + series.getTooltip() + "\"") + ", ")
-                        .append((series.getDataType() == null ? "null" : " DataTypes." + series.getDataType()) + ", ")
-                        .append((series.getFormat() == null ? "null" : " \"" + series.getFormat() + "\"") + ", ")
-                        .append((series.getBaseLink() == null ? "null" : " \"" + series.getBaseLink() + "\"") + "));\n");
+                        .append("\n")
+                        .append("      " + StringUtil.toJavaObjectName(element.getName()) + " = Series." + getGenerics(series.getDataType()) + "builder()\n")
+                        .append("        .name(_" + StringUtil.toJavaConstantName(series.getName()) + ")\n")
+                        .append("        .alias(" + GenUtil.stringToJava(series.getAlias()) + ")\n")
+                        .append("        .description(" + GenUtil.stringToJava(series.getDescription()) + ")\n")
+                        .append("        .tooltip(" + GenUtil.stringToJava(series.getTooltip()) + ")\n")
+                        .append("        .dataType(" + (series.getDataType() == null ? "null" : "DataTypes." + series.getDataType()) + ")\n")
+                        .append("        .format(" + GenUtil.stringToJava(series.getFormat()) + ")\n")
+                        .append("        .baseLink(" + GenUtil.stringToJava(series.getBaseLink()) + ")\n")
+                        .append("        .build();\n")
+                        .append("      addChild(" + StringUtil.toJavaObjectName(series.getName()) + ");\n");
 
             } else if (element instanceof DecodedText) {
                 DecodedText decodedText = (DecodedText) element;
