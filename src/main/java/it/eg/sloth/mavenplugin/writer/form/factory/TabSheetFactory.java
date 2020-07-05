@@ -69,6 +69,7 @@ public class TabSheetFactory {
             stringBuilder.append("      addChild(" + StringUtil.toJavaObjectName(tab.getName()) + " = new Tab(");
             stringBuilder.append("_" + StringUtil.toJavaConstantName(tab.getName()) + ", ");
             stringBuilder.append((tab.getDescription() == null ? "null" : " \"" + tab.getDescription() + "\"") + ", ");
+            stringBuilder.append((tab.getToolTip() == null ? "null" : " \"" + tab.getToolTip() + "\"") + ", ");
             stringBuilder.append(tab.isHidden() + ", ");
             stringBuilder.append(tab.isHidden() + "));\n");
         }
