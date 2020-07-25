@@ -39,9 +39,9 @@ import it.eg.sloth.mavenplugin.common.GenUtil;
  * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * <p>
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * <p>
- * You should have received a copy of the GNU General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with this program. If not, see <http://www.gnu.org/licenses/>.
  *
  * @author Enrico Grillini
  */
@@ -214,15 +214,18 @@ public class FieldFactory {
             } else if (element instanceof Hidden) {
                 Hidden hidden = (Hidden) element;
                 stringBuilder
-                        .append("      addChild(" + StringUtil.toJavaObjectName(hidden.getName()) + " = new Hidden" + getGenerics(hidden.getDataType()) + " (")
-                        .append("_" + StringUtil.toJavaConstantName(hidden.getName()) + ", ")
-                        .append((hidden.getAlias() == null ? "null" : " \"" + hidden.getAlias() + "\"") + ", ")
-                        .append((hidden.getDescription() == null ? "null" : " \"" + hidden.getDescription() + "\"") + ", ")
-                        .append((hidden.getTooltip() == null ? "null" : " \"" + hidden.getTooltip() + "\"") + ", ")
-                        .append((hidden.getDataType() == null ? "null" : " DataTypes." + hidden.getDataType()) + ", ")
-                        .append((hidden.getFormat() == null ? "null" : " \"" + hidden.getFormat() + "\"") + ", ")
-                        .append((hidden.getBaseLink() == null ? "null" : " \"" + hidden.getBaseLink() + "\"") + ", ")
-                        .append(hidden.isRequired() + "));\n");
+                        .append("\n")
+                        .append("      " + StringUtil.toJavaObjectName(hidden.getName()) + " = Hidden." + getGenerics(hidden.getDataType()) + "builder()\n")
+                        .append("        .name(_" + StringUtil.toJavaConstantName(hidden.getName()) + ")\n")
+                        .append("        .alias(" + GenUtil.stringToJava(hidden.getAlias()) + ")\n")
+                        .append("        .description(" + GenUtil.stringToJava(hidden.getDescription()) + ")\n")
+                        .append("        .tooltip(" + GenUtil.stringToJava(hidden.getTooltip()) + ")\n")
+                        .append("        .dataType(" + (hidden.getDataType() == null ? "null" : "DataTypes." + hidden.getDataType()) + ")\n")
+                        .append("        .format(" + GenUtil.stringToJava(hidden.getFormat()) + ")\n")
+                        .append("        .baseLink(" + GenUtil.stringToJava(hidden.getBaseLink()) + ")\n")
+                        .append("        .required(" + hidden.isRequired() + ")\n")
+                        .append("        .build();\n")
+                        .append("      addChild(" + StringUtil.toJavaObjectName(hidden.getName()) + ");\n");
 
             } else if (element instanceof InputTotalizer) {
                 InputTotalizer inputTotalizer = (InputTotalizer) element;
@@ -245,7 +248,6 @@ public class FieldFactory {
                         .append("        .build();\n")
                         .append("      addChild(" + StringUtil.toJavaObjectName(inputTotalizer.getName()) + ");\n");
 
-
             } else if (element instanceof Input) {
                 Input input = (Input) element;
                 stringBuilder
@@ -266,7 +268,6 @@ public class FieldFactory {
                         .append("        .forceCase(" + input.getForceCase() + ")\n")
                         .append("        .build();\n")
                         .append("      addChild(" + StringUtil.toJavaObjectName(input.getName()) + ");\n");
-
 
             } else if (element instanceof ComboBox) {
                 ComboBox comboBox = (ComboBox) element;
