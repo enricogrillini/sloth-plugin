@@ -3,32 +3,7 @@ package it.eg.sloth.mavenplugin.writer.form.factory;
 import java.util.List;
 
 import it.eg.sloth.framework.common.base.StringUtil;
-import it.eg.sloth.jaxb.form.Attribute;
-import it.eg.sloth.jaxb.form.AutoComplete;
-import it.eg.sloth.jaxb.form.Button;
-import it.eg.sloth.jaxb.form.CheckBox;
-import it.eg.sloth.jaxb.form.ComboBox;
-import it.eg.sloth.jaxb.form.DataType;
-import it.eg.sloth.jaxb.form.DecodedText;
-import it.eg.sloth.jaxb.form.Element;
-import it.eg.sloth.jaxb.form.Elements;
-import it.eg.sloth.jaxb.form.Field;
-import it.eg.sloth.jaxb.form.File;
-import it.eg.sloth.jaxb.form.Hidden;
-import it.eg.sloth.jaxb.form.Input;
-import it.eg.sloth.jaxb.form.InputTotalizer;
-import it.eg.sloth.jaxb.form.Level;
-import it.eg.sloth.jaxb.form.Link;
-import it.eg.sloth.jaxb.form.Measure;
-import it.eg.sloth.jaxb.form.MultipleAutoComplete;
-import it.eg.sloth.jaxb.form.RadioGroup;
-import it.eg.sloth.jaxb.form.Semaphore;
-import it.eg.sloth.jaxb.form.Series;
-import it.eg.sloth.jaxb.form.Text;
-import it.eg.sloth.jaxb.form.TextArea;
-import it.eg.sloth.jaxb.form.TextTotalizer;
-import it.eg.sloth.jaxb.form.Labels;
-import it.eg.sloth.jaxb.form.ViewModality;
+import it.eg.sloth.jaxb.form.*;
 import it.eg.sloth.mavenplugin.common.GenUtil;
 
 /**
@@ -72,11 +47,12 @@ public class FieldFactory {
 
             if (element instanceof Series || element instanceof TextTotalizer || element instanceof InputTotalizer || element instanceof Semaphore) {
                 stringBuilder.append("    private " + simpleClassName + " " + StringUtil.toJavaObjectName(element.getName()) + ";\n");
-
+            } else if (element instanceof CheckButtons) {
+                CheckButtons field = (CheckButtons) element;
+                stringBuilder.append("    private " + simpleClassName + getListGenerics(field.getDataType()) + " " + StringUtil.toJavaObjectName(element.getName()) + ";\n");
             } else if (element instanceof MultipleAutoComplete) {
                 MultipleAutoComplete field = (MultipleAutoComplete) element;
                 stringBuilder.append("    private " + simpleClassName + getListGenerics(field.getDataType()) + " " + StringUtil.toJavaObjectName(element.getName()) + ";\n");
-
             } else if (element instanceof Field) {
                 Field field = (Field) element;
                 stringBuilder.append("    private " + simpleClassName + getGenerics(field.getDataType()) + " " + StringUtil.toJavaObjectName(element.getName()) + ";\n");
@@ -95,6 +71,12 @@ public class FieldFactory {
             if (element instanceof Series || element instanceof TextTotalizer || element instanceof InputTotalizer || element instanceof Semaphore) {
                 stringBuilder.append(" public " + simpleClassName + " get" + StringUtil.toJavaClassName(element.getName()) + "() {\n");
                 stringBuilder.append(" return (" + simpleClassName + ") " + StringUtil.toJavaObjectName(element.getName()) + ";\n");
+                stringBuilder.append(" }\n");
+                stringBuilder.append("\n");
+            } else if (element instanceof CheckButtons) {
+                CheckButtons field = (CheckButtons) element;
+                stringBuilder.append(" public " + simpleClassName + getListGenerics(field.getDataType()) + " get" + StringUtil.toJavaClassName(element.getName()) + "() {\n");
+                stringBuilder.append(" return (" + simpleClassName + getListGenerics(field.getDataType()) + ")" + StringUtil.toJavaObjectName(element.getName()) + ";\n");
                 stringBuilder.append(" }\n");
                 stringBuilder.append("\n");
             } else if (element instanceof MultipleAutoComplete) {
@@ -247,6 +229,28 @@ public class FieldFactory {
                         .append("        .forceCase(" + inputTotalizer.getForceCase() + ")\n")
                         .append("        .build();\n")
                         .append("      addChild(" + StringUtil.toJavaObjectName(inputTotalizer.getName()) + ");\n");
+
+            } else if (element instanceof CheckButtons) {
+                CheckButtons checkButtons = (CheckButtons) element;
+                stringBuilder
+                        .append("\n")
+                        .append("      " + StringUtil.toJavaObjectName(checkButtons.getName()) + " = CheckButtons." + getListGenerics(checkButtons.getDataType()) + "builder()\n")
+                        .append("        .name(_" + StringUtil.toJavaConstantName(checkButtons.getName()) + ")\n")
+                        .append("        .alias(" + GenUtil.stringToJava(checkButtons.getAlias()) + ")\n")
+                        .append("        .description(" + GenUtil.stringToJava(checkButtons.getDescription()) + ")\n")
+                        .append("        .tooltip(" + GenUtil.stringToJava(checkButtons.getTooltip()) + ")\n")
+                        .append("        .dataType(" + (checkButtons.getDataType() == null ? "null" : "DataTypes." + checkButtons.getDataType()) + ")\n")
+                        .append("        .format(" + GenUtil.stringToJava(checkButtons.getFormat()) + ")\n")
+                        .append("        .baseLink(" + GenUtil.stringToJava(checkButtons.getBaseLink()) + ")\n")
+                        .append("        .required(" + checkButtons.isRequired() + ")\n")
+                        .append("        .readOnly(" + checkButtons.isReadOnly() + ")\n")
+                        .append("        .hidden(" + checkButtons.isHidden() + ")\n")
+                        .append("        .viewModality(" + decodeViewModality(checkButtons.getViewModality()) + ")\n")
+                        .append("        .values(" + GenUtil.stringToJava(checkButtons.getValues()) + ")\n")
+                        .append("        .descriptions(" + GenUtil.stringToJava(checkButtons.getDescriptions()) + ")\n")
+                        .append("        .tooltips(" + GenUtil.stringToJava(checkButtons.getTooltips()) + ")\n")
+                        .append("        .build();\n")
+                        .append("      addChild(" + StringUtil.toJavaObjectName(checkButtons.getName()) + ");\n");
 
             } else if (element instanceof Input) {
                 Input input = (Input) element;
