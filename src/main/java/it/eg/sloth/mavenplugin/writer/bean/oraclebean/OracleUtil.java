@@ -176,6 +176,7 @@ public class OracleUtil {
             testo.append("    super.setObject(" + column.getName().toUpperCase() + ", bLobData);\n");
             testo.append("  }\n");
             testo.append("\n");
+            testo.append("  @SneakyThrows\n");
             testo.append("  protected BLobData get" + GenUtil.initCap(column.getName()) + "BLobData() {\n");
             testo.append("    if (super.getObject(" + column.getName().toUpperCase() + ") == null) {\n");
             testo.append("      set" + GenUtil.initCap(column.getName()) + "BLobData(new BLobData(isAutoloadLob(), null));\n");
@@ -229,6 +230,7 @@ public class OracleUtil {
             testo.append("    super.setObject(" + column.getName().toUpperCase() + ", cLobData);\n");
             testo.append("  }\n");
             testo.append("\n");
+            testo.append("  @SneakyThrows\n");
             testo.append("  protected CLobData get" + GenUtil.initCap(column.getName()) + "CLobData() {\n");
             testo.append("    if (super.getObject(" + column.getName().toUpperCase() + ") == null) {\n");
             testo.append("      set" + GenUtil.initCap(column.getName()) + "CLobData(new CLobData(isAutoloadLob(), null));\n");

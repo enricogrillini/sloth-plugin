@@ -337,6 +337,7 @@ public class ViewBeanWriter {
                 .append("import java.sql.SQLException;\n")
                 .append("import java.sql.Timestamp;\n")
                 .append("import java.sql.Types;\n")
+                .append("import lombok.SneakyThrows;\n")
                 .append("\n")
                 .append("/**\n")
                 .append(" * RowBean per la tabella " + view.getName() + "\n")

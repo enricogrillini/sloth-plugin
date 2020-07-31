@@ -591,6 +591,7 @@ public class TableBeanWriter {
                 .append("import java.sql.SQLException;\n")
                 .append("import java.sql.Timestamp;\n")
                 .append("import java.sql.Types;\n")
+                .append("import lombok.SneakyThrows;\n")
                 .append("\n")
                 .append("/**\n")
                 .append(" * RowBean per la tabella " + table.getName() + "\n")
@@ -710,9 +711,6 @@ public class TableBeanWriter {
     }
 
     public void write() throws IOException {
-        // Table Bean
-        //GenUtil.writeFile(tableBeanClassFile, getTableBean().toString());
-
         // Row Bean
         GenUtil.writeFile(rowBeanClassFile, getRowBean().toString());
 
@@ -721,20 +719,5 @@ public class TableBeanWriter {
             GenUtil.writeFile(decodeBeanClassFile, getDecodeBean().toString());
         }
     }
-
-    public void writeTableBean() throws IOException {
-        VelocityEngine ve = new VelocityEngine();
-        ve.init();
-
-        Template t = ve.getTemplate("templates/datapage.vm");
-
-        VelocityContext vc = new VelocityContext();
-        vc.put("username", "John");
-
-        try (FileWriter fileWriter = new FileWriter(tableBeanClassFile)) {
-            t.merge(vc, fileWriter);
-        }
-    }
-
 
 }
