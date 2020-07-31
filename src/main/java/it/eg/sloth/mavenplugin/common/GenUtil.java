@@ -10,6 +10,20 @@ import org.apache.commons.io.FileUtils;
 
 import it.eg.sloth.framework.common.base.StringUtil;
 
+/**
+ * Project: sloth-plugin
+ * Copyright (C) 2019-2020 Enrico Grillini
+ * <p>
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * <p>
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+ * <p>
+ * You should have received a copy of the GNU General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * @author Enrico Grillini
+ */
 public class GenUtil {
 
     public static final char UNIX_PATH_DELIMITER = '/';
@@ -93,6 +107,22 @@ public class GenUtil {
 
         return stringBuilder.toString();
 
+    }
+
+    public static String stringToJava(String value) {
+        if (value == null) {
+            return "null";
+        } else {
+            return "\"" + StringUtil.replace(value, "\"", "\\\"") + "\"";
+        }
+    }
+
+    public static String booleanToJava(Boolean value) {
+        if (value == null) {
+            return "false";
+        } else {
+            return "" + value;
+        }
     }
 
 }

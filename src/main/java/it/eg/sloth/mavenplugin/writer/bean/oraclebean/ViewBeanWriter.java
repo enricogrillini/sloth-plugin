@@ -1,6 +1,9 @@
 package it.eg.sloth.mavenplugin.writer.bean.oraclebean;
 
-import it.eg.sloth.jaxb.dbschema.*;
+import it.eg.sloth.jaxb.dbschema.Column;
+import it.eg.sloth.jaxb.dbschema.Constant;
+import it.eg.sloth.jaxb.dbschema.View;
+import it.eg.sloth.jaxb.dbschema.ViewColumn;
 import it.eg.sloth.mavenplugin.common.GenUtil;
 
 import java.io.File;
@@ -8,6 +11,20 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Project: sloth-plugin
+ * Copyright (C) 2019-2020 Enrico Grillini
+ * <p>
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * <p>
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+ * <p>
+ * You should have received a copy of the GNU General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * @author Enrico Grillini
+ */
 public class ViewBeanWriter {
     private static final String DECODE_BEAN = ".bean.decode";
     private static final String VIEW_BEAN = ".bean.viewbean";
@@ -46,9 +63,9 @@ public class ViewBeanWriter {
         rowBeanClassFile = GenUtil.getClassFile(outputJavaDirectory, rowBeanPackageName, rowBeanClassName);
 
         decodeBeanClassName = GenUtil.initCap(view.getName()) + "DecodeBean";
-        decodeBeanFullClassName = genPackage + DECODE_BEAN + "." + rowBeanClassName;
+        decodeBeanFullClassName = genPackage + DECODE_BEAN + "." + decodeBeanClassName;
         decodeBeanPackageName = genPackage + DECODE_BEAN;
-        decodeBeanClassFile = GenUtil.getClassFile(outputJavaDirectory, decodeBeanFullClassName, decodeBeanClassName);
+        decodeBeanClassFile = GenUtil.getClassFile(outputJavaDirectory, decodeBeanPackageName, decodeBeanClassName);
 
         // lobColumnList
         lobColumnList = new ArrayList<>();
@@ -64,87 +81,86 @@ public class ViewBeanWriter {
      * @return
      */
     public StringBuilder getViewTableBean() {
-        StringBuilder testo = new StringBuilder();
-
-        testo.append("package " + tableBeanPackageName + ";\n");
-        testo.append("\n");
-        testo.append("import it.eg.sloth.db.query.SelectQueryInterface;\n");
-        testo.append("import it.eg.sloth.db.datasource.DataRow;\n");
-        testo.append("import it.eg.sloth.db.datasource.table.DbTable;\n");
-        testo.append("\n");
-        testo.append("import java.sql.Connection;\n");
-        testo.append("\n");
-        testo.append("/**\n");
-        testo.append(" * ViewBean per la vista " + view.getName() + "\n");
-        testo.append(" *\n");
-        testo.append(" */\n");
-        testo.append("public class " + tableBeanClassName + " extends DbTable<" + rowBeanClassName + "> {\n");
-        testo.append("\n");
-        testo.append("  \n");
-        testo.append("\n");
-        testo.append("  public static final String SELECT = \"Select * from " + view.getName() + " /*W*/\";\n");
-        testo.append("  public static final String TABLE_NAME = \"" + view.getName().toUpperCase() + "\";\n");
-        testo.append("\n");
-        testo.append("  @Override\n");
-        testo.append("  protected " + rowBeanClassName + " createRow () {\n");
-        testo.append("    " + rowBeanClassName + " rowBean = new " + rowBeanClassName + "();\n");
-        testo.append("    rowBean.setAutoloadLob(isAutoloadLob());\n");
-        testo.append("    return rowBean;\n");
-        testo.append("  }\n");
-        testo.append("\n");
-        testo.append("  @Override\n");
-        testo.append("  protected " + tableBeanClassName + " newTable() {\n");
-        testo.append("    return new " + tableBeanClassName + "();\n");
-        testo.append("  }\n");
-        testo.append("\n");
-        testo.append("  public " + rowBeanClassName + " get" + rowBeanClassName + "() {\n");
-        testo.append("    return (" + rowBeanClassName + ") getRow();\n");
-        testo.append("  }\n");
-        testo.append("\n");
-        testo.append("  public void load(" + rowBeanClassName + " " + GenUtil.initLow(rowBeanClassName) + ") {\n");
-        testo.append("    load(SELECT, " + rowBeanClassName + ".columns, " + GenUtil.initLow(rowBeanClassName) + ");\n");
-        testo.append("  }\n");
-        testo.append("\n");
-        testo.append("  public void load(" + rowBeanClassName + " " + GenUtil.initLow(rowBeanClassName) + ", Connection connection) {\n");
-        testo.append("    load(SELECT, " + rowBeanClassName + ".columns, " + GenUtil.initLow(rowBeanClassName) + ", connection);\n");
-        testo.append("  }\n");
-        testo.append("\n");
-        testo.append("  public static class Factory {\n");
-        testo.append("\n");
-        testo.append("    public static " + tableBeanClassName + " load(" + rowBeanClassName + " rowBean, int pageSize, Connection connection) {\n");
-        testo.append("      " + tableBeanClassName + " tableBean = new " + tableBeanClassName + "();\n");
-        testo.append("      tableBean.load(rowBean, connection);\n");
-        testo.append("      tableBean.setPageSize(pageSize);\n");
-        testo.append("      return tableBean;\n");
-        testo.append("    }\n");
-        testo.append("\n");
-        testo.append("    public static " + tableBeanClassName + " load(" + rowBeanClassName + " " + GenUtil.initLow(rowBeanClassName) + ", int pageSize) {\n");
-        testo.append("      return load(" + GenUtil.initLow(rowBeanClassName) + ", pageSize, null);\n");
-        testo.append("    }\n");
-        testo.append("\n");
-        testo.append("    public static " + tableBeanClassName + " load(" + rowBeanClassName + " " + GenUtil.initLow(rowBeanClassName) + ") {\n");
-        testo.append("      return load (" + GenUtil.initLow(rowBeanClassName) + ", -1);\n");
-        testo.append("    }\n");
-        testo.append("\n");
-        testo.append("    public static " + tableBeanClassName + " loadFromQuery(SelectQueryInterface query, int pageSize, Connection connection) {\n");
-        testo.append("      " + tableBeanClassName + " tableBean = new " + tableBeanClassName + "();\n");
-        testo.append("      tableBean.loadFromQuery(query, connection);\n");
-        testo.append("      tableBean.setPageSize(pageSize);\n");
-        testo.append("      return tableBean;\n");
-        testo.append("    }\n");
-        testo.append("\n");
-        testo.append("    public static " + tableBeanClassName + " loadFromQuery(SelectQueryInterface query, int pageSize) {\n");
-        testo.append("      return loadFromQuery (query, pageSize, null);\n");
-        testo.append("    }\n");
-        testo.append("\n");
-        testo.append("    public static " + tableBeanClassName + " loadFromQuery(SelectQueryInterface query) {\n");
-        testo.append("      return loadFromQuery (query, -1);\n");
-        testo.append("    }\n");
-        testo.append("  }\n");
-        testo.append("\n");
-        testo.append("}");
-
-        return testo;
+        return new StringBuilder()
+                .append("package " + tableBeanPackageName + ";\n")
+                .append("\n")
+                .append("import it.eg.sloth.db.query.SelectQueryInterface;\n")
+                .append("import it.eg.sloth.db.datasource.DataRow;\n")
+                .append("import it.eg.sloth.db.datasource.table.DbTable;\n")
+                .append("import it.eg.sloth.framework.common.exception.FrameworkException;\n")
+                .append("import java.io.IOException;\n")
+                .append("import java.sql.Connection;\n")
+                .append("import java.sql.SQLException;\n")
+                .append("\n")
+                .append("/**\n")
+                .append(" * ViewBean per la vista " + view.getName() + "\n")
+                .append(" *\n")
+                .append(" */\n")
+                .append("public class " + tableBeanClassName + " extends DbTable<" + rowBeanClassName + "> {\n")
+                .append("\n")
+                .append("  \n")
+                .append("\n")
+                .append("  public static final String SELECT = \"Select * from " + view.getName() + " /*W*/\";\n")
+                .append("  public static final String TABLE_NAME = \"" + view.getName().toUpperCase() + "\";\n")
+                .append("\n")
+                .append("  @Override\n")
+                .append("  protected " + rowBeanClassName + " createRow () {\n")
+                .append("    " + rowBeanClassName + " rowBean = new " + rowBeanClassName + "();\n")
+                .append("    rowBean.setAutoloadLob(isAutoloadLob());\n")
+                .append("    return rowBean;\n")
+                .append("  }\n")
+                .append("\n")
+                .append("  @Override\n")
+                .append("  protected " + tableBeanClassName + " newTable() {\n")
+                .append("    return new " + tableBeanClassName + "();\n")
+                .append("  }\n")
+                .append("\n")
+                .append("  public " + rowBeanClassName + " get" + rowBeanClassName + "() {\n")
+                .append("    return (" + rowBeanClassName + ") getRow();\n")
+                .append("  }\n")
+                .append("\n")
+                .append("  public void load(" + rowBeanClassName + " " + GenUtil.initLow(rowBeanClassName) + ") throws SQLException, IOException, FrameworkException {\n")
+                .append("    load(SELECT, " + rowBeanClassName + ".columns, " + GenUtil.initLow(rowBeanClassName) + ");\n")
+                .append("  }\n")
+                .append("\n")
+                .append("  public void load(" + rowBeanClassName + " " + GenUtil.initLow(rowBeanClassName) + ", Connection connection) throws SQLException, IOException, FrameworkException {\n")
+                .append("    load(SELECT, " + rowBeanClassName + ".columns, " + GenUtil.initLow(rowBeanClassName) + ", connection);\n")
+                .append("  }\n")
+                .append("\n")
+                .append("  public static class Factory {\n")
+                .append("\n")
+                .append("    public static " + tableBeanClassName + " load(" + rowBeanClassName + " rowBean, int pageSize, Connection connection) throws SQLException, IOException, FrameworkException {\n")
+                .append("      " + tableBeanClassName + " tableBean = new " + tableBeanClassName + "();\n")
+                .append("      tableBean.load(rowBean, connection);\n")
+                .append("      tableBean.setPageSize(pageSize);\n")
+                .append("      return tableBean;\n")
+                .append("    }\n")
+                .append("\n")
+                .append("    public static " + tableBeanClassName + " load(" + rowBeanClassName + " " + GenUtil.initLow(rowBeanClassName) + ", int pageSize) throws SQLException, IOException, FrameworkException {\n")
+                .append("      return load(" + GenUtil.initLow(rowBeanClassName) + ", pageSize, null);\n")
+                .append("    }\n")
+                .append("\n")
+                .append("    public static " + tableBeanClassName + " load(" + rowBeanClassName + " " + GenUtil.initLow(rowBeanClassName) + ") throws SQLException, IOException, FrameworkException {\n")
+                .append("      return load (" + GenUtil.initLow(rowBeanClassName) + ", -1);\n")
+                .append("    }\n")
+                .append("\n")
+                .append("    public static " + tableBeanClassName + " loadFromQuery(SelectQueryInterface query, int pageSize, Connection connection) throws SQLException, IOException, FrameworkException {\n")
+                .append("      " + tableBeanClassName + " tableBean = new " + tableBeanClassName + "();\n")
+                .append("      tableBean.loadFromQuery(query, connection);\n")
+                .append("      tableBean.setPageSize(pageSize);\n")
+                .append("      return tableBean;\n")
+                .append("    }\n")
+                .append("\n")
+                .append("    public static " + tableBeanClassName + " loadFromQuery(SelectQueryInterface query, int pageSize) throws SQLException, IOException, FrameworkException {\n")
+                .append("      return loadFromQuery (query, pageSize, null);\n")
+                .append("    }\n")
+                .append("\n")
+                .append("    public static " + tableBeanClassName + " loadFromQuery(SelectQueryInterface query) throws SQLException, IOException, FrameworkException {\n")
+                .append("      return loadFromQuery (query, -1);\n")
+                .append("    }\n")
+                .append("  }\n")
+                .append("\n")
+                .append("}");
     }
 
     private String getSelect() {
@@ -264,19 +280,19 @@ public class ViewBeanWriter {
      */
     private void writeQuery(StringBuilder testo) {
         // Select
-        testo.append("  public boolean select(Connection connection)  {\n");
-        testo.append("    Query query = new Query (getSelect());\n");
-        testo.append("    return loadFromQuery(query, connection);\n");
-        testo.append("  }\n");
-        testo.append("\n");
-        testo.append("  public void delete(Connection connection) {\n");
-        testo.append("  }\n");
-        testo.append("\n");
-        testo.append("  public void insert(Connection connection) {\n");
-        testo.append("  }\n");
-        testo.append("\n");
-        testo.append("  public void update(Connection connection) {\n");
-        testo.append("  }\n");
+        testo.append("  public boolean select(Connection connection) throws SQLException, IOException, FrameworkException {\n")
+                .append("    Query query = new Query (getSelect());\n")
+                .append("    return loadFromQuery(query, connection);\n")
+                .append("  }\n")
+                .append("\n")
+                .append("  public void delete(Connection connection) {\n")
+                .append("  }\n")
+                .append("\n")
+                .append("  public void insert(Connection connection) {\n")
+                .append("  }\n")
+                .append("\n")
+                .append("  public void update(Connection connection) {\n")
+                .append("  }\n");
 
     }
 
@@ -286,49 +302,51 @@ public class ViewBeanWriter {
      * @param testo
      */
     private void writeFactory(StringBuilder testo) {
-        testo.append("  public static class Factory {\n");
-        testo.append("\n");
-        testo.append("    public static " + rowBeanClassName + " load(SelectQueryInterface selectQueryInterface) {\n");
-        testo.append("      " + rowBeanClassName + " " + GenUtil.initLow(rowBeanClassName) + " = new " + rowBeanClassName + "();\n");
-        testo.append("      " + GenUtil.initLow(rowBeanClassName) + ".loadFromQuery(selectQueryInterface);\n");
-        testo.append("      return " + GenUtil.initLow(rowBeanClassName) + ";\n");
-        testo.append("    }\n");
-        testo.append("  }\n");
+        testo.append("  public static class Factory {\n")
+                .append("\n")
+                .append("    public static " + rowBeanClassName + " load(SelectQueryInterface selectQueryInterface) throws SQLException, IOException, FrameworkException {\n")
+                .append("      " + rowBeanClassName + " " + GenUtil.initLow(rowBeanClassName) + " = new " + rowBeanClassName + "();\n")
+                .append("      " + GenUtil.initLow(rowBeanClassName) + ".loadFromQuery(selectQueryInterface);\n")
+                .append("      return " + GenUtil.initLow(rowBeanClassName) + ";\n")
+                .append("    }\n")
+                .append("  }\n");
     }
 
     public StringBuilder getViewRowBean() {
-        StringBuilder testo = new StringBuilder();
-
-        testo.append("package " + rowBeanPackageName + ";\n");
-        testo.append("\n");
-        testo.append("import it.eg.sloth.db.query.SelectQueryInterface;\n");
-        testo.append("import it.eg.sloth.db.query.query.Query;\n");
-        testo.append("import it.eg.sloth.db.datasource.row.DbRow;\n");
-        testo.append("import it.eg.sloth.db.datasource.row.column.Column;\n");
-        testo.append("import it.eg.sloth.db.datasource.row.lob.BLobData;\n");
-        testo.append("import it.eg.sloth.framework.utility.stream.StreamUtil;\n");
-        testo.append("import it.eg.sloth.db.manager.DataConnectionManager;\n");
-        testo.append("import java.io.ByteArrayInputStream;\n");
-        testo.append("\n");
-        testo.append("import java.io.InputStream;");
-        testo.append("import java.io.OutputStream;");
-        testo.append("\n");
-        testo.append("import java.math.BigDecimal;\n");
-        testo.append("import java.sql.Connection;\n");
-        testo.append("import java.sql.PreparedStatement;\n");
-        testo.append("import java.sql.ResultSet;\n");
-        testo.append("import java.sql.SQLException;\n");
-        testo.append("import java.sql.Timestamp;\n");
-        testo.append("import java.sql.Types;\n");
-        testo.append("\n");
-        testo.append("/**\n");
-        testo.append(" * RowBean per la tabella " + view.getName() + "\n");
-        testo.append(" *\n");
-        testo.append(" */\n");
-        testo.append("public class " + rowBeanClassName + " extends DbRow {\n");
-        testo.append("\n");
-        testo.append("  \n");
-        testo.append("\n");
+        StringBuilder testo = new StringBuilder()
+                .append("package " + rowBeanPackageName + ";\n")
+                .append("\n")
+                .append("import it.eg.sloth.db.datasource.row.lob.CLobData;\n")
+                .append("import it.eg.sloth.db.query.SelectQueryInterface;\n")
+                .append("import it.eg.sloth.db.query.query.Query;\n")
+                .append("import it.eg.sloth.framework.common.exception.FrameworkException;\n")
+                .append("import it.eg.sloth.db.datasource.row.DbRow;\n")
+                .append("import it.eg.sloth.db.datasource.row.column.Column;\n")
+                .append("import it.eg.sloth.db.datasource.row.lob.BLobData;\n")
+                .append("import org.apache.commons.io.IOUtils;\n")
+                .append("import it.eg.sloth.db.manager.DataConnectionManager;\n")
+                .append("import java.io.ByteArrayInputStream;\n")
+                .append("import java.io.IOException;\n")
+                .append("import java.io.InputStream;\n")
+                .append("import java.io.OutputStream;\n")
+                .append("\n")
+                .append("import java.math.BigDecimal;\n")
+                .append("import java.sql.Connection;\n")
+                .append("import java.sql.PreparedStatement;\n")
+                .append("import java.sql.ResultSet;\n")
+                .append("import java.sql.SQLException;\n")
+                .append("import java.sql.Timestamp;\n")
+                .append("import java.sql.Types;\n")
+                .append("import lombok.SneakyThrows;\n")
+                .append("\n")
+                .append("/**\n")
+                .append(" * RowBean per la tabella " + view.getName() + "\n")
+                .append(" *\n")
+                .append(" */\n")
+                .append("public class " + rowBeanClassName + " extends DbRow {\n")
+                .append("\n")
+                .append("  \n")
+                .append("\n");
 
         writeConstant(testo);
         writeConstructor(testo);
@@ -343,20 +361,22 @@ public class ViewBeanWriter {
     }
 
     public StringBuilder getViewDecodeBean() {
-        StringBuilder testo = new StringBuilder();
         String code = view.getColumns().getColumn().get(0).getName().toUpperCase();
-        testo.append("package " + decodeBeanPackageName + ";\n");
-        testo.append("\n");
-        testo.append("import it.eg.sloth.db.decodemap.tabledecodeMap.TableDecodeMap;\n");
-        testo.append("import it.eg.sloth.db.decodemap.tabledecodeMap.TableDecodeValue;\n");
-        testo.append("import " + rowBeanPackageName + "." + rowBeanClassName + ";\n");
-        testo.append("import " + tableBeanPackageName + "." + rowBeanClassName + ";\n");
-        testo.append("\n");
-        testo.append("import java.sql.Timestamp;\n");
-        testo.append("import java.sql.SQLException;\n");
-        testo.append("\n");
-        testo.append("public class " + decodeBeanClassName + " extends TableDecodeMap {");
-        testo.append("\n");
+        StringBuilder testo = new StringBuilder()
+                .append("package " + decodeBeanPackageName + ";\n")
+                .append("\n")
+                .append("import it.eg.sloth.db.decodemap.map.TableDecodeMap;\n")
+                .append("import it.eg.sloth.db.decodemap.value.TableDecodeValue;\n")
+                .append("import it.eg.sloth.framework.common.exception.FrameworkException;\n")
+                .append("import " + rowBeanPackageName + "." + rowBeanClassName + ";\n")
+                .append("import " + tableBeanPackageName + "." + tableBeanClassName + ";\n")
+                .append("import java.io.IOException;\n")
+                .append("import java.math.BigDecimal;\n")
+                .append("import java.sql.Timestamp;\n")
+                .append("import java.sql.SQLException;\n")
+                .append("\n")
+                .append("public class " + decodeBeanClassName + " extends TableDecodeMap {")
+                .append("\n");
 
         // Costanti
         for (Constant constant : view.getConstants().getConstant()) {
@@ -366,8 +386,8 @@ public class ViewBeanWriter {
         // Metodi
         testo.append("\n");
         String comma = OracleUtil.getFlags(view.getColumns().getColumn()).size() > 0 ? ", " : "";
-        testo.append("  public " + decodeBeanClassName + "(boolean onlyValid, boolean fullDescription " + comma + OracleUtil.getFlagsForDecodeKey(view.getColumns().getColumn(), OracleUtil.FIELDS_GEN_TYPE.AS_PARAMETER, false) + ") {\n");
-        testo.append("    super(" + rowBeanClassName + "." + code + ",  fullDescription ? " + rowBeanClassName + ".DESCRIZIONELUNGA : " + rowBeanClassName + ".DESCRIZIONEBREVE);\n");     //$NON-NLS-5$
+        testo.append("  public " + decodeBeanClassName + "(boolean onlyValid, boolean fullDescription " + comma + OracleUtil.getFlagsForDecodeKey(view.getColumns().getColumn(), OracleUtil.FIELDS_GEN_TYPE.AS_PARAMETER, false) + ") throws SQLException, IOException, FrameworkException {\n");
+        testo.append("    super();\n");     //$NON-NLS-5$
         testo.append("\n");
         testo.append("    " + rowBeanClassName + " row = new " + rowBeanClassName + "();\n");
         testo.append("    row.setFlagvalido(onlyValid ? \"S\" : null);\n");
@@ -376,12 +396,12 @@ public class ViewBeanWriter {
             testo.append("    row.set" + column.getName() + "(" + column.getName() + ");\n");
         }
 
-        testo.append("    " + rowBeanClassName + " table = " + rowBeanClassName + ".Factory.load(row);\n");
+        testo.append("    " + tableBeanClassName + " table = " + tableBeanClassName + ".Factory.load(row);\n");
         testo.append("    table.addSortingRule(" + rowBeanClassName + ".POSIZIONE);\n");
         testo.append("    table.addSortingRule(fullDescription ? " + rowBeanClassName + ".DESCRIZIONELUNGA : " + rowBeanClassName + ".DESCRIZIONEBREVE);\n");
         testo.append("    table.applySort();\n");
         testo.append("\n");
-        testo.append("    load(table);\n");
+        testo.append("    load(table, "  + rowBeanClassName + "." + code + ",  fullDescription ? " + rowBeanClassName + ".DESCRIZIONELUNGA : " + rowBeanClassName + ".DESCRIZIONEBREVE);\n");
         testo.append("  }\n");
         testo.append("\n");
         testo.append("  public " + rowBeanClassName + " getRowBean(Object code) {\n");
@@ -394,25 +414,25 @@ public class ViewBeanWriter {
         testo.append("  public static class Factory {\n");
         testo.append("    private static " + decodeBeanClassName + " decodeBean = null;\n");
         testo.append("\n");
-        testo.append("    public static " + decodeBeanClassName + " getFromDb() throws SQLException {\n");
+        testo.append("    public static " + decodeBeanClassName + " getFromDb() throws SQLException, IOException, FrameworkException  {\n");
         testo.append("      return new " + decodeBeanClassName + "(false, true " + comma + OracleUtil.getFlagsForDecodeKey(view.getColumns().getColumn(), OracleUtil.FIELDS_GEN_TYPE.AS_VARIABLE, true) + ");\n");
         testo.append("    }\n");
         testo.append("\n");
-        testo.append("    public static " + decodeBeanClassName + " getFromDb(boolean onlyValid, boolean fullDescription) throws SQLException {\n");
+        testo.append("    public static " + decodeBeanClassName + " getFromDb(boolean onlyValid, boolean fullDescription) throws SQLException, IOException, FrameworkException  {\n");
         testo.append("      return new " + decodeBeanClassName + "(onlyValid, fullDescription " + comma + OracleUtil.getFlagsForDecodeKey(view.getColumns().getColumn(), OracleUtil.FIELDS_GEN_TYPE.AS_VARIABLE, true) + ");\n");
         testo.append("    }\n");
         testo.append("\n");
         if (OracleUtil.getFlags(view.getColumns().getColumn()).size() > 0) {
-            testo.append("    public static " + decodeBeanClassName + " getFromDb(" + OracleUtil.getFlagsForDecodeKey(view.getColumns().getColumn(), OracleUtil.FIELDS_GEN_TYPE.AS_PARAMETER, false) + ") throws SQLException {\n");
+            testo.append("    public static " + decodeBeanClassName + " getFromDb(" + OracleUtil.getFlagsForDecodeKey(view.getColumns().getColumn(), OracleUtil.FIELDS_GEN_TYPE.AS_PARAMETER, false) + ") throws SQLException, IOException, FrameworkException {\n");
             testo.append("      return new " + decodeBeanClassName + "(false, true, " + OracleUtil.getFlagsForDecodeKey(view.getColumns().getColumn(), OracleUtil.FIELDS_GEN_TYPE.AS_VARIABLE, false) + ");\n");
             testo.append("    }\n");
             testo.append("\n");
-            testo.append("    public static " + decodeBeanClassName + " getFromDb(boolean onlyValid, boolean fullDescription," + OracleUtil.getFlagsForDecodeKey(view.getColumns().getColumn(), OracleUtil.FIELDS_GEN_TYPE.AS_PARAMETER, false) + ") throws SQLException {\n");
+            testo.append("    public static " + decodeBeanClassName + " getFromDb(boolean onlyValid, boolean fullDescription," + OracleUtil.getFlagsForDecodeKey(view.getColumns().getColumn(), OracleUtil.FIELDS_GEN_TYPE.AS_PARAMETER, false) + ") throws SQLException, IOException, FrameworkException  {\n");
             testo.append("      return new " + decodeBeanClassName + "(onlyValid, fullDescription, " + OracleUtil.getFlagsForDecodeKey(view.getColumns().getColumn(), OracleUtil.FIELDS_GEN_TYPE.AS_VARIABLE, false) + ");\n");
             testo.append("    }\n");
             testo.append("\n");
         }
-        testo.append("    public static synchronized " + decodeBeanClassName + " getFromCache() throws SQLException {\n");
+        testo.append("    public static synchronized " + decodeBeanClassName + " getFromCache() throws SQLException, IOException, FrameworkException  {\n");
         testo.append("      if (decodeBean == null) {\n");
         testo.append("        return decodeBean = getFromDb();\n");
         testo.append("      } else {\n");
@@ -420,7 +440,7 @@ public class ViewBeanWriter {
         testo.append("      }\n");
         testo.append("    }\n");
         testo.append("\n");
-        testo.append("    public static String decode (String code) throw SQLException {\n");
+        testo.append("    public static String decode (String code) throws SQLException, IOException, FrameworkException  {\n");
         testo.append("      return getFromDb().decode(code);\n");
         testo.append("    }\n");
         testo.append("  }\n");

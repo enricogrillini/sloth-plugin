@@ -1,5 +1,17 @@
 package it.eg.sloth.mavenplugin.writer.spring;
 
+import it.eg.sloth.framework.common.base.StringUtil;
+import it.eg.sloth.framework.common.base.TimeStampUtil;
+import it.eg.sloth.framework.common.casting.DataTypes;
+import it.eg.sloth.framework.common.exception.FrameworkException;
+import it.eg.sloth.mavenplugin.common.GenUtil;
+import it.eg.sloth.mavenplugin.common.files.DirectoryFilter;
+import it.eg.sloth.mavenplugin.common.files.ExtensionFilter;
+import it.eg.sloth.mavenplugin.writer.spring.model.ControllerProperties;
+import it.eg.sloth.mavenplugin.writer.spring.model.JspProperties;
+import org.apache.commons.io.FileUtils;
+import org.apache.maven.plugin.logging.Log;
+import org.apache.maven.project.MavenProject;
 
 import java.io.File;
 import java.io.IOException;
@@ -9,54 +21,42 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.maven.plugin.logging.Log;
-import org.apache.maven.project.MavenProject;
-
-import it.eg.sloth.framework.common.base.StringUtil;
-import it.eg.sloth.framework.common.base.TimeStampUtil;
-import it.eg.sloth.framework.common.casting.DataTypes;
-import it.eg.sloth.framework.common.exception.BusinessException;
-import it.eg.sloth.jaxb.config.Configuration;
-import it.eg.sloth.jaxb.config.Group;
-import it.eg.sloth.jaxb.config.Parameter;
-import it.eg.sloth.mavenplugin.common.GenUtil;
-import it.eg.sloth.mavenplugin.common.files.DirectoryFilter;
-import it.eg.sloth.mavenplugin.common.files.ExtensionFilter;
-import it.eg.sloth.mavenplugin.writer.spring.model.ControllerProperties;
-import it.eg.sloth.mavenplugin.writer.spring.model.JspProperties;
-
-
+/**
+ * Project: sloth-plugin
+ * Copyright (C) 2019-2020 Enrico Grillini
+ * <p>
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * <p>
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+ * <p>
+ * You should have received a copy of the GNU General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * @author Enrico Grillini
+ */
 public class SpringControllerWriter {
 
     File javaDirectory;
     File webappDirectory;
     String controllerPackage;
-    File systemXml;
     File outputJavaDirectory;
     String genPackage;
 
     MavenProject project;
     Log log;
 
-    File appConfig;
     File constant;
 
-    public SpringControllerWriter(File javaDirectory, File webappDirectory, String controllerPackage, File systemXml, File outputJavaDirectory, String genPackage, MavenProject project, Log log) {
+    public SpringControllerWriter(File javaDirectory, File webappDirectory, String controllerPackage, File outputJavaDirectory, String genPackage, MavenProject project, Log log) {
         this.javaDirectory = javaDirectory;
         this.webappDirectory = webappDirectory;
         this.controllerPackage = controllerPackage;
-        this.systemXml = systemXml;
         this.outputJavaDirectory = outputJavaDirectory;
         this.genPackage = genPackage;
         this.log = log;
         this.project = project;
 
-        appConfig = new File(outputJavaDirectory.getAbsolutePath() + GenUtil.UNIX_PATH_DELIMITER + genPackage.replace('.', GenUtil.UNIX_PATH_DELIMITER) + "/AppConfig.java");
         constant = new File(outputJavaDirectory.getAbsolutePath() + GenUtil.UNIX_PATH_DELIMITER + genPackage.replace('.', GenUtil.UNIX_PATH_DELIMITER) + "/Constant.java");
     }
 
@@ -78,7 +78,7 @@ public class SpringControllerWriter {
     }
 
     private List<JspProperties> scanJsp() {
-        File pathToScan = new File(webappDirectory.getAbsolutePath() + "/jsp");
+        File pathToScan = new File(webappDirectory.getAbsolutePath() + "/WEB-INF/views");
 
         Collection<File> files = FileUtils.listFiles(pathToScan, new ExtensionFilter(".jsp"), new DirectoryFilter());
         List<JspProperties> list = new ArrayList<>();
@@ -89,107 +89,50 @@ public class SpringControllerWriter {
         return list;
     }
 
-    public void write() throws IOException, JAXBException, BusinessException {
+    public void write() throws IOException, FrameworkException {
         List<ControllerProperties> controllerPropertiesList = scanController();
         List<JspProperties> jspPropertiesList = scanJsp();
 
         // Controller
         log.info("Controller: ");
         for (ControllerProperties properties : controllerPropertiesList) {
-            log.info("  " + properties.getControllerClassName());
+            log.info("  " + properties.getOutputClassName());
             writeController(properties);
         }
-
-        // AppConfig
-        log.info("AppConfig");
-        writeAppConfig(controllerPropertiesList);
 
         // Constant
         log.info("Constant");
         writeConstant(controllerPropertiesList, jspPropertiesList);
-
-
     }
 
     public void writeController(ControllerProperties properties) throws IOException {
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("package " + properties.getControllerPackageName() + ";\n");
-        stringBuilder.append("\n");
-        stringBuilder.append("import javax.servlet.http.HttpServletRequest;\n");
-        stringBuilder.append("import javax.servlet.http.HttpServletResponse;\n");
-        stringBuilder.append("\n");
-        stringBuilder.append("import org.springframework.web.servlet.ModelAndView;\n");
-        stringBuilder.append("import org.springframework.web.servlet.mvc.Controller;\n");
-        stringBuilder.append("\n");
-        stringBuilder.append("public class " + properties.getControllerClassName() + " implements Controller {\n");
-        stringBuilder.append("  \n");
-        stringBuilder.append("  @Override\n");
-        stringBuilder.append("  public ModelAndView handleRequest(HttpServletRequest arg0, HttpServletResponse arg1) throws Exception {\n");
-        stringBuilder.append("    return new " + controllerPackage + properties.getControllerRelativePackage() + "." + properties.getControllerClassName() + "().handleRequest(arg0, arg1);\n");
-        stringBuilder.append("  }\n");
-        stringBuilder.append("\n");
-        stringBuilder.append("}\n");
+        StringBuilder stringBuilder = new StringBuilder()
+                .append("package " + properties.getOutputPackageName() + ";\n")
+                .append("\n")
+                .append("import javax.servlet.http.HttpServletRequest;\n")
+                .append("import javax.servlet.http.HttpServletResponse;\n")
+                .append("\n")
+                .append("import org.springframework.web.bind.annotation.RequestMapping;\n")
+                .append("import org.springframework.web.servlet.ModelAndView;\n")
+                .append("import org.springframework.stereotype.Controller;\n")
+                .append("import springfox.documentation.annotations.ApiIgnore;\n")
+                .append("import " + controllerPackage + properties.getInputRelativePackage() + "." + properties.getInputClassName() + ";\n")
+                .append("\n")
+                .append("@Controller\n")
+                .append("@ApiIgnore\n")
+                .append("public class " + properties.getOutputClassName() + " {\n")
+                .append("  \n")
+                .append("  @RequestMapping(\"/html/" + properties.getInputClassName() + ".html\")\n")
+                .append("  public ModelAndView handleRequest(HttpServletRequest arg0, HttpServletResponse arg1) throws Exception {\n")
+                .append("    return new " + properties.getInputClassName() + "().handleRequest(arg0, arg1);\n")
+                .append("  }\n")
+                .append("\n")
+                .append("}\n");
 
-        GenUtil.writeFile(properties.getControllerClassFile(), stringBuilder.toString());
+        GenUtil.writeFile(properties.getOutputClassFile(), stringBuilder.toString());
     }
 
-    public void writeAppConfig(List<ControllerProperties> controllerPropertiesList) throws IOException {
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("package " + genPackage + ";\n");
-        stringBuilder.append("\n");
-        stringBuilder.append("import java.util.HashMap;\n");
-        stringBuilder.append("import java.util.Map;\n");
-        stringBuilder.append("import org.springframework.context.annotation.Bean;\n");
-        stringBuilder.append("import org.springframework.context.annotation.Configuration;\n");
-        stringBuilder.append("import org.springframework.web.servlet.handler.SimpleUrlHandlerMapping;\n");
-        stringBuilder.append("\n");
-        stringBuilder.append("@Configuration\n");
-        stringBuilder.append("public class AppConfig {\n");
-
-        stringBuilder.append("  @Bean\n");
-        stringBuilder.append("  public org.springframework.web.servlet.handler.SimpleUrlHandlerMapping urlHandler () {\n");
-        stringBuilder.append("    SimpleUrlHandlerMapping mapping = new SimpleUrlHandlerMapping();\n");
-        stringBuilder.append("    Map<String, Object> urlMap = new HashMap<String, Object>();\n");
-        for (ControllerProperties properties : controllerPropertiesList) {
-            String objectName = StringUtil.toJavaObjectName(properties.getControllerClassName());
-            stringBuilder.append("    urlMap.put(\"html/" + properties.getControllerClassName() + ".html\", " + objectName + "());\n");
-            stringBuilder.append("    urlMap.put(\"" + properties.getControllerClassName() + ".html\", " + objectName + "());\n");
-            stringBuilder.append("\n");
-        }
-
-        stringBuilder.append("    mapping.setUrlMap(urlMap);\n");
-        stringBuilder.append("    return mapping;\n");
-        stringBuilder.append("  }\n");
-
-
-        for (ControllerProperties properties : controllerPropertiesList) {
-            String objectName = StringUtil.toJavaObjectName(properties.getControllerClassName());
-
-//            stringBuilder.append("  @Bean(id = \"" + properties.getControllerClassName() +  "\" name = \"/html/" + properties.getControllerClassName() + ".html\")\n");
-            stringBuilder.append("  @Bean\n");
-            stringBuilder.append("  public " + properties.getControllerFullClassName() + " " + objectName + "() {\n");
-            stringBuilder.append("    return new " + properties.getControllerFullClassName() + "();\n");
-            stringBuilder.append("  }\n");
-            stringBuilder.append("\n");
-        }
-
-        stringBuilder.append("  @Bean()\n");
-        stringBuilder.append("  public  org.springframework.web.servlet.view.InternalResourceViewResolver viewResolver () {\n");
-        stringBuilder.append("      org.springframework.web.servlet.view.InternalResourceViewResolver  internalResourceViewResolver = new org.springframework.web.servlet.view.InternalResourceViewResolver();\n");
-        stringBuilder.append("\n");
-        stringBuilder.append("      internalResourceViewResolver.setPrefix(\"/jsp/\");\n");
-        stringBuilder.append("      internalResourceViewResolver.setSuffix(\".jsp\");\n");
-        stringBuilder.append("\n");
-        stringBuilder.append("      return internalResourceViewResolver;\n");
-        stringBuilder.append("  }\n");
-
-        stringBuilder.append("}\n");
-
-        GenUtil.writeFile(appConfig, stringBuilder.toString());
-    }
-
-
-    public void writeConstant(List<ControllerProperties> controllerPropertiesList, List<JspProperties> jspPropertiesList) throws IOException, JAXBException, BusinessException {
+    public void writeConstant(List<ControllerProperties> controllerPropertiesList, List<JspProperties> jspPropertiesList) throws IOException, FrameworkException {
         Timestamp date = TimeStampUtil.sysdate();
         String version = project.getVersion();
 
@@ -219,7 +162,7 @@ public class SpringControllerWriter {
         // Page
         stringBuilder.append("  public class Page {\n");
         for (ControllerProperties properties : controllerPropertiesList) {
-            String className = properties.getControllerClassName();
+            String className = properties.getInputClassName();
 
             if (className.endsWith("Json")) {
                 stringBuilder.append("    public static final String " + StringUtil.toJavaConstantName(className) + " = \"" + className + ".json\";\n");
@@ -229,30 +172,6 @@ public class SpringControllerWriter {
         }
         stringBuilder.append("  }\n");
 
-        // Configuration
-        JAXBContext jaxbContext = JAXBContext.newInstance(Configuration.class);
-        Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-        Configuration configuration = (Configuration) jaxbUnmarshaller.unmarshal(systemXml);
-
-        if (configuration.getParameters() != null) {
-            stringBuilder.append("  public class Parameters {\n");
-            for (Group group : configuration.getParameters().getGroup()) {
-                stringBuilder.append("    public static final String " + StringUtil.toJavaConstantName(group.getName()) + " = \"" + group.getName() + "\";\n");
-            }
-            stringBuilder.append("\n");
-
-            for (Group group : configuration.getParameters().getGroup()) {
-                stringBuilder.append("    public class " + StringUtil.toJavaClassName(group.getName()) + " {\n");
-                for (Parameter parameter : group.getParameter()) {
-                    stringBuilder.append("      public static final String " + StringUtil.toJavaConstantName(parameter.getName()) + " = \"" + parameter.getName() + "\";\n");
-                }
-                stringBuilder.append("    }\n");
-            }
-
-            stringBuilder.append("  }\n");
-        }
-
-        stringBuilder.append("\n");
         stringBuilder.append("}\n");
 
         GenUtil.writeFile(constant, stringBuilder.toString());

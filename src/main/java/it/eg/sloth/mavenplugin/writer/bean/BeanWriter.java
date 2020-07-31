@@ -3,10 +3,7 @@ package it.eg.sloth.mavenplugin.writer.bean;
 
 import it.eg.sloth.jaxb.dbschema.*;
 import it.eg.sloth.jaxb.dbschema.Package;
-import it.eg.sloth.mavenplugin.writer.bean.oraclebean.PackageBeanWriter;
-import it.eg.sloth.mavenplugin.writer.bean.oraclebean.SequenceDaoWriter;
-import it.eg.sloth.mavenplugin.writer.bean.oraclebean.TableBeanWriter;
-import it.eg.sloth.mavenplugin.writer.bean.oraclebean.ViewBeanWriter;
+import it.eg.sloth.mavenplugin.writer.bean.oraclebean.*;
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
 
@@ -16,7 +13,21 @@ import javax.xml.bind.Unmarshaller;
 import java.io.File;
 import java.io.IOException;
 
-
+/**
+ * Project: sloth-plugin
+ * Copyright (C) 2019-2020 Enrico Grillini
+ * <p>
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * <p>
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+ * <p>
+ * You should have received a copy of the GNU General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * @author Enrico Grillini
+ *
+ */
 public class BeanWriter {
 
     File dbSchemaXml;
@@ -52,9 +63,12 @@ public class BeanWriter {
         }
 
         log.info("  Table bean");
+        VelocityTableBeanWriter velocityTableBeanWriter = new VelocityTableBeanWriter(outputJavaDirectory, genPackage);
         for (Table table : dbToolProject.getDataBase().getTables().getTable()) {
             TableBeanWriter writer = new TableBeanWriter(outputJavaDirectory, genPackage, table);
             writer.write();
+
+            velocityTableBeanWriter.write(table);
         }
 
         log.info("  Sequence Dao");

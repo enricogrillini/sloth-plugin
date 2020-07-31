@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Form Title="Tipi Cliente" PageType="EDITABLE_GRID" xmlns="http://form.jaxb.sloth.eg.it" xmlns:xsi="http://www.w3.org/2001/XMLSchema">
+ <Grid Name="Anagrafica" Table="Dec_TipiCliente">
+  <Input Name="Codtipocliente" Description="Codice" DataType="STRING" MaxLength="10" Required="true" />
+  <Input Name="Descrizionebreve" Description="Descrizione breve" DataType="STRING" MaxLength="20" Required="true" />
+  <Input Name="Descrizionelunga" Description="Descrizione lunga" DataType="STRING" MaxLength="100" Required="true" />
+  <Input Name="Posizione" Description="Posizione" DataType="INTEGER" Required="true" />
+  <CheckBox Name="Flagvalido" Description="Valido" DataType="STRING" Required="true" />
+ </Grid>
+
+ <Fields Name="Utility">
+  <Button Name="Normalizza" Description="Normalizza" />
+ </Fields>
+</Form>
+
+

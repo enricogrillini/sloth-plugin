@@ -9,9 +9,20 @@ import java.io.File;
 import java.io.IOException;
 
 /**
- * @author Enrico Grillini
+ * Project: sloth-plugin
+ * Copyright (C) 2019-2020 Enrico Grillini
+ * <p>
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * <p>
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+ * <p>
+ * You should have received a copy of the GNU General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * <p>
  * Classe per la generazione dei Package bean
+ *
+ * @author Enrico Grillini
  */
 @Data
 public class PackageBeanWriter {
@@ -97,19 +108,16 @@ public class PackageBeanWriter {
             // Metodo con connection
             if (dbMethod.getType() == MethodType.FUNCTION) {
                 Argument dbArgument = dbMethod.getArguments().getArgument().get(0);
-
                 stringBuilder.append("  public static " + OracleUtil.getJavaClass(dbArgument.getType()) + " " + dbMethod.getName() + " (Connection connection");
                 stringBuilder.append(parameterList2 == "" ? "" : ", " + parameterList2);
-                stringBuilder.append(") {\n");
+                stringBuilder.append(") throws SQLException {\n");
             } else {
                 stringBuilder.append("  public static void " + dbMethod.getName() + " (Connection connection");
                 stringBuilder.append(parameterList2 == "" ? "" : ", " + parameterList2);
-                stringBuilder.append(") {\n");
+                stringBuilder.append(") throws SQLException {\n");
             }
 
-            stringBuilder.append("    CallableStatement callableStatement = null;\n");
-            stringBuilder.append("    try {\n");
-            stringBuilder.append("      callableStatement = connection.prepareCall(" + dbMethod.getName() + "Statement" + dbMethod.getOverload() + ");\n");
+            stringBuilder.append("    try (CallableStatement callableStatement = connection.prepareCall(" + dbMethod.getName() + "Statement" + dbMethod.getOverload() + ")) {\n");
             int j = 0;
             for (Argument dbArgument : dbMethod.getArguments().getArgument()) {
                 if (dbArgument.getName() == null && dbArgument.getPosition() > 0)
@@ -138,10 +146,6 @@ public class PackageBeanWriter {
                 stringBuilder.append("      return value;\n");
             } else {
             }
-            stringBuilder.append("    } catch (SQLException e) {\n");
-            stringBuilder.append("      throw new RuntimeException(e);\n");
-            stringBuilder.append("    } finally {\n");
-            stringBuilder.append("      DataConnectionManager.release(callableStatement);\n");
             stringBuilder.append("    }\n");
             stringBuilder.append("  }\n");
             stringBuilder.append("\n");
@@ -150,15 +154,12 @@ public class PackageBeanWriter {
             if (dbMethod.getType() == MethodType.FUNCTION) {
                 Argument dbArgument = dbMethod.getArguments().getArgument().get(0);
 
-                stringBuilder.append("  public static " + OracleUtil.getJavaClass(dbArgument.getType()) + " " + dbMethod.getName() + " (" + parameterList2 + ") {\n");
+                stringBuilder.append("  public static " + OracleUtil.getJavaClass(dbArgument.getType()) + " " + dbMethod.getName() + " (" + parameterList2 + ") throws SQLException, FrameworkException {\n");
             } else {
-                stringBuilder.append("  public static void " + dbMethod.getName() + " (" + parameterList2 + ") {\n");
+                stringBuilder.append("  public static void " + dbMethod.getName() + " (" + parameterList2 + ") throws SQLException, FrameworkException {\n");
             }
 
-            stringBuilder.append("    Connection connection = null;\n");
-            stringBuilder.append("    try {\n");
-            stringBuilder.append("      connection = DataConnectionManager.getInstance().getConnection();\n");
-
+            stringBuilder.append("    try (Connection connection = DataConnectionManager.getInstance().getDataSource().getConnection()) {\n");
             stringBuilder.append(dbMethod.getType() == MethodType.FUNCTION ? "      return " + dbMethod.getName() + "(connection" : "      " + dbMethod.getName() + "(connection");
 
             for (Argument dbArgument : dbMethod.getArguments().getArgument()) {
@@ -171,11 +172,6 @@ public class PackageBeanWriter {
                 }
             }
             stringBuilder.append(");\n");
-            stringBuilder.append("\n");
-            stringBuilder.append("    } catch (SQLException e) {\n");
-            stringBuilder.append("      throw new RuntimeException(e);\n");
-            stringBuilder.append("    } finally {\n");
-            stringBuilder.append("      DataConnectionManager.release(connection);\n");
             stringBuilder.append("    }\n");
             stringBuilder.append("  }\n");
             stringBuilder.append("\n");
@@ -184,20 +180,20 @@ public class PackageBeanWriter {
     }
 
     public void write() throws IOException {
-        StringBuilder testo = new StringBuilder();
-
-        testo.append("package " + packageBeanPackageName + ";\n");
-        testo.append("\n");
-        testo.append("import it.eg.sloth.db.manager.DataConnectionManager;\n");
-        testo.append("\n");
-        testo.append("import java.math.BigDecimal;\n");
-        testo.append("import java.sql.CallableStatement;\n");
-        testo.append("import java.sql.Connection;\n");
-        testo.append("import java.sql.SQLException;\n");
-        testo.append("import java.sql.Timestamp;\n");
-        testo.append("import java.sql.Types;\n");
-        testo.append("\n");
-        testo.append("public class " + packageBeanClassName + " {\n");
+        StringBuilder testo = new StringBuilder()
+                .append("package " + packageBeanPackageName + ";\n")
+                .append("\n")
+                .append("import it.eg.sloth.db.manager.DataConnectionManager;\n")
+                .append("import it.eg.sloth.framework.common.exception.FrameworkException;\n")
+                .append("\n")
+                .append("import java.math.BigDecimal;\n")
+                .append("import java.sql.CallableStatement;\n")
+                .append("import java.sql.Connection;\n")
+                .append("import java.sql.SQLException;\n")
+                .append("import java.sql.Timestamp;\n")
+                .append("import java.sql.Types;\n")
+                .append("\n")
+                .append("public class " + packageBeanClassName + " {\n");
 
         writeProceduresStatement(testo);
         writeProcedures(testo);

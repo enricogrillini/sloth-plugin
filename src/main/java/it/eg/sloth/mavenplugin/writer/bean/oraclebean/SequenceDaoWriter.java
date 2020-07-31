@@ -8,9 +8,20 @@ import java.io.File;
 import java.io.IOException;
 
 /**
- * @author Enrico Grillini
+ * Project: sloth-plugin
+ * Copyright (C) 2019-2020 Enrico Grillini
+ * <p>
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * <p>
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+ * <p>
+ * You should have received a copy of the GNU General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * <p>
  * Classe per la generazione della classe Sequence Dao
+ *
+ * @author Enrico Grillini
  */
 public class SequenceDaoWriter {
     private static final String DAO = ".dao";
@@ -46,6 +57,7 @@ public class SequenceDaoWriter {
                 .append("import java.sql.SQLException;\n")
                 .append("\n")
                 .append("import it.eg.sloth.db.query.query.Query;\n")
+                .append("import it.eg.sloth.framework.common.exception.FrameworkException;\n")
                 .append("\n")
                 .append("public class SequencesDao {\n")
                 .append("  private static final String COLUMN = \"nextval\";\n")
@@ -53,7 +65,7 @@ public class SequenceDaoWriter {
 
         // Costanti
         for (Sequence sequence : sequences.getSequence()) {
-            testo.append("  private static final String " + sequence.getName().toUpperCase() + " = \"select " + sequence.getName() + ".nextval nextval from dual\";");
+            testo.append("  private static final String " + sequence.getName().toUpperCase() + " = \"select " + sequence.getName() + ".nextval nextval from dual\";\n");
         }
 
         testo.append("\n");
@@ -61,7 +73,7 @@ public class SequenceDaoWriter {
         // Metodi
         for (Sequence sequence : sequences.getSequence()) {
             testo
-                    .append("  public static BigDecimal " + StringUtil.initCap(sequence.getName()) + "() throws SQLException, IOException {\n")
+                    .append("  public static BigDecimal " + StringUtil.initCap(sequence.getName()) + "() throws SQLException, IOException, FrameworkException {\n")
                     .append("    return new Query(" + sequence.getName().toUpperCase() + ").selectRow().getBigDecimal(COLUMN);\n")
                     .append("  }\n")
                     .append("\n");

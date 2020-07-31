@@ -11,8 +11,22 @@ import org.apache.maven.project.MavenProject;
 
 import java.io.File;
 
+
 /**
+ * Project: sloth-plugin
+ * Copyright (C) 2019-2020 Enrico Grillini
+ * <p>
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * <p>
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+ * <p>
+ * You should have received a copy of the GNU General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * <p>
  * Goal che crea le classi di configurazione spring
+ *
+ * @author Enrico Grillini
  */
 @Mojo(name = "spring",
         threadSafe = true,
@@ -32,9 +46,6 @@ public class SpringMojo extends AbstractMojo {
     @Parameter(property = "controllerPackage", required = true)
     private String controllerPackage;
 
-    @Parameter(property = "systemXml", required = true)
-    private File systemXml;
-
     @Parameter(defaultValue = "${project.build.directory}/generated-sources/sloth", property = "outputJavaDirectory", required = true)
     private File outputJavaDirectory;
 
@@ -49,7 +60,6 @@ public class SpringMojo extends AbstractMojo {
         getLog().info("  javaDirectory: " + javaDirectory);
         getLog().info("  webappDirectory: " + webappDirectory);
         getLog().info("  controllerPackage: " + genPackage);
-        getLog().info("  systemXml: " + systemXml);
         getLog().info("  outputJavaDirectory: " + outputJavaDirectory);
         getLog().info("  genPackage: " + genPackage);
         getLog().info("------------------------------------------------");
@@ -61,7 +71,7 @@ public class SpringMojo extends AbstractMojo {
             try {
                 project.addCompileSourceRoot(outputJavaDirectory.getAbsolutePath());
 
-                new SpringControllerWriter(javaDirectory, webappDirectory, controllerPackage, systemXml, outputJavaDirectory, genPackage, project, getLog()).write();
+                new SpringControllerWriter(javaDirectory, webappDirectory, controllerPackage, outputJavaDirectory, genPackage, project, getLog()).write();
 
             } catch (Exception e) {
                 throw new MojoExecutionException("Could not generate Java source code!", e);

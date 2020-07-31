@@ -13,11 +13,10 @@
  <Fields Name="Utility">
   <Button Name="Refresh" Description="Refresh" />
   <Button Name="Send" Description="Send" />
-  <LinkButton Name="Clear" Description="Clear" ConfirmMessage="Se si procede tutte le mail in coda saranno eliminate. Confermi?"/>
  </Fields>
 
- <SimpleChart Name="GraficoInvii" ChartType="LINE" Title="Invii">
-  <Ticks Name="Ora" Description="Ora" DataType="DATE" Format="dd/MM HH" Rotation="-75" />
+ <SimpleChart Name="GraficoInvii" ChartType="line" Title="Invii">
+  <Labels Name="Ora" Description="Ora" DataType="DATE" Format="dd/MM HH" />
   <Series Name="success" Description="Success" DataType="INTEGER" />
   <Series Name="fail" Description="Fail" DataType="INTEGER" />
  </SimpleChart>
