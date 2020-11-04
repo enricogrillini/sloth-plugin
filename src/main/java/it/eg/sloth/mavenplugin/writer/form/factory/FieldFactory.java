@@ -118,7 +118,7 @@ public class FieldFactory {
             return "<Timestamp>";
         } else if (DataType.DECIMAL.equals(dataType) || DataType.INTEGER.equals(dataType) || DataType.CURRENCY.equals(dataType) || DataType.PERC.equals(dataType)) {
             return "<BigDecimal>";
-        } else if (DataType.STRING.equals(dataType) || DataType.MAIL.equals(dataType) || DataType.PARTITA_IVA.equals(dataType) || DataType.CODICE_FISCALE.equals(dataType) || DataType.URL.equals(dataType)) {
+        } else if (DataType.STRING.equals(dataType) || DataType.PASSWORD.equals(dataType) ||DataType.MAIL.equals(dataType) || DataType.PARTITA_IVA.equals(dataType) || DataType.CODICE_FISCALE.equals(dataType) || DataType.URL.equals(dataType)) {
             return "<String>";
         }
 
