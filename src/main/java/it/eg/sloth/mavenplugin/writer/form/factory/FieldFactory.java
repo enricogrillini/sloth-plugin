@@ -118,7 +118,7 @@ public class FieldFactory {
             return "<Timestamp>";
         } else if (DataType.DECIMAL.equals(dataType) || DataType.INTEGER.equals(dataType) || DataType.CURRENCY.equals(dataType) || DataType.PERC.equals(dataType)) {
             return "<BigDecimal>";
-        } else if (DataType.STRING.equals(dataType) || DataType.PASSWORD.equals(dataType) ||DataType.MAIL.equals(dataType) || DataType.PARTITA_IVA.equals(dataType) || DataType.CODICE_FISCALE.equals(dataType) || DataType.URL.equals(dataType)) {
+        } else if (DataType.STRING.equals(dataType) || DataType.PASSWORD.equals(dataType) || DataType.MAIL.equals(dataType) || DataType.PARTITA_IVA.equals(dataType) || DataType.CODICE_FISCALE.equals(dataType) || DataType.URL.equals(dataType)) {
             return "<String>";
         }
 
@@ -377,6 +377,25 @@ public class FieldFactory {
                         .append("        .viewModality(" + decodeViewModality(radioGroup.getViewModality()) + ")\n")
                         .append("        .build();\n")
                         .append("      addChild(" + StringUtil.toJavaObjectName(radioGroup.getName()) + ");\n");
+            } else if (element instanceof RadioButtons) {
+                RadioButtons radioButtons = (RadioButtons) element;
+                stringBuilder
+                        .append("\n")
+                        .append("      " + StringUtil.toJavaObjectName(radioButtons.getName()) + " = RadioButtons." + getGenerics(radioButtons.getDataType()) + "builder()\n")
+                        .append("        .name(_" + StringUtil.toJavaConstantName(radioButtons.getName()) + ")\n")
+                        .append("        .alias(" + GenUtil.stringToJava(radioButtons.getAlias()) + ")\n")
+                        .append("        .orderByAlias(" + GenUtil.stringToJava(radioButtons.getOrderByAlias()) + ")\n")
+                        .append("        .description(" + GenUtil.stringToJava(radioButtons.getDescription()) + ")\n")
+                        .append("        .tooltip(" + GenUtil.stringToJava(radioButtons.getTooltip()) + ")\n")
+                        .append("        .dataType(" + (radioButtons.getDataType() == null ? "null" : "DataTypes." + radioButtons.getDataType()) + ")\n")
+                        .append("        .format(" + GenUtil.stringToJava(radioButtons.getFormat()) + ")\n")
+                        .append("        .baseLink(" + GenUtil.stringToJava(radioButtons.getBaseLink()) + ")\n")
+                        .append("        .required(" + radioButtons.isRequired() + ")\n")
+                        .append("        .readOnly(" + radioButtons.isReadOnly() + ")\n")
+                        .append("        .hidden(" + radioButtons.isHidden() + ")\n")
+                        .append("        .viewModality(" + decodeViewModality(radioButtons.getViewModality()) + ")\n")
+                        .append("        .build();\n")
+                        .append("      addChild(" + StringUtil.toJavaObjectName(radioButtons.getName()) + ");\n");
 
             } else if (element instanceof Semaphore) {
                 Semaphore semaphore = (Semaphore) element;
@@ -395,6 +414,7 @@ public class FieldFactory {
                         .append("        .readOnly(" + semaphore.isReadOnly() + ")\n")
                         .append("        .hidden(" + semaphore.isHidden() + ")\n")
                         .append("        .viewModality(" + decodeViewModality(semaphore.getViewModality()) + ")\n")
+                        .append("        .full(" + semaphore.isFull() + ")\n")
                         .append("        .build();\n")
                         .append("      addChild(" + StringUtil.toJavaObjectName(semaphore.getName()) + ");\n");
 
