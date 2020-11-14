@@ -1,11 +1,14 @@
 package it.eg.sloth.mavenplugin;
 
+import com.google.common.io.LineReader;
 import it.eg.sloth.db.manager.DataConnectionManager;
 import it.eg.sloth.jaxb.dbschema.DataBase;
 import it.eg.sloth.jaxb.dbschema.DbToolProject;
 import it.eg.sloth.mavenplugin.writer.bean.BeanWriter;
 import it.eg.sloth.mavenplugin.writer.refreshdb.DbIFace;
 import it.eg.sloth.mavenplugin.writer.refreshdb.oracle.OracleDb;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
@@ -18,6 +21,9 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 /**
  * Project: sloth-plugin
@@ -103,10 +109,22 @@ public class RefreshDbMojo extends AbstractMojo {
 
             Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
             jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+            jaxbMarshaller.setProperty(Marshaller.JAXB_ENCODING, StandardCharsets.UTF_8.name());
 
-            try (OutputStream os = new FileOutputStream(dbSchema)) {
-                jaxbMarshaller.marshal(dbToolProject, os);
+            // Salvo il dbSchema in un file temporaneo
+            Path tempFile = Files.createTempFile(null, null);
+            try (OutputStream outputStream = new FileOutputStream(tempFile.toFile())) {
+                jaxbMarshaller.marshal(dbToolProject, outputStream);
             }
+
+            // Converto il file temporaneo appena creato in un file con i fine linea coerenti con il Sistema operativo per facilitare i confronti con WinMerge
+            try (BufferedReader reader = Files.newBufferedReader(tempFile, StandardCharsets.UTF_8); PrintWriter writer = new PrintWriter(dbSchema, StandardCharsets.UTF_8.name())) {
+                String line = null;
+                while ((line = reader.readLine()) != null) {
+                    writer.println(line);
+                }
+            }
+
         } catch (Exception e) {
             throw new MojoExecutionException("Could not generate Java source code!", e);
         }

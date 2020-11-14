@@ -50,13 +50,9 @@ public class FieldFactory {
             } else if (element instanceof CheckButtons) {
                 CheckButtons field = (CheckButtons) element;
                 stringBuilder.append("    private " + simpleClassName + getListGenerics(field.getDataType()) + " " + StringUtil.toJavaObjectName(element.getName()) + ";\n");
-            } else if (element instanceof MultipleAutoComplete) {
-                MultipleAutoComplete field = (MultipleAutoComplete) element;
-                stringBuilder.append("    private " + simpleClassName + getListGenerics(field.getDataType()) + " " + StringUtil.toJavaObjectName(element.getName()) + ";\n");
             } else if (element instanceof Field) {
                 Field field = (Field) element;
                 stringBuilder.append("    private " + simpleClassName + getGenerics(field.getDataType()) + " " + StringUtil.toJavaObjectName(element.getName()) + ";\n");
-
             } else if (!(element instanceof Elements)) {
                 stringBuilder.append("    private " + simpleClassName + " " + StringUtil.toJavaObjectName(element.getName()) + ";\n");
             }
@@ -75,12 +71,6 @@ public class FieldFactory {
                 stringBuilder.append("\n");
             } else if (element instanceof CheckButtons) {
                 CheckButtons field = (CheckButtons) element;
-                stringBuilder.append(" public " + simpleClassName + getListGenerics(field.getDataType()) + " get" + StringUtil.toJavaClassName(element.getName()) + "() {\n");
-                stringBuilder.append(" return (" + simpleClassName + getListGenerics(field.getDataType()) + ")" + StringUtil.toJavaObjectName(element.getName()) + ";\n");
-                stringBuilder.append(" }\n");
-                stringBuilder.append("\n");
-            } else if (element instanceof MultipleAutoComplete) {
-                MultipleAutoComplete field = (MultipleAutoComplete) element;
                 stringBuilder.append(" public " + simpleClassName + getListGenerics(field.getDataType()) + " get" + StringUtil.toJavaClassName(element.getName()) + "() {\n");
                 stringBuilder.append(" return (" + simpleClassName + getListGenerics(field.getDataType()) + ")" + StringUtil.toJavaObjectName(element.getName()) + ";\n");
                 stringBuilder.append(" }\n");
@@ -319,22 +309,6 @@ public class FieldFactory {
                         .append("        .viewModality(" + decodeViewModality(autoComplete.getViewModality()) + ")\n")
                         .append("        .build();\n")
                         .append("      addChild(" + StringUtil.toJavaObjectName(autoComplete.getName()) + ");\n");
-
-            } else if (element instanceof MultipleAutoComplete) {
-                MultipleAutoComplete multipleAutoComplete = (MultipleAutoComplete) element;
-                stringBuilder
-                        .append("      addChild(" + StringUtil.toJavaObjectName(multipleAutoComplete.getName()) + " = new MultipleAutoComplete" + getListGenerics(multipleAutoComplete.getDataType()) + " (" + "_")
-                        .append(StringUtil.toJavaConstantName(multipleAutoComplete.getName()) + ", ")
-                        .append((multipleAutoComplete.getAlias() == null ? "null" : " \"" + multipleAutoComplete.getAlias() + "\"") + ", ")
-                        .append((multipleAutoComplete.getDescription() == null ? "null" : " \"" + multipleAutoComplete.getDescription() + "\"") + ", ")
-                        .append((multipleAutoComplete.getTooltip() == null ? "null" : " \"" + multipleAutoComplete.getTooltip() + "\"") + ", ")
-                        .append((multipleAutoComplete.getDataType() == null ? "null" : " DataTypes." + multipleAutoComplete.getDataType()) + ", ")
-                        .append((multipleAutoComplete.getFormat() == null ? "null" : " \"" + multipleAutoComplete.getFormat() + "\"") + ", ")
-                        .append((multipleAutoComplete.getBaseLink() == null ? "null" : " \"" + multipleAutoComplete.getBaseLink() + "\"") + ", ")
-                        .append(multipleAutoComplete.isRequired() + ", ")
-                        .append(multipleAutoComplete.isReadOnly() + ", ")
-                        .append(multipleAutoComplete.isHidden() + ", ")
-                        .append(decodeViewModality(multipleAutoComplete.getViewModality()) + "));\n");
 
             } else if (element instanceof CheckBox) {
                 CheckBox checkBox = (CheckBox) element;

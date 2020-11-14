@@ -30,7 +30,6 @@ import java.util.*;
  * You should have received a copy of the GNU General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @author Enrico Grillini
- *
  */
 @Data
 public class OracleDb extends AbstractDb {
@@ -590,10 +589,13 @@ public class OracleDb extends AbstractDb {
                     dbConstraint = new Constraint();
                     dbConstraint.setColumns(new ConstraintColumns());
 
-                    dbConstraint.setName(dataRow.getString("constraint_name"));
+                    dbConstraint.setGenerated(GEN_GENERATED_NAME.equals(dataRow.getString("generated")));
+                    if (!dbConstraint.isGenerated()) {
+                        dbConstraint.setName(dataRow.getString("constraint_name"));
+                    }
+
                     dbConstraint.setType(getConstraintType(dataRow.getString("constraint_type")));
                     dbConstraint.setSearchCondition(dataRow.getString("search_condition"));
-                    dbConstraint.setGenerated(GEN_GENERATED_NAME.equals(dataRow.getString("generated")));
                     dbConstraint.setTable(dataRow.getString("tabellaReferenziata"));
                     dbTable.getConstraints().getConstraint().add(dbConstraint);
 
