@@ -393,21 +393,21 @@ public class FieldFactory {
                         .append("      addChild(" + StringUtil.toJavaObjectName(semaphore.getName()) + ");\n");
 
             } else if (element instanceof Link) {
-                Link button = (Link) element;
+                Link link = (Link) element;
                 stringBuilder
                         .append("\n")
-                        .append("      " + StringUtil.toJavaObjectName(button.getName()) + " = Link.builder()\n")
-                        .append("        .name(_" + StringUtil.toJavaConstantName(button.getName()) + ")\n")
-                        .append("        .description(" + GenUtil.stringToJava(button.getDescription()) + ")\n")
-                        .append("        .tooltip(" + GenUtil.stringToJava(button.getTooltip()) + ")\n")
-                        .append("        .hidden(" + GenUtil.booleanToJava(button.isHidden()) + ")\n")
-                        .append("        .disabled(" + GenUtil.booleanToJava(button.isDisabled()) + ")\n")
-                        .append("        .buttonType(" + (button.getType() == null ? "null" : "ButtonType." + button.getType()) + ")\n")
-                        .append("        .imgHtml(" + GenUtil.stringToJava(button.getImgHtml()) + ")\n")
-                        .append("        .href(" + GenUtil.stringToJava(button.getHref()) + ")\n")
-                        .append("        .target(" + GenUtil.stringToJava(button.getTarget()) + ")\n")
+                        .append("      " + StringUtil.toJavaObjectName(link.getName()) + " = Link.builder()\n")
+                        .append("        .name(_" + StringUtil.toJavaConstantName(link.getName()) + ")\n")
+                        .append("        .description(" + GenUtil.stringToJava(link.getDescription()) + ")\n")
+                        .append("        .tooltip(" + GenUtil.stringToJava(link.getTooltip()) + ")\n")
+                        .append("        .hidden(" + GenUtil.booleanToJava(link.isHidden()) + ")\n")
+                        .append("        .disabled(" + GenUtil.booleanToJava(link.isDisabled()) + ")\n")
+                        .append("        .buttonType(" + (link.getType() == null ? "null" : "ButtonType." + link.getType()) + ")\n")
+                        .append("        .imgHtml(" + GenUtil.stringToJava(link.getImgHtml()) + ")\n")
+                        .append("        .href(" + GenUtil.stringToJava(link.getHref()) + ")\n")
+                        .append("        .target(" + GenUtil.stringToJava(link.getTarget()) + ")\n")
                         .append("        .build();\n")
-                        .append("      addChild(" + StringUtil.toJavaObjectName(button.getName()) + ");\n");
+                        .append("      addChild(" + StringUtil.toJavaObjectName(link.getName()) + ");\n");
 
             } else if (element instanceof Button) {
                 Button button = (Button) element;
@@ -421,6 +421,7 @@ public class FieldFactory {
                         .append("        .disabled(" + GenUtil.booleanToJava(button.isDisabled()) + ")\n")
                         .append("        .buttonType(" + (button.getType() == null ? "null" : "ButtonType." + button.getType()) + ")\n")
                         .append("        .imgHtml(" + GenUtil.stringToJava(button.getImgHtml()) + ")\n")
+                        .append("        .confirmMessage(" + GenUtil.stringToJava(button.getConfirmMessage()) + ")\n")
                         .append("        .build();\n")
                         .append("      addChild(" + StringUtil.toJavaObjectName(button.getName()) + ");\n");
 
