@@ -51,7 +51,7 @@ public class OracleDb extends AbstractDb {
     private static final String ARG_OUT = "OUT";
     private static final String ARG_INOUT = "IN/OUT";
 
-    private static final String _sqlPackages = "Select InitCap(a.object_name) object_name,\n" +
+    private static final String SQL_PACKAGES = "Select InitCap(a.object_name) object_name,\n" +
             "       InitCap(a.package_name) package_name,\n" +
             "       nvl(a.overload, 0) overload,\n" +
             "       InitCap(a.argument_name) argument_name,\n" +
@@ -69,19 +69,19 @@ public class OracleDb extends AbstractDb {
             "      o.object_type = 'PACKAGE'\n" +
             "Order By package_name, object_name, overload, sequence";
 
-    private static final String _sqlSource = "Select *\n" +
+    private static final String SQL_SOURCE = "Select *\n" +
             "From ###source\n" +
             "Where owner = upper(?) And\n" +
             "      type = ?\n" +
             "Order by type, name, line\n";
 
-    private static final String _sqlView = "Select InitCap(view_name) view_name,\n" +
+    private static final String SQL_VIEW = "Select InitCap(view_name) view_name,\n" +
             "       text\n" +
             "From ###views\n" +
             "Where owner = upper(?) \n" +
             "Order by view_name\n";
 
-    private static final String _sqlTriggers = "Select *\n" +
+    private static final String SQL_TRIGGERS = "Select *\n" +
             "From ###triggers t\n" +
             "Where t.owner = upper(?) and\n" +
             "      t.table_name = nvl(upper(?), t.table_name) And\n" +
@@ -100,7 +100,7 @@ public class OracleDb extends AbstractDb {
             "      l.owner = upper(?) And" +
             "      l.table_name = nvl(upper(?), l.table_name)\n";
 
-    private static final String _sqlLobs = "Select l.column_name,\n" +
+    private static final String SQL_LOBS = "Select l.column_name,\n" +
             "       l.table_name,\n" +
             "       l.chunk,\n" +
             "       l.in_row\n" +
@@ -109,7 +109,7 @@ public class OracleDb extends AbstractDb {
             "      l.owner = upper(?) And" +
             "      l.table_name = nvl(upper(?), l.table_name)\n";
 
-    private static final String _sqlDbTables = "Select InitCap(t.table_name) table_Name,\n" +
+    private static final String SQL_DB_TABLES = "Select InitCap(t.table_name) table_Name,\n" +
             "       c.comments table_comments,\n" +
             "       t.tablespace_name,\n" +
             "       t.initial_extent,\n" +
@@ -135,15 +135,15 @@ public class OracleDb extends AbstractDb {
             "      t.NESTED = 'NO' And\n" +
             "      t.owner = upper(?) And\n" +
             "      t.table_name = nvl(upper(?), t.table_name) And\n" +
-            "      c.TABLE_TYPE (+) = 'TABLE'\n" +
-            // GG 30-09-2014: escludo dalle
-            // tabelle le viste materializzate:
-            "      And Not Exists (Select 1 From ALL_mviews mv\n" +
-            "                      Where mv.owner      = t.owner\n" +
-            "                      And   mv.mview_name = t.table_name)\n" +
+            "      c.TABLE_TYPE (+) = 'TABLE' And\n" +
+            // Escludo dalle tabelle di sistema per import/export
+            "      t.table_name not like 'SYS_EXPORT_SCHEMA%' And\n" +
+            "      t.table_name not like 'SYS_IMPORT_FULL%' And\n" +
+            // Escludo dalle tabelle le viste materializzate:
+            "      Not Exists (Select 1 From ALL_mviews mv Where mv.owner = t.owner And mv.mview_name = t.table_name)\n" +
             "Order by t.table_Name, tc.column_id\n";
 
-    private static final String _sqlDbViews = "Select InitCap(t.view_name) view_name,\n" +
+    private static final String SQL_DB_VIEWS = "Select InitCap(t.view_name) view_name,\n" +
             "       c.comments table_comments,\n" +
             "       InitCap(tc.column_name) column_name,\n" +
             "       tc.column_id,\n" +
@@ -165,7 +165,7 @@ public class OracleDb extends AbstractDb {
             "      c.TABLE_TYPE = 'VIEW'\n" +
             "Order by t.view_name, tc.column_id\n";
 
-    private static final String _sqlDbIndexes = "Select i.index_name,\n" +
+    private static final String SQL_DB_INDEXES = "Select i.index_name,\n" +
             "       ic.column_position,\n" +
             "       i.owner,\n" +
             "       i.table_name,\n" +
@@ -204,7 +204,7 @@ public class OracleDb extends AbstractDb {
     // il campo
     // "COLUMN_EXPRESSION" è di tipo LONG e non è leggibile facilmente come
     // stringa.
-    private static final String _sqlDbIdxColumnExpr =
+    private static final String SQL_DB_IDX_COLUMN_EXPR =
             "Select ie.column_expression" +
                     " From ###ind_expressions ie" +
                     " Where ie.index_owner = Upper(?)" +
@@ -213,7 +213,7 @@ public class OracleDb extends AbstractDb {
                     " And   ie.table_name  = Upper(?)" +
                     " And   ie.column_position = ?";
 
-    private static final String _sqlDbConstraint = "Select c1.table_name,\n" +
+    private static final String SQL_DB_CONSTRAINT = "Select c1.table_name,\n" +
             "       decode (c1.constraint_type, 'P', 1, 'R', 2, 'C', 3) Ordinamento,\n" +
             "       c1.constraint_name,\n" +
             "       cc1.position,\n" +
@@ -248,17 +248,17 @@ public class OracleDb extends AbstractDb {
             "      c1.r_constraint_name = c2.constraint_name\n" +
             "Order By 1, 2, 3, 4\n";
 
-    private static final String _sqlDbGrants = "Select *\n" +
+    private static final String SQL_DB_GRANTS = "Select *\n" +
             "From user_tab_privs\n" +
             "Where owner = upper(?)\n" +
             "Order by Grantee";
 
-    private static final String _sqlDbSequences = "Select InitCap(sequence_name) sequence_name\n" +
+    private static final String SQL_DB_SEQUENCES = "Select InitCap(sequence_name) sequence_name\n" +
             "From ###sequences\n" +
             "Where sequence_owner = upper(?)\n" +
             "Order By sequence_name";
 
-    private static final String _sqlInvalidObject = "Select o.object_name,\n" +
+    private static final String SQL_INVALID_OBJECT = "Select o.object_name,\n" +
             "       o.object_type,\n" +
             "       e.line,\n" +
             "       e.position,\n" +
@@ -271,7 +271,7 @@ public class OracleDb extends AbstractDb {
             "      o.owner = upper(?)\n" +
             "Order by decode (o.object_type, 'FUNCTION', 1, 'PROCEDURE', 2, 'VIEW', 3, 'PACKAGE', 4, 'PACKAGE BODY', 5, 6), o.object_name, e.line, e.position\n";
 
-    private static final String _sqlTablePartition = "select p.table_name,\n" +
+    private static final String SQL_TABLE_PARTITION = "select p.table_name,\n" +
             "       pt.partitioning_type,\n" +
             "       P.Partition_Name,\n" +
             "       P.Tablespace_Name,\n" +
@@ -291,7 +291,7 @@ public class OracleDb extends AbstractDb {
             "      C.Object_Type = 'TABLE'\n" +
             "order by p.table_name, p.Partition_Position\n";
 
-    private static final String _sqlIndexPartition = "Select P.Index_Name,\n" +
+    private static final String SQL_INDEX_PARTITION = "Select P.Index_Name,\n" +
             "       Pt.Partitioning_Type,\n" +
             "       P.Partition_Name,\n" +
             "       P.Tablespace_Name,\n" +
@@ -315,22 +315,22 @@ public class OracleDb extends AbstractDb {
             "      C.Object_Type = 'INDEX'\n" +
             "Order By P.Index_Name, P.Partition_Position\n";
 
-    private static final String _sqlRecycleBin = "select * from user_recyclebin";
+    private static final String SQL_RECYCLE_BIN = "select * from user_recyclebin";
 
-    private static final String _sqlPurgeRecycleBin = "purge recyclebin";
+    private static final String SQL_PURGE_RECYCLE_BIN = "purge recyclebin";
 
-    private static final String _sqlAttributes = "Select *\n" +
+    private static final String SQL_ATTRIBUTES = "Select *\n" +
             "From ###TYPE_ATTRS\n" +
             "Where owner = upper(?)\n" +
             "Order by type_name, attr_no\n";
 
-    private static final String _sqlLastDdlModifiedDate = "SELECT MAX(last_ddl_time) AS Last_Ddl_Modified_Date" +
+    private static final String SQL_LAST_DDL_MODIFIED_DATE = "SELECT MAX(last_ddl_time) AS Last_Ddl_Modified_Date" +
             " FROM USER_OBJECTS";
 
-    private static final String _sqlSelectAny = "select * from dba_objects where rownum < 2";
+    private static final String SQL_SELECT_ANY = "select * from dba_objects where rownum < 2";
 
     // GG 25-06-2013
-    private static final String _sqlDependencies =
+    private static final String SQL_DEPENDENCIES =
             "Select referenced_owner as OWNER,\n" +
                     "       referenced_name  as NAME,\n" +
                     "       referenced_type  as TYPE\n" +
@@ -340,7 +340,7 @@ public class OracleDb extends AbstractDb {
                     " And   type  Like upper(?)||'%'\n" +
                     " Order by owner, name, type, referenced_owner, referenced_name, referenced_type\n";
 
-    private static final String _sqlDependenciesReverse =
+    private static final String SQL_DEPENDENCIES_REVERSE =
             "Select owner as OWNER,\n" +
                     "       name  as NAME,\n" +
                     "       type  as TYPE\n" +
@@ -350,13 +350,13 @@ public class OracleDb extends AbstractDb {
                     " And   referenced_type  Like upper(?)||'%'\n" +
                     " Order by referenced_owner, referenced_name, referenced_type, owner, name, type\n";
 
-    private static final String _sqlMaterializedViews =
+    private static final String SQL_MATERIALIZED_VIEWS =
             "Select mv.mview_name,\n" +
                     "       mv.query As source\n" +
                     " From ###mviews mv\n" +
                     " Where mv.owner = upper(?)";
 
-    private static final String _sqlMaterializedViews_Cols =
+    private static final String SQL_MATERIALIZED_VIEWS_COLS =
             "Select InitCap(t.mview_name) mview_name,\n" +
                     "        InitCap(tc.column_name) column_name,\n" +
                     "        column_id,\n" +
@@ -433,10 +433,10 @@ public class OracleDb extends AbstractDb {
         }
     }
 
-    private List<Source> loadSourceList(String type) throws SQLException, IOException, FrameworkException {
+    private List<Source> loadSourceList(String type) throws SQLException, FrameworkException {
         it.eg.sloth.db.datasource.table.Table sqlSource = new it.eg.sloth.db.datasource.table.Table();
 
-        Query query = new Query(getSqlStatement(_sqlSource));
+        Query query = new Query(getSqlStatement(SQL_SOURCE));
         query.addParameter(Types.VARCHAR, getOwner());
         query.addParameter(Types.VARCHAR, type);
         query.populateDataTable(sqlSource);
@@ -518,7 +518,7 @@ public class OracleDb extends AbstractDb {
         // Tables
         it.eg.sloth.db.datasource.table.Table sqlTable = new it.eg.sloth.db.datasource.table.Table();
 
-        Query query = new Query(getSqlStatement(_sqlDbTables));
+        Query query = new Query(getSqlStatement(SQL_DB_TABLES));
         query.addParameter(Types.VARCHAR, getOwner());
         query.addParameter(Types.VARCHAR, tableName);
         query.populateDataTable(sqlTable);
@@ -571,7 +571,7 @@ public class OracleDb extends AbstractDb {
         // Constraints
         it.eg.sloth.db.datasource.table.Table sqlDbConstraint = new it.eg.sloth.db.datasource.table.Table();
 
-        query = new Query(getSqlStatement(_sqlDbConstraint));
+        query = new Query(getSqlStatement(SQL_DB_CONSTRAINT));
         query.addParameter(Types.VARCHAR, getOwner());
         query.addParameter(Types.VARCHAR, tableName);
         query.addParameter(Types.VARCHAR, getOwner());
@@ -848,7 +848,7 @@ public class OracleDb extends AbstractDb {
         // Method
         it.eg.sloth.db.datasource.table.Table sqlPackages = new it.eg.sloth.db.datasource.table.Table();
 
-        Query query = new Query(getSqlStatement(_sqlPackages));
+        Query query = new Query(getSqlStatement(SQL_PACKAGES));
         query.addParameter(Types.VARCHAR, getOwner());
         query.populateDataTable(sqlPackages);
 
@@ -910,7 +910,7 @@ public class OracleDb extends AbstractDb {
         // View
         it.eg.sloth.db.datasource.table.Table sqlView = new it.eg.sloth.db.datasource.table.Table();
 
-        Query query = new Query(getSqlStatement(_sqlView));
+        Query query = new Query(getSqlStatement(SQL_VIEW));
         query.addParameter(Types.VARCHAR, getOwner());
         query.populateDataTable(sqlView);
 
@@ -930,7 +930,7 @@ public class OracleDb extends AbstractDb {
         // Colonne
         it.eg.sloth.db.datasource.table.Table sqlViewColumns = new it.eg.sloth.db.datasource.table.Table();
 
-        query = new Query(getSqlStatement(_sqlDbViews));
+        query = new Query(getSqlStatement(SQL_DB_VIEWS));
         query.addParameter(Types.VARCHAR, getOwner());
         query.populateDataTable(sqlViewColumns);
 
@@ -964,7 +964,7 @@ public class OracleDb extends AbstractDb {
         // Trigger
         it.eg.sloth.db.datasource.table.Table sqlTriggers = new it.eg.sloth.db.datasource.table.Table();
 
-        query = new Query(getSqlStatement(_sqlTriggers));
+        query = new Query(getSqlStatement(SQL_TRIGGERS));
         query.addParameter(Types.VARCHAR, getOwner());
         query.addParameter(Types.VARCHAR, null);
         query.populateDataTable(sqlTriggers);
@@ -1063,7 +1063,7 @@ public class OracleDb extends AbstractDb {
         // Sequences
         it.eg.sloth.db.datasource.table.Table sqlDbSequences = new it.eg.sloth.db.datasource.table.Table();
 
-        Query query = new Query(getSqlStatement(_sqlDbSequences));
+        Query query = new Query(getSqlStatement(SQL_DB_SEQUENCES));
         query.addParameter(Types.VARCHAR, getOwner());
         query.populateDataTable(sqlDbSequences);
 
