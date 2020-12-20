@@ -190,7 +190,6 @@ public class FormWriter {
                 .append("import it.eg.sloth.form.tabsheet.Tab;\n")
                 .append("import it.eg.sloth.form.tabsheet.TabSheet;\n")
                 .append("import it.eg.sloth.form.grid.Grid;\n")
-                .append("import it.eg.sloth.form.grid.RadioGrid;\n")
                 .append("import it.eg.sloth.jaxb.form.DataType;\n")
                 .append("import it.eg.sloth.jaxb.form.ForceCase;\n")
                 .append("import it.eg.sloth.jaxb.form.ButtonType;\n")
