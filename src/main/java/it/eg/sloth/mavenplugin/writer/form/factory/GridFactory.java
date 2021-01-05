@@ -48,8 +48,6 @@ public class GridFactory {
 
     if (grid.getGridType() == null || GridType.BASE.equals(grid.getGridType())) {
       stringBuilder.append("  public static class " + className + " extends Grid" + dataTable + " {\n");
-    } else if (grid.getGridType() == null || GridType.RADIO.equals(grid.getGridType())) {
-      stringBuilder.append("  public static class " + className + " extends RadioGrid" + dataTable + " {\n");
     }
 
     stringBuilder.append("    \n");

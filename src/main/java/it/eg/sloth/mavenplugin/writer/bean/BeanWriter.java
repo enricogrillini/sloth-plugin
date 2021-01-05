@@ -9,9 +9,13 @@ import org.apache.maven.project.MavenProject;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 
 /**
  * Project: sloth-plugin
@@ -48,7 +52,11 @@ public class BeanWriter {
     public void write() throws JAXBException, IOException {
         JAXBContext jaxbContext = JAXBContext.newInstance(DbToolProject.class);
         Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-        DbToolProject dbToolProject = (DbToolProject) jaxbUnmarshaller.unmarshal(dbSchemaXml);
+
+        DbToolProject dbToolProject = null;
+        try (InputStream inStream = new FileInputStream(dbSchemaXml)) {
+            dbToolProject = (DbToolProject) jaxbUnmarshaller.unmarshal(inStream);
+        }
 
         log.info("  Package bean");
         for (Package dbPackage : dbToolProject.getDataBase().getPackages().getPackage()) {

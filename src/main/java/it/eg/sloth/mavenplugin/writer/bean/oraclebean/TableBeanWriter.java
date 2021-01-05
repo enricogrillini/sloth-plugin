@@ -5,13 +5,12 @@ import it.eg.sloth.jaxb.dbschema.Constant;
 import it.eg.sloth.jaxb.dbschema.Table;
 import it.eg.sloth.jaxb.dbschema.TableColumn;
 import it.eg.sloth.mavenplugin.common.GenUtil;
+import org.apache.commons.io.IOUtils;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -458,13 +457,10 @@ public class TableBeanWriter {
                 testo.append("        if (get" + GenUtil.initCap(dbTableColumn.getName()) + "CLobData().getValue() != null) {\n");
                 testo.append("          DataRow row = selectQuery().selectRow(connection);\n");
                 testo.append("          Clob clob = (Clob) row.getObject(" + dbTableColumn.getName().toUpperCase() + ");\n");
-                testo.append("          InputStream inputStream = new ByteArrayInputStream(get" + GenUtil.initCap(dbTableColumn.getName()) + "CLobData().getValue().getBytes());\n");
-                testo.append("          OutputStream outputStream = clob.setAsciiStream(0);\n");
-                testo.append("\n");
-                testo.append("          IOUtils.copy(inputStream, outputStream);\n");
-                testo.append("\n");
-                testo.append("          outputStream.close();\n");
-                testo.append("          inputStream.close();\n");
+                testo.append("          try (Reader reader = new StringReader(get" +  GenUtil.initCap(dbTableColumn.getName()) + "CLobData().getValue());\n");
+                testo.append("            Writer outputStream = clob.setCharacterStream(0)) {\n");
+                testo.append("            IOUtils.copy(reader, outputStream);\n");
+                testo.append("          }\n");
                 testo.append("        }\n");
                 testo.append("      }\n");
                 testo.append("    } catch (Throwable e) {\n");
@@ -589,6 +585,9 @@ public class TableBeanWriter {
                 .append("import java.sql.PreparedStatement;\n")
                 .append("import java.sql.ResultSet;\n")
                 .append("import java.sql.SQLException;\n")
+                .append("  import java.io.Reader;\n")
+                .append("import java.io.StringReader;\n")
+                .append("import java.io.Writer;\n")
                 .append("import java.sql.Timestamp;\n")
                 .append("import java.sql.Types;\n")
                 .append("import lombok.SneakyThrows;\n")

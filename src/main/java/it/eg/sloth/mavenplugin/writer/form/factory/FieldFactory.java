@@ -50,13 +50,9 @@ public class FieldFactory {
             } else if (element instanceof CheckButtons) {
                 CheckButtons field = (CheckButtons) element;
                 stringBuilder.append("    private " + simpleClassName + getListGenerics(field.getDataType()) + " " + StringUtil.toJavaObjectName(element.getName()) + ";\n");
-            } else if (element instanceof MultipleAutoComplete) {
-                MultipleAutoComplete field = (MultipleAutoComplete) element;
-                stringBuilder.append("    private " + simpleClassName + getListGenerics(field.getDataType()) + " " + StringUtil.toJavaObjectName(element.getName()) + ";\n");
             } else if (element instanceof Field) {
                 Field field = (Field) element;
                 stringBuilder.append("    private " + simpleClassName + getGenerics(field.getDataType()) + " " + StringUtil.toJavaObjectName(element.getName()) + ";\n");
-
             } else if (!(element instanceof Elements)) {
                 stringBuilder.append("    private " + simpleClassName + " " + StringUtil.toJavaObjectName(element.getName()) + ";\n");
             }
@@ -75,12 +71,6 @@ public class FieldFactory {
                 stringBuilder.append("\n");
             } else if (element instanceof CheckButtons) {
                 CheckButtons field = (CheckButtons) element;
-                stringBuilder.append(" public " + simpleClassName + getListGenerics(field.getDataType()) + " get" + StringUtil.toJavaClassName(element.getName()) + "() {\n");
-                stringBuilder.append(" return (" + simpleClassName + getListGenerics(field.getDataType()) + ")" + StringUtil.toJavaObjectName(element.getName()) + ";\n");
-                stringBuilder.append(" }\n");
-                stringBuilder.append("\n");
-            } else if (element instanceof MultipleAutoComplete) {
-                MultipleAutoComplete field = (MultipleAutoComplete) element;
                 stringBuilder.append(" public " + simpleClassName + getListGenerics(field.getDataType()) + " get" + StringUtil.toJavaClassName(element.getName()) + "() {\n");
                 stringBuilder.append(" return (" + simpleClassName + getListGenerics(field.getDataType()) + ")" + StringUtil.toJavaObjectName(element.getName()) + ";\n");
                 stringBuilder.append(" }\n");
@@ -118,7 +108,7 @@ public class FieldFactory {
             return "<Timestamp>";
         } else if (DataType.DECIMAL.equals(dataType) || DataType.INTEGER.equals(dataType) || DataType.CURRENCY.equals(dataType) || DataType.PERC.equals(dataType)) {
             return "<BigDecimal>";
-        } else if (DataType.STRING.equals(dataType) || DataType.MAIL.equals(dataType) || DataType.PARTITA_IVA.equals(dataType) || DataType.CODICE_FISCALE.equals(dataType) || DataType.URL.equals(dataType)) {
+        } else if (DataType.STRING.equals(dataType) || DataType.PASSWORD.equals(dataType) || DataType.MAIL.equals(dataType) || DataType.PARTITA_IVA.equals(dataType) || DataType.CODICE_FISCALE.equals(dataType) || DataType.URL.equals(dataType)) {
             return "<String>";
         }
 
@@ -149,11 +139,14 @@ public class FieldFactory {
                         .append("      " + StringUtil.toJavaObjectName(textTotalizer.getName()) + " = TextTotalizer." + getGenerics(textTotalizer.getDataType()) + "builder()\n")
                         .append("        .name(_" + StringUtil.toJavaConstantName(textTotalizer.getName()) + ")\n")
                         .append("        .alias(" + GenUtil.stringToJava(textTotalizer.getAlias()) + ")\n")
+                        .append("        .orderByAlias(" + GenUtil.stringToJava(textTotalizer.getOrderByAlias()) + ")\n")
                         .append("        .description(" + GenUtil.stringToJava(textTotalizer.getDescription()) + ")\n")
                         .append("        .tooltip(" + GenUtil.stringToJava(textTotalizer.getTooltip()) + ")\n")
                         .append("        .dataType(" + (textTotalizer.getDataType() == null ? "null" : "DataTypes." + textTotalizer.getDataType()) + ")\n")
                         .append("        .format(" + GenUtil.stringToJava(textTotalizer.getFormat()) + ")\n")
                         .append("        .baseLink(" + GenUtil.stringToJava(textTotalizer.getBaseLink()) + ")\n")
+                        .append("        .linkField(" + GenUtil.stringToJava(textTotalizer.getLinkField()) + ")\n")
+                        .append("        .hidden(" + textTotalizer.isHidden() + ")\n")
                         .append("        .build();\n")
                         .append("      addChild(" + StringUtil.toJavaObjectName(textTotalizer.getName()) + ");\n");
 
@@ -164,11 +157,14 @@ public class FieldFactory {
                         .append("      " + StringUtil.toJavaObjectName(text.getName()) + " = Text." + getGenerics(text.getDataType()) + "builder()\n")
                         .append("        .name(_" + StringUtil.toJavaConstantName(text.getName()) + ")\n")
                         .append("        .alias(" + GenUtil.stringToJava(text.getAlias()) + ")\n")
+                        .append("        .orderByAlias(" + GenUtil.stringToJava(text.getOrderByAlias()) + ")\n")
                         .append("        .description(" + GenUtil.stringToJava(text.getDescription()) + ")\n")
                         .append("        .tooltip(" + GenUtil.stringToJava(text.getTooltip()) + ")\n")
                         .append("        .dataType(" + (text.getDataType() == null ? "null" : "DataTypes." + text.getDataType()) + ")\n")
                         .append("        .format(" + GenUtil.stringToJava(text.getFormat()) + ")\n")
                         .append("        .baseLink(" + GenUtil.stringToJava(text.getBaseLink()) + ")\n")
+                        .append("        .linkField(" + GenUtil.stringToJava(text.getLinkField()) + ")\n")
+                        .append("        .hidden(" + text.isHidden() + ")\n")
                         .append("        .build();\n")
                         .append("      addChild(" + StringUtil.toJavaObjectName(text.getName()) + ");\n");
 
@@ -179,11 +175,13 @@ public class FieldFactory {
                         .append("      " + StringUtil.toJavaObjectName(textArea.getName()) + " = TextArea." + getGenerics(textArea.getDataType()) + "builder()\n")
                         .append("        .name(_" + StringUtil.toJavaConstantName(textArea.getName()) + ")\n")
                         .append("        .alias(" + GenUtil.stringToJava(textArea.getAlias()) + ")\n")
+                        .append("        .orderByAlias(" + GenUtil.stringToJava(textArea.getOrderByAlias()) + ")\n")
                         .append("        .description(" + GenUtil.stringToJava(textArea.getDescription()) + ")\n")
                         .append("        .tooltip(" + GenUtil.stringToJava(textArea.getTooltip()) + ")\n")
                         .append("        .dataType(" + (textArea.getDataType() == null ? "null" : "DataTypes." + textArea.getDataType()) + ")\n")
                         .append("        .format(" + GenUtil.stringToJava(textArea.getFormat()) + ")\n")
                         .append("        .baseLink(" + GenUtil.stringToJava(textArea.getBaseLink()) + ")\n")
+                        .append("        .linkField(" + GenUtil.stringToJava(textArea.getLinkField()) + ")\n")
                         .append("        .required(" + textArea.isRequired() + ")\n")
                         .append("        .readOnly(" + textArea.isReadOnly() + ")\n")
                         .append("        .hidden(" + textArea.isHidden() + ")\n")
@@ -200,11 +198,13 @@ public class FieldFactory {
                         .append("      " + StringUtil.toJavaObjectName(hidden.getName()) + " = Hidden." + getGenerics(hidden.getDataType()) + "builder()\n")
                         .append("        .name(_" + StringUtil.toJavaConstantName(hidden.getName()) + ")\n")
                         .append("        .alias(" + GenUtil.stringToJava(hidden.getAlias()) + ")\n")
+                        .append("        .orderByAlias(" + GenUtil.stringToJava(hidden.getOrderByAlias()) + ")\n")
                         .append("        .description(" + GenUtil.stringToJava(hidden.getDescription()) + ")\n")
                         .append("        .tooltip(" + GenUtil.stringToJava(hidden.getTooltip()) + ")\n")
                         .append("        .dataType(" + (hidden.getDataType() == null ? "null" : "DataTypes." + hidden.getDataType()) + ")\n")
                         .append("        .format(" + GenUtil.stringToJava(hidden.getFormat()) + ")\n")
                         .append("        .baseLink(" + GenUtil.stringToJava(hidden.getBaseLink()) + ")\n")
+                        .append("        .linkField(" + GenUtil.stringToJava(hidden.getLinkField()) + ")\n")
                         .append("        .required(" + hidden.isRequired() + ")\n")
                         .append("        .build();\n")
                         .append("      addChild(" + StringUtil.toJavaObjectName(hidden.getName()) + ");\n");
@@ -216,11 +216,13 @@ public class FieldFactory {
                         .append("      " + StringUtil.toJavaObjectName(inputTotalizer.getName()) + " = InputTotalizer." + getGenerics(inputTotalizer.getDataType()) + "builder()\n")
                         .append("        .name(_" + StringUtil.toJavaConstantName(inputTotalizer.getName()) + ")\n")
                         .append("        .alias(" + GenUtil.stringToJava(inputTotalizer.getAlias()) + ")\n")
+                        .append("        .orderByAlias(" + GenUtil.stringToJava(inputTotalizer.getOrderByAlias()) + ")\n")
                         .append("        .description(" + GenUtil.stringToJava(inputTotalizer.getDescription()) + ")\n")
                         .append("        .tooltip(" + GenUtil.stringToJava(inputTotalizer.getTooltip()) + ")\n")
                         .append("        .dataType(" + (inputTotalizer.getDataType() == null ? "null" : "DataTypes." + inputTotalizer.getDataType()) + ")\n")
                         .append("        .format(" + GenUtil.stringToJava(inputTotalizer.getFormat()) + ")\n")
                         .append("        .baseLink(" + GenUtil.stringToJava(inputTotalizer.getBaseLink()) + ")\n")
+                        .append("        .linkField(" + GenUtil.stringToJava(inputTotalizer.getLinkField()) + ")\n")
                         .append("        .required(" + inputTotalizer.isRequired() + ")\n")
                         .append("        .readOnly(" + inputTotalizer.isReadOnly() + ")\n")
                         .append("        .hidden(" + inputTotalizer.isHidden() + ")\n")
@@ -237,11 +239,13 @@ public class FieldFactory {
                         .append("      " + StringUtil.toJavaObjectName(checkButtons.getName()) + " = CheckButtons." + getListGenerics(checkButtons.getDataType()) + "builder()\n")
                         .append("        .name(_" + StringUtil.toJavaConstantName(checkButtons.getName()) + ")\n")
                         .append("        .alias(" + GenUtil.stringToJava(checkButtons.getAlias()) + ")\n")
+                        .append("        .orderByAlias(" + GenUtil.stringToJava(checkButtons.getOrderByAlias()) + ")\n")
                         .append("        .description(" + GenUtil.stringToJava(checkButtons.getDescription()) + ")\n")
                         .append("        .tooltip(" + GenUtil.stringToJava(checkButtons.getTooltip()) + ")\n")
                         .append("        .dataType(" + (checkButtons.getDataType() == null ? "null" : "DataTypes." + checkButtons.getDataType()) + ")\n")
                         .append("        .format(" + GenUtil.stringToJava(checkButtons.getFormat()) + ")\n")
                         .append("        .baseLink(" + GenUtil.stringToJava(checkButtons.getBaseLink()) + ")\n")
+                        .append("        .linkField(" + GenUtil.stringToJava(checkButtons.getLinkField()) + ")\n")
                         .append("        .required(" + checkButtons.isRequired() + ")\n")
                         .append("        .readOnly(" + checkButtons.isReadOnly() + ")\n")
                         .append("        .hidden(" + checkButtons.isHidden() + ")\n")
@@ -259,11 +263,13 @@ public class FieldFactory {
                         .append("      " + StringUtil.toJavaObjectName(input.getName()) + " = Input." + getGenerics(input.getDataType()) + "builder()\n")
                         .append("        .name(_" + StringUtil.toJavaConstantName(input.getName()) + ")\n")
                         .append("        .alias(" + GenUtil.stringToJava(input.getAlias()) + ")\n")
+                        .append("        .orderByAlias(" + GenUtil.stringToJava(input.getOrderByAlias()) + ")\n")
                         .append("        .description(" + GenUtil.stringToJava(input.getDescription()) + ")\n")
                         .append("        .tooltip(" + GenUtil.stringToJava(input.getTooltip()) + ")\n")
                         .append("        .dataType(" + (input.getDataType() == null ? "null" : "DataTypes." + input.getDataType()) + ")\n")
                         .append("        .format(" + GenUtil.stringToJava(input.getFormat()) + ")\n")
                         .append("        .baseLink(" + GenUtil.stringToJava(input.getBaseLink()) + ")\n")
+                        .append("        .linkField(" + GenUtil.stringToJava(input.getLinkField()) + ")\n")
                         .append("        .required(" + input.isRequired() + ")\n")
                         .append("        .readOnly(" + input.isReadOnly() + ")\n")
                         .append("        .hidden(" + input.isHidden() + ")\n")
@@ -280,11 +286,13 @@ public class FieldFactory {
                         .append("      " + StringUtil.toJavaObjectName(comboBox.getName()) + " = ComboBox." + getGenerics(comboBox.getDataType()) + "builder()\n")
                         .append("        .name(_" + StringUtil.toJavaConstantName(comboBox.getName()) + ")\n")
                         .append("        .alias(" + GenUtil.stringToJava(comboBox.getAlias()) + ")\n")
+                        .append("        .orderByAlias(" + GenUtil.stringToJava(comboBox.getOrderByAlias()) + ")\n")
                         .append("        .description(" + GenUtil.stringToJava(comboBox.getDescription()) + ")\n")
                         .append("        .tooltip(" + GenUtil.stringToJava(comboBox.getTooltip()) + ")\n")
                         .append("        .dataType(" + (comboBox.getDataType() == null ? "null" : "DataTypes." + comboBox.getDataType()) + ")\n")
                         .append("        .format(" + GenUtil.stringToJava(comboBox.getFormat()) + ")\n")
                         .append("        .baseLink(" + GenUtil.stringToJava(comboBox.getBaseLink()) + ")\n")
+                        .append("        .linkField(" + GenUtil.stringToJava(comboBox.getLinkField()) + ")\n")
                         .append("        .required(" + comboBox.isRequired() + ")\n")
                         .append("        .readOnly(" + comboBox.isReadOnly() + ")\n")
                         .append("        .hidden(" + comboBox.isHidden() + ")\n")
@@ -299,36 +307,19 @@ public class FieldFactory {
                         .append("      " + StringUtil.toJavaObjectName(autoComplete.getName()) + " = AutoComplete." + getGenerics(autoComplete.getDataType()) + "builder()\n")
                         .append("        .name(_" + StringUtil.toJavaConstantName(autoComplete.getName()) + ")\n")
                         .append("        .alias(" + GenUtil.stringToJava(autoComplete.getAlias()) + ")\n")
-                        .append("        .decodeAlias(" + GenUtil.stringToJava(autoComplete.getDecodeAlias()) + ")\n")
+                        .append("        .orderByAlias(" + GenUtil.stringToJava(autoComplete.getOrderByAlias()) + ")\n")
                         .append("        .description(" + GenUtil.stringToJava(autoComplete.getDescription()) + ")\n")
                         .append("        .tooltip(" + GenUtil.stringToJava(autoComplete.getTooltip()) + ")\n")
                         .append("        .dataType(" + (autoComplete.getDataType() == null ? "null" : "DataTypes." + autoComplete.getDataType()) + ")\n")
                         .append("        .format(" + GenUtil.stringToJava(autoComplete.getFormat()) + ")\n")
                         .append("        .baseLink(" + GenUtil.stringToJava(autoComplete.getBaseLink()) + ")\n")
+                        .append("        .linkField(" + GenUtil.stringToJava(autoComplete.getLinkField()) + ")\n")
                         .append("        .required(" + autoComplete.isRequired() + ")\n")
                         .append("        .readOnly(" + autoComplete.isReadOnly() + ")\n")
                         .append("        .hidden(" + autoComplete.isHidden() + ")\n")
                         .append("        .viewModality(" + decodeViewModality(autoComplete.getViewModality()) + ")\n")
-                        .append("        .sizeLimit(" + autoComplete.getSizeLimit() + ")\n")
                         .append("        .build();\n")
                         .append("      addChild(" + StringUtil.toJavaObjectName(autoComplete.getName()) + ");\n");
-
-            } else if (element instanceof MultipleAutoComplete) {
-                MultipleAutoComplete multipleAutoComplete = (MultipleAutoComplete) element;
-                stringBuilder
-                        .append("      addChild(" + StringUtil.toJavaObjectName(multipleAutoComplete.getName()) + " = new MultipleAutoComplete" + getListGenerics(multipleAutoComplete.getDataType()) + " (" + "_")
-                        .append(StringUtil.toJavaConstantName(multipleAutoComplete.getName()) + ", ")
-                        .append((multipleAutoComplete.getAlias() == null ? "null" : " \"" + multipleAutoComplete.getAlias() + "\"") + ", ")
-                        .append((multipleAutoComplete.getDecodeAlias() == null ? "null" : " \"" + multipleAutoComplete.getDecodeAlias() + "\"") + ", ")
-                        .append((multipleAutoComplete.getDescription() == null ? "null" : " \"" + multipleAutoComplete.getDescription() + "\"") + ", ")
-                        .append((multipleAutoComplete.getTooltip() == null ? "null" : " \"" + multipleAutoComplete.getTooltip() + "\"") + ", ")
-                        .append((multipleAutoComplete.getDataType() == null ? "null" : " DataTypes." + multipleAutoComplete.getDataType()) + ", ")
-                        .append((multipleAutoComplete.getFormat() == null ? "null" : " \"" + multipleAutoComplete.getFormat() + "\"") + ", ")
-                        .append((multipleAutoComplete.getBaseLink() == null ? "null" : " \"" + multipleAutoComplete.getBaseLink() + "\"") + ", ")
-                        .append(multipleAutoComplete.isRequired() + ", ")
-                        .append(multipleAutoComplete.isReadOnly() + ", ")
-                        .append(multipleAutoComplete.isHidden() + ", ")
-                        .append(decodeViewModality(multipleAutoComplete.getViewModality()) + "));\n");
 
             } else if (element instanceof CheckBox) {
                 CheckBox checkBox = (CheckBox) element;
@@ -337,11 +328,13 @@ public class FieldFactory {
                         .append("      " + StringUtil.toJavaObjectName(checkBox.getName()) + " = CheckBox." + getGenerics(checkBox.getDataType()) + "builder()\n")
                         .append("        .name(_" + StringUtil.toJavaConstantName(checkBox.getName()) + ")\n")
                         .append("        .alias(" + GenUtil.stringToJava(checkBox.getAlias()) + ")\n")
+                        .append("        .orderByAlias(" + GenUtil.stringToJava(checkBox.getOrderByAlias()) + ")\n")
                         .append("        .description(" + GenUtil.stringToJava(checkBox.getDescription()) + ")\n")
                         .append("        .tooltip(" + GenUtil.stringToJava(checkBox.getTooltip()) + ")\n")
                         .append("        .dataType(" + (checkBox.getDataType() == null ? "null" : "DataTypes." + checkBox.getDataType()) + ")\n")
                         .append("        .format(" + GenUtil.stringToJava(checkBox.getFormat()) + ")\n")
                         .append("        .baseLink(" + GenUtil.stringToJava(checkBox.getBaseLink()) + ")\n")
+                        .append("        .linkField(" + GenUtil.stringToJava(checkBox.getLinkField()) + ")\n")
                         .append("        .required(" + checkBox.isRequired() + ")\n")
                         .append("        .readOnly(" + checkBox.isReadOnly() + ")\n")
                         .append("        .hidden(" + checkBox.isHidden() + ")\n")
@@ -358,17 +351,39 @@ public class FieldFactory {
                         .append("      " + StringUtil.toJavaObjectName(radioGroup.getName()) + " = RadioGroup." + getGenerics(radioGroup.getDataType()) + "builder()\n")
                         .append("        .name(_" + StringUtil.toJavaConstantName(radioGroup.getName()) + ")\n")
                         .append("        .alias(" + GenUtil.stringToJava(radioGroup.getAlias()) + ")\n")
+                        .append("        .orderByAlias(" + GenUtil.stringToJava(radioGroup.getOrderByAlias()) + ")\n")
                         .append("        .description(" + GenUtil.stringToJava(radioGroup.getDescription()) + ")\n")
                         .append("        .tooltip(" + GenUtil.stringToJava(radioGroup.getTooltip()) + ")\n")
                         .append("        .dataType(" + (radioGroup.getDataType() == null ? "null" : "DataTypes." + radioGroup.getDataType()) + ")\n")
                         .append("        .format(" + GenUtil.stringToJava(radioGroup.getFormat()) + ")\n")
                         .append("        .baseLink(" + GenUtil.stringToJava(radioGroup.getBaseLink()) + ")\n")
+                        .append("        .linkField(" + GenUtil.stringToJava(radioGroup.getLinkField()) + ")\n")
                         .append("        .required(" + radioGroup.isRequired() + ")\n")
                         .append("        .readOnly(" + radioGroup.isReadOnly() + ")\n")
                         .append("        .hidden(" + radioGroup.isHidden() + ")\n")
                         .append("        .viewModality(" + decodeViewModality(radioGroup.getViewModality()) + ")\n")
                         .append("        .build();\n")
                         .append("      addChild(" + StringUtil.toJavaObjectName(radioGroup.getName()) + ");\n");
+            } else if (element instanceof RadioButtons) {
+                RadioButtons radioButtons = (RadioButtons) element;
+                stringBuilder
+                        .append("\n")
+                        .append("      " + StringUtil.toJavaObjectName(radioButtons.getName()) + " = RadioButtons." + getGenerics(radioButtons.getDataType()) + "builder()\n")
+                        .append("        .name(_" + StringUtil.toJavaConstantName(radioButtons.getName()) + ")\n")
+                        .append("        .alias(" + GenUtil.stringToJava(radioButtons.getAlias()) + ")\n")
+                        .append("        .orderByAlias(" + GenUtil.stringToJava(radioButtons.getOrderByAlias()) + ")\n")
+                        .append("        .description(" + GenUtil.stringToJava(radioButtons.getDescription()) + ")\n")
+                        .append("        .tooltip(" + GenUtil.stringToJava(radioButtons.getTooltip()) + ")\n")
+                        .append("        .dataType(" + (radioButtons.getDataType() == null ? "null" : "DataTypes." + radioButtons.getDataType()) + ")\n")
+                        .append("        .format(" + GenUtil.stringToJava(radioButtons.getFormat()) + ")\n")
+                        .append("        .baseLink(" + GenUtil.stringToJava(radioButtons.getBaseLink()) + ")\n")
+                        .append("        .linkField(" + GenUtil.stringToJava(radioButtons.getLinkField()) + ")\n")
+                        .append("        .required(" + radioButtons.isRequired() + ")\n")
+                        .append("        .readOnly(" + radioButtons.isReadOnly() + ")\n")
+                        .append("        .hidden(" + radioButtons.isHidden() + ")\n")
+                        .append("        .viewModality(" + decodeViewModality(radioButtons.getViewModality()) + ")\n")
+                        .append("        .build();\n")
+                        .append("      addChild(" + StringUtil.toJavaObjectName(radioButtons.getName()) + ");\n");
 
             } else if (element instanceof Semaphore) {
                 Semaphore semaphore = (Semaphore) element;
@@ -377,34 +392,37 @@ public class FieldFactory {
                         .append("      " + StringUtil.toJavaObjectName(semaphore.getName()) + " = Semaphore." + getGenerics(semaphore.getDataType()) + "builder()\n")
                         .append("        .name(_" + StringUtil.toJavaConstantName(semaphore.getName()) + ")\n")
                         .append("        .alias(" + GenUtil.stringToJava(semaphore.getAlias()) + ")\n")
+                        .append("        .orderByAlias(" + GenUtil.stringToJava(semaphore.getOrderByAlias()) + ")\n")
                         .append("        .description(" + GenUtil.stringToJava(semaphore.getDescription()) + ")\n")
                         .append("        .tooltip(" + GenUtil.stringToJava(semaphore.getTooltip()) + ")\n")
                         .append("        .dataType(" + (semaphore.getDataType() == null ? "null" : "DataTypes." + semaphore.getDataType()) + ")\n")
                         .append("        .format(" + GenUtil.stringToJava(semaphore.getFormat()) + ")\n")
                         .append("        .baseLink(" + GenUtil.stringToJava(semaphore.getBaseLink()) + ")\n")
+                        .append("        .linkField(" + GenUtil.stringToJava(semaphore.getLinkField()) + ")\n")
                         .append("        .required(" + semaphore.isRequired() + ")\n")
                         .append("        .readOnly(" + semaphore.isReadOnly() + ")\n")
                         .append("        .hidden(" + semaphore.isHidden() + ")\n")
                         .append("        .viewModality(" + decodeViewModality(semaphore.getViewModality()) + ")\n")
+                        .append("        .full(" + semaphore.isFull() + ")\n")
                         .append("        .build();\n")
                         .append("      addChild(" + StringUtil.toJavaObjectName(semaphore.getName()) + ");\n");
 
             } else if (element instanceof Link) {
-                Link button = (Link) element;
+                Link link = (Link) element;
                 stringBuilder
                         .append("\n")
-                        .append("      " + StringUtil.toJavaObjectName(button.getName()) + " = Link.builder()\n")
-                        .append("        .name(_" + StringUtil.toJavaConstantName(button.getName()) + ")\n")
-                        .append("        .description(" + GenUtil.stringToJava(button.getDescription()) + ")\n")
-                        .append("        .tooltip(" + GenUtil.stringToJava(button.getTooltip()) + ")\n")
-                        .append("        .hidden(" + GenUtil.booleanToJava(button.isHidden()) + ")\n")
-                        .append("        .disabled(" + GenUtil.booleanToJava(button.isDisabled()) + ")\n")
-                        .append("        .buttonType(" + (button.getType() == null ? "null" : "ButtonType." + button.getType()) + ")\n")
-                        .append("        .imgHtml(" + GenUtil.stringToJava(button.getImgHtml()) + ")\n")
-                        .append("        .href(" + GenUtil.stringToJava(button.getHref()) + ")\n")
-                        .append("        .target(" + GenUtil.stringToJava(button.getTarget()) + ")\n")
+                        .append("      " + StringUtil.toJavaObjectName(link.getName()) + " = Link.builder()\n")
+                        .append("        .name(_" + StringUtil.toJavaConstantName(link.getName()) + ")\n")
+                        .append("        .description(" + GenUtil.stringToJava(link.getDescription()) + ")\n")
+                        .append("        .tooltip(" + GenUtil.stringToJava(link.getTooltip()) + ")\n")
+                        .append("        .hidden(" + GenUtil.booleanToJava(link.isHidden()) + ")\n")
+                        .append("        .disabled(" + GenUtil.booleanToJava(link.isDisabled()) + ")\n")
+                        .append("        .buttonType(" + (link.getType() == null ? "null" : "ButtonType." + link.getType()) + ")\n")
+                        .append("        .imgHtml(" + GenUtil.stringToJava(link.getImgHtml()) + ")\n")
+                        .append("        .href(" + GenUtil.stringToJava(link.getHref()) + ")\n")
+                        .append("        .target(" + GenUtil.stringToJava(link.getTarget()) + ")\n")
                         .append("        .build();\n")
-                        .append("      addChild(" + StringUtil.toJavaObjectName(button.getName()) + ");\n");
+                        .append("      addChild(" + StringUtil.toJavaObjectName(link.getName()) + ");\n");
 
             } else if (element instanceof Button) {
                 Button button = (Button) element;
@@ -418,6 +436,7 @@ public class FieldFactory {
                         .append("        .disabled(" + GenUtil.booleanToJava(button.isDisabled()) + ")\n")
                         .append("        .buttonType(" + (button.getType() == null ? "null" : "ButtonType." + button.getType()) + ")\n")
                         .append("        .imgHtml(" + GenUtil.stringToJava(button.getImgHtml()) + ")\n")
+                        .append("        .confirmMessage(" + GenUtil.stringToJava(button.getConfirmMessage()) + ")\n")
                         .append("        .build();\n")
                         .append("      addChild(" + StringUtil.toJavaObjectName(button.getName()) + ");\n");
 
@@ -482,11 +501,13 @@ public class FieldFactory {
                         .append("      " + StringUtil.toJavaObjectName(element.getName()) + " = Labels." + getGenerics(labels.getDataType()) + "builder()\n")
                         .append("        .name(_" + StringUtil.toJavaConstantName(labels.getName()) + ")\n")
                         .append("        .alias(" + GenUtil.stringToJava(labels.getAlias()) + ")\n")
+                        .append("        .orderByAlias(" + GenUtil.stringToJava(labels.getOrderByAlias()) + ")\n")
                         .append("        .description(" + GenUtil.stringToJava(labels.getDescription()) + ")\n")
                         .append("        .tooltip(" + GenUtil.stringToJava(labels.getTooltip()) + ")\n")
                         .append("        .dataType(" + (labels.getDataType() == null ? "null" : "DataTypes." + labels.getDataType()) + ")\n")
                         .append("        .format(" + GenUtil.stringToJava(labels.getFormat()) + ")\n")
                         .append("        .baseLink(" + GenUtil.stringToJava(labels.getBaseLink()) + ")\n")
+                        .append("        .linkField(" + GenUtil.stringToJava(labels.getLinkField()) + ")\n")
                         .append("        .rotation(" + labels.getRotation() + ")\n")
                         .append("        .build();\n")
                         .append("      addChild(" + StringUtil.toJavaObjectName(labels.getName()) + ");\n");
@@ -498,25 +519,32 @@ public class FieldFactory {
                         .append("      " + StringUtil.toJavaObjectName(element.getName()) + " = Series." + getGenerics(series.getDataType()) + "builder()\n")
                         .append("        .name(_" + StringUtil.toJavaConstantName(series.getName()) + ")\n")
                         .append("        .alias(" + GenUtil.stringToJava(series.getAlias()) + ")\n")
+                        .append("        .orderByAlias(" + GenUtil.stringToJava(series.getOrderByAlias()) + ")\n")
                         .append("        .description(" + GenUtil.stringToJava(series.getDescription()) + ")\n")
                         .append("        .tooltip(" + GenUtil.stringToJava(series.getTooltip()) + ")\n")
                         .append("        .dataType(" + (series.getDataType() == null ? "null" : "DataTypes." + series.getDataType()) + ")\n")
                         .append("        .format(" + GenUtil.stringToJava(series.getFormat()) + ")\n")
                         .append("        .baseLink(" + GenUtil.stringToJava(series.getBaseLink()) + ")\n")
+                        .append("        .linkField(" + GenUtil.stringToJava(series.getLinkField()) + ")\n")
                         .append("        .build();\n")
                         .append("      addChild(" + StringUtil.toJavaObjectName(series.getName()) + ");\n");
 
             } else if (element instanceof DecodedText) {
                 DecodedText decodedText = (DecodedText) element;
                 stringBuilder
-                        .append("      addChild(" + StringUtil.toJavaObjectName(decodedText.getName()) + " = new DecodedText" + getGenerics(decodedText.getDataType()) + " (" + "_")
-                        .append(StringUtil.toJavaConstantName(decodedText.getName()) + ", ")
-                        .append((decodedText.getAlias() == null ? "null" : " \"" + decodedText.getAlias() + "\"") + ", ")
-                        .append((decodedText.getDescription() == null ? "null" : " \"" + decodedText.getDescription() + "\"") + ", ")
-                        .append((decodedText.getTooltip() == null ? "null" : " \"" + decodedText.getTooltip() + "\"") + ", ")
-                        .append((decodedText.getDataType() == null ? "null" : " DataTypes." + decodedText.getDataType()) + ", ")
-                        .append((decodedText.getFormat() == null ? "null" : " \"" + decodedText.getFormat() + "\"") + ", ")
-                        .append((decodedText.getBaseLink() == null ? "null" : " \"" + decodedText.getBaseLink() + "\"") + "));\n");
+                        .append("\n")
+                        .append("      " + StringUtil.toJavaObjectName(decodedText.getName()) + " = DecodedText." + getGenerics(decodedText.getDataType()) + "builder()\n")
+                        .append("        .name(_" + StringUtil.toJavaConstantName(decodedText.getName()) + ")\n")
+                        .append("        .alias(" + GenUtil.stringToJava(decodedText.getAlias()) + ")\n")
+                        .append("        .orderByAlias(" + GenUtil.stringToJava(decodedText.getOrderByAlias()) + ")\n")
+                        .append("        .description(" + GenUtil.stringToJava(decodedText.getDescription()) + ")\n")
+                        .append("        .tooltip(" + GenUtil.stringToJava(decodedText.getTooltip()) + ")\n")
+                        .append("        .dataType(" + (decodedText.getDataType() == null ? "null" : "DataTypes." + decodedText.getDataType()) + ")\n")
+                        .append("        .format(" + GenUtil.stringToJava(decodedText.getFormat()) + ")\n")
+                        .append("        .baseLink(" + GenUtil.stringToJava(decodedText.getBaseLink()) + ")\n")
+                        .append("        .linkField(" + GenUtil.stringToJava(decodedText.getLinkField()) + ")\n")
+                        .append("        .build();\n")
+                        .append("      addChild(" + StringUtil.toJavaObjectName(decodedText.getName()) + ");\n");
             }
 
         }
