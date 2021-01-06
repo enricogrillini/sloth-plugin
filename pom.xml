@@ -23,6 +23,14 @@
         <lombok.version>1.18.14</lombok.version>
         <oracle.version>19.7.0.0</oracle.version>
     </properties>
+	
+	<distributionManagement>
+        <repository>
+            <id>github-sloth-plugin</id>
+            <name>GitHub enricogrillini Apache Maven Packages</name>
+            <url>https://maven.pkg.github.com/enricogrillini/sloth-plugin</url>
+        </repository>
+    </distributionManagement>
 
     <dependencies>
         <!-- SlothFramework -->
