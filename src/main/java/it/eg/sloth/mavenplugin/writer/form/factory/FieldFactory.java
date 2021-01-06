@@ -100,6 +100,13 @@ public class FieldFactory {
             return "ViewModality.VIEW_MODIFICA";
     }
 
+    public static String decodeForceCase(ForceCase forceCase) {
+        if (forceCase == null)
+            return "null";
+        else
+            return "ForceCase." + forceCase;
+    }
+
     private static String getGenerics(DataType dataType) {
         if (dataType == null)
             return "";
@@ -187,7 +194,7 @@ public class FieldFactory {
                         .append("        .hidden(" + textArea.isHidden() + ")\n")
                         .append("        .viewModality(" + decodeViewModality(textArea.getViewModality()) + ")\n")
                         .append("        .maxLength(" + textArea.getMaxLength() + ")\n")
-                        .append("        .forceCase(" + textArea.getForceCase() + ")\n")
+                        .append("        .forceCase(" + decodeForceCase(textArea.getForceCase()) + ")\n")
                         .append("        .build();\n")
                         .append("      addChild(" + StringUtil.toJavaObjectName(textArea.getName()) + ");\n");
 
@@ -228,7 +235,7 @@ public class FieldFactory {
                         .append("        .hidden(" + inputTotalizer.isHidden() + ")\n")
                         .append("        .viewModality(" + decodeViewModality(inputTotalizer.getViewModality()) + ")\n")
                         .append("        .maxLength(" + inputTotalizer.getMaxLength() + ")\n")
-                        .append("        .forceCase(" + inputTotalizer.getForceCase() + ")\n")
+                        .append("        .forceCase(" + decodeForceCase(inputTotalizer.getForceCase()) + ")\n")
                         .append("        .build();\n")
                         .append("      addChild(" + StringUtil.toJavaObjectName(inputTotalizer.getName()) + ");\n");
 
@@ -275,7 +282,7 @@ public class FieldFactory {
                         .append("        .hidden(" + input.isHidden() + ")\n")
                         .append("        .viewModality(" + decodeViewModality(input.getViewModality()) + ")\n")
                         .append("        .maxLength(" + input.getMaxLength() + ")\n")
-                        .append("        .forceCase(" + input.getForceCase() + ")\n")
+                        .append("        .forceCase(" + decodeForceCase(input.getForceCase()) + ")\n")
                         .append("        .build();\n")
                         .append("      addChild(" + StringUtil.toJavaObjectName(input.getName()) + ");\n");
 
