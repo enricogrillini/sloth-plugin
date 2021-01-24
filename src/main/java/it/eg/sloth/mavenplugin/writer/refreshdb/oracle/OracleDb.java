@@ -397,7 +397,6 @@ public class OracleDb extends AbstractDb {
         }
     }
 
-
     private String getTipoColonna(String dataType, BigDecimal dataPrecision, BigDecimal dataScale, BigDecimal dataLength) {
         dataType = dataType.trim();
         dataPrecision = BaseFunction.nvl(dataPrecision, new BigDecimal(0));
