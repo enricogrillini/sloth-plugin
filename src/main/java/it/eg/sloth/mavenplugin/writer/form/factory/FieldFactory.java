@@ -213,6 +213,7 @@ public class FieldFactory {
                         .append("        .baseLink(" + GenUtil.stringToJava(hidden.getBaseLink()) + ")\n")
                         .append("        .linkField(" + GenUtil.stringToJava(hidden.getLinkField()) + ")\n")
                         .append("        .required(" + hidden.isRequired() + ")\n")
+                        .append("        .readOnly(" + hidden.isReadOnly() + ")\n")
                         .append("        .build();\n")
                         .append("      addChild(" + StringUtil.toJavaObjectName(hidden.getName()) + ");\n");
 
