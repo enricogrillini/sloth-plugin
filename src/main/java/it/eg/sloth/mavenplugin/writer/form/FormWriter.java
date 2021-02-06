@@ -32,7 +32,6 @@ import it.eg.sloth.mavenplugin.common.files.ExtensionFilter;
 import it.eg.sloth.mavenplugin.writer.form.factory.ChartFactory;
 import it.eg.sloth.mavenplugin.writer.form.factory.FieldsFactory;
 import it.eg.sloth.mavenplugin.writer.form.factory.GridFactory;
-import it.eg.sloth.mavenplugin.writer.form.factory.RollupFactory;
 import it.eg.sloth.mavenplugin.writer.form.factory.SkipperFactory;
 import it.eg.sloth.mavenplugin.writer.form.factory.TabSheetFactory;
 import it.eg.sloth.mavenplugin.writer.form.model.FormProperties;
@@ -170,30 +169,27 @@ public class FormWriter {
                 .append("import " + genPackage + ".bean.viewbean.*;\n")
                 .append("\n")
                 .append("import it.eg.sloth.framework.common.casting.DataTypes;\n")
-                .append(" import it.eg.sloth.db.datasource.DataSource;\n")
+                .append("import it.eg.sloth.db.datasource.DataSource;\n")
                 .append("import it.eg.sloth.db.datasource.DataTable;\n")
                 .append("import it.eg.sloth.form.Form;\n")
                 .append("import it.eg.sloth.framework.pageinfo.ViewModality;\n")
                 .append("import it.eg.sloth.form.fields.Fields;\n")
                 .append("import it.eg.sloth.form.fields.field.SimpleField;\n")
-                .append("import it.eg.sloth.form.dwh.rollup.Rollup;\n")
-                .append("import it.eg.sloth.form.dwh.Attribute;\n")
-                .append("import it.eg.sloth.form.dwh.Level;\n")
-                .append("import it.eg.sloth.form.dwh.Measure;\n")
                 .append("import it.eg.sloth.form.base.Element;\n")
                 .append("import it.eg.sloth.form.chart.SimpleChart;\n")
                 .append("import it.eg.sloth.form.chart.element.Series;\n")
                 .append("import it.eg.sloth.form.chart.element.Labels;\n")
                 .append("import it.eg.sloth.form.fields.field.impl.*;\n")
-                .append("import it.eg.sloth.jaxb.form.LegendPosition;\n")
                 .append("import it.eg.sloth.form.skipper.Skipper;\n")
                 .append("import it.eg.sloth.form.tabsheet.Tab;\n")
                 .append("import it.eg.sloth.form.tabsheet.TabSheet;\n")
                 .append("import it.eg.sloth.form.grid.Grid;\n")
-                .append("import it.eg.sloth.jaxb.form.DataType;\n")
+                .append("import it.eg.sloth.form.pivot.*;\n")
                 .append("import it.eg.sloth.jaxb.form.ForceCase;\n")
                 .append("import it.eg.sloth.jaxb.form.ButtonType;\n")
                 .append("import it.eg.sloth.jaxb.form.ChartType;\n")
+                .append("import it.eg.sloth.jaxb.form.ConsolidateFunction;\n")
+                .append("import it.eg.sloth.jaxb.form.LegendPosition;\n")
                 .append("\n")
                 .append("public class " + formProperties.getFormClassName() + " extends Form {\n")
                 .append("\n")
@@ -223,7 +219,6 @@ public class FormWriter {
         // SubClass
         FieldsFactory.write(stringBuilder, form.getFieldsOrGridOrTabSheet());
         GridFactory.write(stringBuilder, form.getFieldsOrGridOrTabSheet());
-        RollupFactory.write(stringBuilder, form.getFieldsOrGridOrTabSheet());
         TabSheetFactory.write(stringBuilder, form.getFieldsOrGridOrTabSheet());
         SkipperFactory.write(stringBuilder, form.getFieldsOrGridOrTabSheet());
         ChartFactory.write(stringBuilder, form.getFieldsOrGridOrTabSheet());

@@ -109,11 +109,11 @@ public class PackageBeanWriter {
             if (dbMethod.getType() == MethodType.FUNCTION) {
                 Argument dbArgument = dbMethod.getArguments().getArgument().get(0);
                 stringBuilder.append("  public static " + OracleUtil.getJavaClass(dbArgument.getType()) + " " + dbMethod.getName() + " (Connection connection");
-                stringBuilder.append(parameterList2 == "" ? "" : ", " + parameterList2);
+                stringBuilder.append(parameterList2.equals("") ? "" : ", " + parameterList2);
                 stringBuilder.append(") throws SQLException {\n");
             } else {
                 stringBuilder.append("  public static void " + dbMethod.getName() + " (Connection connection");
-                stringBuilder.append(parameterList2 == "" ? "" : ", " + parameterList2);
+                stringBuilder.append(parameterList2.equals("") ? "" : ", " + parameterList2);
                 stringBuilder.append(") throws SQLException {\n");
             }
 

@@ -20,12 +20,11 @@ import it.eg.sloth.jaxb.form.Fields;
  * You should have received a copy of the GNU General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @author Enrico Grillini
- *
  */
 public class FieldsFactory {
 
     private FieldsFactory() {
-        // nothing
+        // NOP
     }
 
     public static void write(StringBuilder stringBuilder, List<Element> elements) throws IOException {
@@ -36,18 +35,18 @@ public class FieldsFactory {
         }
     }
 
-    private static void write(StringBuilder stringBuilder, Fields fields) throws IOException {
+    private static void write(StringBuilder stringBuilder, Fields fields) {
         String className = StringUtil.toJavaClassName(fields.getName());
-        
+
         stringBuilder.append("  public static class " + className + " extends Fields<DataSource> {\n");
         stringBuilder.append("    \n");
         stringBuilder.append("    public final static String NAME = \"" + fields.getName() + "\";\n");
         stringBuilder.append("  \n");
 
         // Costanti e variabili
-        FieldFactory.writeFieldsCostanti(stringBuilder, fields.getTextOrInputOrTextArea());
-        FieldFactory.writeFieldsCostanti2(stringBuilder, fields.getTextOrInputOrTextArea());
-        FieldFactory.writeFieldsVariabili(stringBuilder, fields.getTextOrInputOrTextArea());
+        ElementFactory.writeFieldsCostanti(stringBuilder, fields.getTextOrInputOrTextArea());
+        ElementFactory.writeFieldsCostanti2(stringBuilder, fields.getTextOrInputOrTextArea());
+        ElementFactory.writeFieldsVariabili(stringBuilder, fields.getTextOrInputOrTextArea());
 
         // Costruttore
         stringBuilder.append("\n");
@@ -57,7 +56,7 @@ public class FieldsFactory {
         stringBuilder.append("  }\n");
 
         // Getter/Setter
-        FieldFactory.writeFieldsGetter(stringBuilder, fields.getTextOrInputOrTextArea());
+        ElementFactory.writeGetter(stringBuilder, fields.getTextOrInputOrTextArea());
 
         stringBuilder.append("  }\n");
         stringBuilder.append("\n");
