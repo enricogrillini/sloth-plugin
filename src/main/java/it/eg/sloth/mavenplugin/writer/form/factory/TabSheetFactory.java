@@ -6,6 +6,7 @@ import it.eg.sloth.framework.common.base.StringUtil;
 import it.eg.sloth.jaxb.form.Element;
 import it.eg.sloth.jaxb.form.Tab;
 import it.eg.sloth.jaxb.form.TabSheet;
+import it.eg.sloth.mavenplugin.common.GenUtil;
 
 /**
  * Project: sloth-plugin
@@ -20,7 +21,6 @@ import it.eg.sloth.jaxb.form.TabSheet;
  * You should have received a copy of the GNU General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @author Enrico Grillini
- *
  */
 public class TabSheetFactory {
     private TabSheetFactory() {
@@ -66,12 +66,18 @@ public class TabSheetFactory {
         stringBuilder.append("      super(NAME);\n");
 
         for (Tab tab : tabs) {
-            stringBuilder.append("      addChild(" + StringUtil.toJavaObjectName(tab.getName()) + " = new Tab(");
-            stringBuilder.append("_" + StringUtil.toJavaConstantName(tab.getName()) + ", ");
-            stringBuilder.append((tab.getDescription() == null ? "null" : " \"" + tab.getDescription() + "\"") + ", ");
-            stringBuilder.append((tab.getToolTip() == null ? "null" : " \"" + tab.getToolTip() + "\"") + ", ");
-            stringBuilder.append(tab.isHidden() + ", ");
-            stringBuilder.append(tab.isHidden() + "));\n");
+            stringBuilder
+                    .append("      " + StringUtil.toJavaObjectName(tab.getName()) + " = Tab.builder()\n")
+                    .append("        .name(_" + StringUtil.toJavaConstantName(tab.getName()) + ")\n")
+                    .append("        .description(" + GenUtil.stringToJava(tab.getDescription()) + ")\n")
+                    .append("        .tooltip(" + GenUtil.stringToJava(tab.getToolTip()) + ")\n")
+                    .append("        .hidden(" + tab.isHidden() + ")\n")
+                    .append("        .disabled(" + tab.isDisabled() + ")\n")
+                    .append("        .badgeHtml(" + GenUtil.stringToJava(tab.getBadgeHtml()) + ")\n")
+                    .append("        .badgeType(" + (tab.getBadgeType() == null ? "null" : "BadgeType." + tab.getBadgeType()) + ")\n")
+                    .append("        .build();\n")
+                    .append("      addChild(" + StringUtil.toJavaObjectName(tab.getName()) + ");\n")
+                    .append("\n");
         }
 
         stringBuilder.append("    }\n");
