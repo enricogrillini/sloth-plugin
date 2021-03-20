@@ -54,9 +54,9 @@ public class ChartFactory {
         // Costanti e variabili
         List<Element> elementList = new ArrayList<>(simpleChart.getSeries());
         elementList.add(simpleChart.getLabels());
-        FieldFactory.writeFieldsCostanti(stringBuilder, elementList);
-        FieldFactory.writeFieldsCostanti2(stringBuilder, elementList);
-        FieldFactory.writeFieldsVariabili(stringBuilder, elementList);
+        ElementFactory.writeFieldsCostanti(stringBuilder, elementList);
+        ElementFactory.writeFieldsCostanti2(stringBuilder, elementList);
+        ElementFactory.writeFieldsVariabili(stringBuilder, elementList);
 
         // Costruttore
         String title = simpleChart.getTitle() == null ? "null" : "\"" + simpleChart.getTitle() + "\"";
@@ -72,7 +72,7 @@ public class ChartFactory {
         stringBuilder.append("  }\n");
 
         // Getter/Setter
-        FieldFactory.writeFieldsGetter(stringBuilder, elementList);
+        ElementFactory.writeGetter(stringBuilder, elementList);
 
         stringBuilder.append("  }\n");
         stringBuilder.append("\n");

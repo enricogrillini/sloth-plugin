@@ -38,7 +38,7 @@ public class GridFactory {
     }
   }
 
-  public static void write(StringBuilder stringBuilder, Grid grid) throws IOException {
+  private static void write(StringBuilder stringBuilder, Grid grid) throws IOException {
     String className = StringUtil.toJavaClassName(grid.getName());
 
     String dataTable = "<DataTable<?>>";
@@ -55,9 +55,9 @@ public class GridFactory {
     stringBuilder.append("\n");
 
     // Costanti e variabili
-    FieldFactory.writeFieldsCostanti(stringBuilder, grid.getTextOrInputOrTextArea());
-    FieldFactory.writeFieldsCostanti2(stringBuilder, grid.getTextOrInputOrTextArea());
-    FieldFactory.writeFieldsVariabili(stringBuilder, grid.getTextOrInputOrTextArea());
+    ElementFactory.writeFieldsCostanti(stringBuilder, grid.getTextOrInputOrTextArea());
+    ElementFactory.writeFieldsCostanti2(stringBuilder, grid.getTextOrInputOrTextArea());
+    ElementFactory.writeFieldsVariabili(stringBuilder, grid.getTextOrInputOrTextArea());
 
     // Costruttore
     String description = grid.getDescription() == null ? "null" : "\"" + grid.getDescription() + "\"";
@@ -84,10 +84,12 @@ public class GridFactory {
                          grid.isRollbackButtonHidden() + ");\n");
 
     FieldFactory.writeAddFields(stringBuilder, grid.getTextOrInputOrTextArea());
+
+    PivotFactory.writeAddPivots(stringBuilder, grid.getTextOrInputOrTextArea());
     stringBuilder.append("  }\n");
 
     // Getter/Setter
-    FieldFactory.writeFieldsGetter(stringBuilder, grid.getTextOrInputOrTextArea());
+    ElementFactory.writeGetter(stringBuilder, grid.getTextOrInputOrTextArea());
 
     stringBuilder.append("  }\n");
     stringBuilder.append("\n");
