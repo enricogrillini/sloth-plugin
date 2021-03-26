@@ -10,6 +10,8 @@ import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
 
 import java.io.File;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 
 
 /**
@@ -54,6 +56,8 @@ public class SpringMojo extends AbstractMojo {
 
     @Override
     public void execute() throws MojoExecutionException {
+        Instant start = Instant.now();
+
         getLog().info("------------------------------------------------");
         getLog().info("Sloth: Spring goal");
         getLog().info("  project: " + project);
@@ -63,6 +67,7 @@ public class SpringMojo extends AbstractMojo {
         getLog().info("  outputJavaDirectory: " + outputJavaDirectory);
         getLog().info("  genPackage: " + genPackage);
         getLog().info("------------------------------------------------");
+        getLog().info("Aggiornamento Spring Start");
 
         if (!outputJavaDirectory.exists() && !this.outputJavaDirectory.mkdirs()) {
             getLog().error("Could not create source directory!");
@@ -77,5 +82,7 @@ public class SpringMojo extends AbstractMojo {
                 throw new MojoExecutionException("Could not generate Java source code!", e);
             }
         }
+
+        getLog().info("Aggiornamento Spring End: " + ChronoUnit.MILLIS.between(start, Instant.now()));
     }
 }

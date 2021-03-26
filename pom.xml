@@ -25,8 +25,8 @@
         <h2.version>1.4.200</h2.version>
         <postgresql.version>42.2.18</postgresql.version>
     </properties>
-	
-	<distributionManagement>
+
+    <distributionManagement>
         <repository>
             <id>github-sloth-plugin</id>
             <name>GitHub enricogrillini Apache Maven Packages</name>

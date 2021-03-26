@@ -11,6 +11,8 @@ import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
 
 import java.io.File;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 
 /**
  * Project: sloth-plugin
@@ -51,6 +53,8 @@ public class FormMojo extends AbstractMojo {
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
+        Instant start = Instant.now();
+
         getLog().info("------------------------------------------------------------------------");
         getLog().info("Sloth: Form goal");
         getLog().info("  project: " + project);
@@ -58,6 +62,7 @@ public class FormMojo extends AbstractMojo {
         getLog().info("  outputJavaDirectory: " + outputJavaDirectory);
         getLog().info("  genPackage: " + genPackage);
         getLog().info("------------------------------------------------------------------------");
+        getLog().info("Generazione Form Start");
 
         if (!outputJavaDirectory.exists() && !this.outputJavaDirectory.mkdirs()) {
             getLog().error("Could not create source directory!");
@@ -72,5 +77,7 @@ public class FormMojo extends AbstractMojo {
                 throw new MojoExecutionException("Could not generate Java source code!", e);
             }
         }
+
+        getLog().info("Generazione Form End: " + ChronoUnit.MILLIS.between(start, Instant.now()));
     }
 }

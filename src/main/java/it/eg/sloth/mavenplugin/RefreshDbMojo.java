@@ -24,6 +24,8 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 
 /**
  * Project: sloth-plugin
@@ -62,6 +64,7 @@ public class RefreshDbMojo extends AbstractMojo {
 
     @Override
     public void execute() throws MojoExecutionException {
+        Instant start = Instant.now();
 
         ////////////////
         // REFRESH DB //
@@ -73,7 +76,8 @@ public class RefreshDbMojo extends AbstractMojo {
         getLog().info("  outputJavaDirectory: " + outputJavaDirectory);
         getLog().info("  genPackage: " + genPackage);
         getLog().info("------------------------------------------------------------------------");
-        getLog().info("Aggiornamento schema");
+        getLog().info("Aggiornamento schema Start");
+
 
         try {
             JAXBContext jaxbContext = JAXBContext.newInstance(DbToolProject.class);
@@ -148,5 +152,7 @@ public class RefreshDbMojo extends AbstractMojo {
                 throw new MojoExecutionException("Could not generate Java source code!", e);
             }
         }
+
+        getLog().info("Aggiornamento schema End: " + ChronoUnit.MILLIS.between(start, Instant.now()));
     }
 }

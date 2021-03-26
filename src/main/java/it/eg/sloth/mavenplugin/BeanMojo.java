@@ -10,6 +10,8 @@ import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
 
 import java.io.File;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 
 /**
  * Project: sloth-plugin
@@ -22,11 +24,10 @@ import java.io.File;
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
  * <p>
  * You should have received a copy of the GNU General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
+ * <p>
  * Goal: che crea le classi di configurazione spring
  *
  * @author Enrico Grillini
- *
  */
 @Mojo(name = "bean",
         threadSafe = true,
@@ -49,6 +50,8 @@ public class BeanMojo extends AbstractMojo {
 
     @Override
     public void execute() throws MojoExecutionException {
+        Instant start = Instant.now();
+
         getLog().info("------------------------------------------------------------------------");
         getLog().info("Sloth: Bean goal");
         getLog().info("  project: " + project);
@@ -56,20 +59,19 @@ public class BeanMojo extends AbstractMojo {
         getLog().info("  outputJavaDirectory: " + outputJavaDirectory);
         getLog().info("  genPackage: " + genPackage);
         getLog().info("------------------------------------------------------------------------");
-        getLog().info("Generazione Bean");
+        getLog().info("Generazione Bean Start");
 
         if (!outputJavaDirectory.exists() && !this.outputJavaDirectory.mkdirs()) {
             getLog().error("Could not create source directory!");
         } else {
-
             try {
                 project.addCompileSourceRoot(outputJavaDirectory.getAbsolutePath());
-
                 new BeanWriter(dbSchema, outputJavaDirectory, genPackage, project, getLog()).write();
-
             } catch (Exception e) {
                 throw new MojoExecutionException("Could not generate Java source code!", e);
             }
         }
+
+        getLog().info("Generazione Bean End: " + ChronoUnit.MILLIS.between(start, Instant.now()));
     }
 }
