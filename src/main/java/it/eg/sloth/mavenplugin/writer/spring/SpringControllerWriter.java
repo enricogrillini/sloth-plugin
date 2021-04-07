@@ -16,10 +16,8 @@ import org.apache.maven.project.MavenProject;
 import java.io.File;
 import java.io.IOException;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Locale;
+import java.text.MessageFormat;
+import java.util.*;
 
 /**
  * Project: sloth-plugin
@@ -36,6 +34,33 @@ import java.util.Locale;
  * @author Enrico Grillini
  */
 public class SpringControllerWriter {
+
+    private static final String START_CONTROLLER = "" +
+            "package {0};\n" +
+            "\n" +
+            "import javax.servlet.http.HttpServletRequest;\n" +
+            "import javax.servlet.http.HttpServletResponse;\n" +
+            "\n" +
+            "import org.springframework.web.bind.annotation.RequestMapping;\n" +
+            "import org.springframework.web.servlet.ModelAndView;\n" +
+            "import org.springframework.stereotype.Controller;\n" +
+            "import springfox.documentation.annotations.ApiIgnore;\n" +
+            "import {1}.*;\n" +
+            "\n" +
+            "@Controller\n" +
+            "@ApiIgnore\n" +
+            "public class {2} '{'\n" +
+            "\n";
+
+    private static final String BODY_CONTROLLER = "" +
+            "  @RequestMapping(\"/html/{0}.html\")\n" +
+            "  public ModelAndView handle{0}(HttpServletRequest arg0, HttpServletResponse arg1) throws Exception '{'\n" +
+            "    return new {0}().handleRequest(arg0, arg1);\n" +
+            "  '}'\n" +
+            "\n";
+
+    private static final String END_CONTROLLER = "}\n";
+
 
     File javaDirectory;
     File webappDirectory;
@@ -94,42 +119,41 @@ public class SpringControllerWriter {
         List<JspProperties> jspPropertiesList = scanJsp();
 
         // Controller
-        log.info("Controller: ");
+        log.info("  Controller");
+
+        // Costruisco una mappa che aggregi i controller per package di appartenenza
+        Map<String, List<ControllerProperties>> controllers = new HashMap<>();
         for (ControllerProperties properties : controllerPropertiesList) {
-            log.info("  " + properties.getOutputClassName());
-            writeController(properties);
+            if (!controllers.containsKey(properties.getNewOutputClassName())) {
+                controllers.put(properties.getNewOutputClassName(), new ArrayList<>());
+            }
+
+            controllers.get(properties.getNewOutputClassName()).add(properties);
+        }
+
+        // Scrivo i controller
+        for (List<ControllerProperties> propertiesList : controllers.values()) {
+            writeControllers(propertiesList);
         }
 
         // Constant
-        log.info("Constant");
+        log.info("  Constant");
         writeConstant(controllerPropertiesList, jspPropertiesList);
     }
 
-    public void writeController(ControllerProperties properties) throws IOException {
-        StringBuilder stringBuilder = new StringBuilder()
-                .append("package " + properties.getOutputPackageName() + ";\n")
-                .append("\n")
-                .append("import javax.servlet.http.HttpServletRequest;\n")
-                .append("import javax.servlet.http.HttpServletResponse;\n")
-                .append("\n")
-                .append("import org.springframework.web.bind.annotation.RequestMapping;\n")
-                .append("import org.springframework.web.servlet.ModelAndView;\n")
-                .append("import org.springframework.stereotype.Controller;\n")
-                .append("import springfox.documentation.annotations.ApiIgnore;\n")
-                .append("import " + controllerPackage + properties.getInputRelativePackage() + "." + properties.getInputClassName() + ";\n")
-                .append("\n")
-                .append("@Controller\n")
-                .append("@ApiIgnore\n")
-                .append("public class " + properties.getOutputClassName() + " {\n")
-                .append("  \n")
-                .append("  @RequestMapping(\"/html/" + properties.getInputClassName() + ".html\")\n")
-                .append("  public ModelAndView handleRequest(HttpServletRequest arg0, HttpServletResponse arg1) throws Exception {\n")
-                .append("    return new " + properties.getInputClassName() + "().handleRequest(arg0, arg1);\n")
-                .append("  }\n")
-                .append("\n")
-                .append("}\n");
+    public void writeControllers(List<ControllerProperties> propertiesList) throws IOException {
+        ControllerProperties first = propertiesList.get(0);
 
-        GenUtil.writeFile(properties.getOutputClassFile(), stringBuilder.toString());
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(MessageFormat.format(START_CONTROLLER, first.getNewOutputPackageName(), controllerPackage + first.getInputRelativePackage(), first.getNewOutputClassName()));
+
+        for (ControllerProperties properties : propertiesList) {
+            stringBuilder.append(MessageFormat.format(BODY_CONTROLLER, properties.getInputClassName() ));
+        }
+
+        stringBuilder.append(END_CONTROLLER);
+
+        GenUtil.writeFile(first.getNewOutputClassFile(), stringBuilder.toString());
     }
 
     public void writeConstant(List<ControllerProperties> controllerPropertiesList, List<JspProperties> jspPropertiesList) throws IOException, FrameworkException {

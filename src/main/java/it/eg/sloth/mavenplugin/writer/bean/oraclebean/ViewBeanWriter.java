@@ -1,5 +1,6 @@
 package it.eg.sloth.mavenplugin.writer.bean.oraclebean;
 
+import it.eg.sloth.framework.common.base.StringUtil;
 import it.eg.sloth.jaxb.dbschema.Column;
 import it.eg.sloth.jaxb.dbschema.Constant;
 import it.eg.sloth.jaxb.dbschema.View;
@@ -8,6 +9,7 @@ import it.eg.sloth.mavenplugin.common.GenUtil;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -183,7 +185,16 @@ public class ViewBeanWriter {
         int i = 0;
         for (ViewColumn dbViewColumn : view.getColumns().getColumn()) {
             testo.append((i++ == 0 ? "\n" : ",\n"));
-            testo.append("    new Column (" + dbViewColumn.getName().toUpperCase() + ", false, false, Types." + OracleUtil.getTypes(dbViewColumn.getType()) + ")");
+            testo.append(
+                    MessageFormat.format(
+                            TableBeanWriter.COLUMN,
+                            dbViewColumn.getName().toUpperCase(),
+                            StringUtil.toJavaStringParameter(dbViewColumn.getDescription()),
+                            false,
+                            dbViewColumn.isNullable() ,
+                            dbViewColumn.getDataPrecision(),
+                            OracleUtil.getTypes(dbViewColumn.getType())
+                    ));
         }
         testo.append("\n");
         testo.append("  };\n");

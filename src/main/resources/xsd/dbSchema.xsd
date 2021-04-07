@@ -251,6 +251,7 @@
     <attribute name="Type" type="string"></attribute>
     <attribute name="Position" type="int"></attribute>
     <attribute name="DataLength" type="int"></attribute>
+    <attribute name="DataPrecision" type="int"></attribute>
    </extension>
   </complexContent>
  </complexType>

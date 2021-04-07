@@ -1,6 +1,7 @@
 package it.eg.sloth.mavenplugin.writer.spring.model;
 
 
+import it.eg.sloth.framework.common.base.StringUtil;
 import it.eg.sloth.mavenplugin.common.GenUtil;
 import lombok.Getter;
 import lombok.ToString;
@@ -20,13 +21,13 @@ import java.io.File;
  * You should have received a copy of the GNU General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @author Enrico Grillini
- *
  */
 @Getter
 @ToString
 public class ControllerProperties {
 
     File inputFile;
+
     String inputRelativePackage;
     String inputClassName;
 
@@ -34,6 +35,11 @@ public class ControllerProperties {
     String outputClassName;
     String outputFullClassName;
     File outputClassFile;
+
+    String newOutputPackageName;
+    String newOutputClassName;
+    File newOutputClassFile;
+
 
     public ControllerProperties(File basePath, File outputJavaDirectory, String genPackage, File inputFile) {
         this.inputFile = inputFile;
@@ -44,6 +50,10 @@ public class ControllerProperties {
             inputRelativePackage = "." + file.getName() + inputRelativePackage;
         }
         inputClassName = GenUtil.removeExension(inputFile);
+
+        newOutputClassName = StringUtil.toJavaClassName(inputFile.getParentFile().getName() + "Controller");
+        newOutputPackageName = genPackage + ".controller" ;
+        newOutputClassFile = GenUtil.getClassFile(outputJavaDirectory, newOutputPackageName, newOutputClassName);
 
         // Output
         outputPackageName = genPackage + ".controller" + inputRelativePackage;

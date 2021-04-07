@@ -67,7 +67,6 @@ public class ElementFactory {
         return StringUtil.EMPTY;
     }
 
-
     public static String getGenerics(DataType dataType) {
         if (dataType == null) {
             return StringUtil.EMPTY;
@@ -75,7 +74,7 @@ public class ElementFactory {
 
         if (DataType.DATE.equals(dataType) || DataType.DATETIME.equals(dataType) || DataType.TIME.equals(dataType) || DataType.HOUR.equals(dataType) || DataType.MONTH.equals(dataType)) {
             return "<Timestamp>";
-        } else if (DataType.DECIMAL.equals(dataType) || DataType.INTEGER.equals(dataType) || DataType.CURRENCY.equals(dataType) || DataType.PERC.equals(dataType)) {
+        } else if (DataType.NUMBER.equals(dataType) || DataType.DECIMAL.equals(dataType) || DataType.INTEGER.equals(dataType) || DataType.CURRENCY.equals(dataType) || DataType.PERC.equals(dataType)) {
             return "<BigDecimal>";
         } else if (DataType.STRING.equals(dataType) || DataType.PASSWORD.equals(dataType) || DataType.MAIL.equals(dataType) || DataType.PARTITA_IVA.equals(dataType) || DataType.CODICE_FISCALE.equals(dataType) || DataType.URL.equals(dataType)) {
             return "<String>";

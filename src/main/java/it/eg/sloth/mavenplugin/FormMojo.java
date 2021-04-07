@@ -62,7 +62,7 @@ public class FormMojo extends AbstractMojo {
         getLog().info("  outputJavaDirectory: " + outputJavaDirectory);
         getLog().info("  genPackage: " + genPackage);
         getLog().info("------------------------------------------------------------------------");
-        getLog().info("Generazione Form Start");
+        getLog().info("Generazione Form/Page Start");
 
         if (!outputJavaDirectory.exists() && !this.outputJavaDirectory.mkdirs()) {
             getLog().error("Could not create source directory!");

@@ -4,6 +4,7 @@ import it.eg.sloth.db.datasource.DataRow;
 import it.eg.sloth.db.datasource.row.Row;
 import it.eg.sloth.db.query.query.Query;
 import it.eg.sloth.framework.common.base.BaseFunction;
+import it.eg.sloth.framework.common.base.BigDecimalUtil;
 import it.eg.sloth.framework.common.exception.FrameworkException;
 import it.eg.sloth.jaxb.dbschema.*;
 import it.eg.sloth.jaxb.dbschema.Package;
@@ -558,7 +559,8 @@ public class OracleDb extends AbstractDb {
             dbTableColumn.setDescription(dataRow.getString("column_comments"));
             dbTableColumn.setNullable("Y".equals(dataRow.getString("nullable")));
             dbTableColumn.setType(getTipoColonna(dataRow.getString("data_type"), dataRow.getBigDecimal("data_precision"), dataRow.getBigDecimal("data_scale"), dataRow.getBigDecimal("data_length")));
-            dbTableColumn.setDataLength(dataRow.getBigDecimal("data_length").intValue());
+            dbTableColumn.setDataLength(BigDecimalUtil.intValue(dataRow.getBigDecimal("data_length")));
+            dbTableColumn.setDataPrecision(BigDecimalUtil.intObject(dataRow.getBigDecimal("data_precision")));
             dbTableColumn.setDefaultValue(dataRow.getString("DATA_DEFAULT"));
             dbTableColumn.setPosition(j++);
 
@@ -948,7 +950,8 @@ public class OracleDb extends AbstractDb {
             dbViewColumn.setDescription(row.getString("column_comments"));
             dbViewColumn.setNullable("Y".equals(row.getString("nullable")));
             dbViewColumn.setType(getTipoColonna(row.getString("data_type"), row.getBigDecimal("data_precision"), row.getBigDecimal("data_scale"), row.getBigDecimal("data_length")));
-            dbViewColumn.setDataLength(row.getBigDecimal("data_length").intValue());
+            dbViewColumn.setDataLength(BigDecimalUtil.intValue(row.getBigDecimal("data_length")));
+            dbViewColumn.setDataPrecision(BigDecimalUtil.intObject(row.getBigDecimal("data_precision")));
             dbViewColumn.setPosition(j++);
 
             dbView.getColumns().getColumn().add(dbViewColumn);

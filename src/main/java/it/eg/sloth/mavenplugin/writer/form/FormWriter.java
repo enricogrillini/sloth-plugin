@@ -7,25 +7,18 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
+import it.eg.sloth.jaxb.form.*;
 import org.apache.commons.io.FileUtils;
 import org.apache.maven.plugin.logging.Log;
 
 import it.eg.sloth.framework.common.base.BaseFunction;
 import it.eg.sloth.framework.common.base.StringUtil;
-import it.eg.sloth.jaxb.form.Button;
-import it.eg.sloth.jaxb.form.Element;
-import it.eg.sloth.jaxb.form.Fields;
-import it.eg.sloth.jaxb.form.Form;
-import it.eg.sloth.jaxb.form.Grid;
-import it.eg.sloth.jaxb.form.PageType;
 import it.eg.sloth.mavenplugin.common.GenUtil;
 import it.eg.sloth.mavenplugin.common.files.DirectoryFilter;
 import it.eg.sloth.mavenplugin.common.files.ExtensionFilter;
@@ -141,12 +134,13 @@ public class FormWriter {
     public void write() throws JAXBException, IOException {
         getLog().info("Form: ");
 
+        JAXBContext jaxbContext = JAXBContext.newInstance(Form.class);
+        Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+
         List<FormProperties> formPropertiesList = scan();
         for (FormProperties formProperties : formPropertiesList) {
             getLog().info("  " + formProperties.getFormClassName());
 
-            JAXBContext jaxbContext = JAXBContext.newInstance(Form.class);
-            Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
             Form form;
             try (InputStream inputStream = new FileInputStream(formProperties.getInputFile()); Reader reader = new InputStreamReader(inputStream, StandardCharsets.UTF_8)) {
                 form = (Form) jaxbUnmarshaller.unmarshal(inputStream);
@@ -315,57 +309,70 @@ public class FormWriter {
             stringBuilder.append("      return true;\n");
             stringBuilder.append("    }\n");
             stringBuilder.append("\n");
-            stringBuilder.append("    String navigation[] = getWebRequest().getNavigation();\n");
-            stringBuilder.append("    if (navigation.length == 2) {\n");
 
-            for (Element element : form.getFieldsOrGridOrTabSheet()) {
-                if (element instanceof Fields) {
-                    Fields fields = (Fields) element;
+            boolean fieldsContainsButton = fieldsContainsButton(form);
+            boolean gridContainsButton = gridContainsButton(form);
 
-                    for (Element element2 : fields.getTextOrInputOrTextArea()) {
-                        if (element2 instanceof Button) {
-                            Button button = (Button) element2;
-                            String fieldsClassName = StringUtil.toJavaClassName(fields.getName());
-                            String btnConstantName = StringUtil.toJavaConstantName(button.getName());
-                            String btnObjectName = StringUtil.toJavaObjectName(button.getName());
+            if (fieldsContainsButton || gridContainsButton) {
+                stringBuilder.append("    String navigation[] = getWebRequest().getNavigation();\n");
+            }
 
-                            stringBuilder.append("      if (NavigationConst.BUTTON.equals(navigation[0]) && " + formProperties.getFormClassName() + "." + fieldsClassName + "._" + btnConstantName + ".equalsIgnoreCase(navigation[1])) {\n");
-                            stringBuilder.append("        log.info(\"PRESS: " + btnObjectName + "\");\n");
-                            stringBuilder.append("        " + btnObjectName + "Pressed();\n");
-                            stringBuilder.append("        return true;\n");
-                            stringBuilder.append("      }\n");
+            // Fields Button
+            if (fieldsContainsButton) {
+                stringBuilder.append("    if (navigation.length == 2) {\n");
+
+                for (Element element : form.getFieldsOrGridOrTabSheet()) {
+                    if (element instanceof Fields) {
+                        Fields fields = (Fields) element;
+
+                        for (Element element2 : fields.getTextOrInputOrTextArea()) {
+                            if (element2 instanceof Button) {
+                                Button button = (Button) element2;
+                                String fieldsClassName = StringUtil.toJavaClassName(fields.getName());
+                                String btnConstantName = StringUtil.toJavaConstantName(button.getName());
+                                String btnObjectName = StringUtil.toJavaObjectName(button.getName());
+
+                                stringBuilder.append("      if (NavigationConst.BUTTON.equals(navigation[0]) && " + formProperties.getFormClassName() + "." + fieldsClassName + "._" + btnConstantName + ".equalsIgnoreCase(navigation[1])) {\n");
+                                stringBuilder.append("        log.info(\"PRESS: " + btnObjectName + "\");\n");
+                                stringBuilder.append("        " + btnObjectName + "Pressed();\n");
+                                stringBuilder.append("        return true;\n");
+                                stringBuilder.append("      }\n");
+                            }
                         }
                     }
                 }
+
+                stringBuilder.append("    }\n");
+                stringBuilder.append("\n");
             }
 
-            stringBuilder.append("    }\n");
-            stringBuilder.append("\n");
+            // Grid Button
+            if (gridContainsButton) {
+                stringBuilder.append("    if (navigation.length == 3) {\n");
+                for (Element element : form.getFieldsOrGridOrTabSheet()) {
+                    if (element instanceof Grid) {
+                        Grid grid = (Grid) element;
 
-            stringBuilder.append("    if (navigation.length == 3) {\n");
-            for (Element element : form.getFieldsOrGridOrTabSheet()) {
-                if (element instanceof Grid) {
-                    Grid grid = (Grid) element;
+                        for (Element element2 : grid.getTextOrInputOrTextArea()) {
+                            if (element2 instanceof Button) {
+                                Button button = (Button) element2;
+                                String fieldsClassName = StringUtil.toJavaClassName(grid.getName());
+                                String btnConstantName = StringUtil.toJavaConstantName(button.getName());
+                                String btnObjectName = StringUtil.toJavaObjectName(button.getName());
 
-                    for (Element element2 : grid.getTextOrInputOrTextArea()) {
-                        if (element2 instanceof Button) {
-                            Button button = (Button) element2;
-                            String fieldsClassName = StringUtil.toJavaClassName(grid.getName());
-                            String btnConstantName = StringUtil.toJavaConstantName(button.getName());
-                            String btnObjectName = StringUtil.toJavaObjectName(button.getName());
-
-                            stringBuilder.append("      if (NavigationConst.BUTTON.equals(navigation[0]) && " + formProperties.getFormClassName() + "." + fieldsClassName + "._" + btnConstantName + ".equalsIgnoreCase(navigation[1])) {\n");
-                            stringBuilder.append("        log.info(\"PRESS: " + btnObjectName + "\");\n");
-                            stringBuilder.append("        " + btnObjectName + "Pressed(new Integer(navigation[2]));\n");
-                            stringBuilder.append("        return true;\n");
-                            stringBuilder.append("      }\n");
+                                stringBuilder.append("      if (NavigationConst.BUTTON.equals(navigation[0]) && " + formProperties.getFormClassName() + "." + fieldsClassName + "._" + btnConstantName + ".equalsIgnoreCase(navigation[1])) {\n");
+                                stringBuilder.append("        log.info(\"PRESS: " + btnObjectName + "\");\n");
+                                stringBuilder.append("        " + btnObjectName + "Pressed(new Integer(navigation[2]));\n");
+                                stringBuilder.append("        return true;\n");
+                                stringBuilder.append("      }\n");
+                            }
                         }
                     }
                 }
-            }
 
-            stringBuilder.append("    }\n");
-            stringBuilder.append("\n");
+                stringBuilder.append("    }\n");
+                stringBuilder.append("\n");
+            }
 
             stringBuilder.append("    return false;\n");
             stringBuilder.append("  }\n");
@@ -406,5 +413,36 @@ public class FormWriter {
         stringBuilder.append("}\n");
 
         GenUtil.writeFile(formProperties.getControllerClassFile(), stringBuilder.toString());
+    }
+
+
+    private boolean fieldsContainsButton(Form form) {
+        for (Element element : form.getFieldsOrGridOrTabSheet()) {
+            if (element instanceof Fields) {
+                Fields fields = (Fields) element;
+                for (Element element2 : fields.getTextOrInputOrTextArea()) {
+                    if (element2 instanceof Button) {
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
+
+    private boolean gridContainsButton(Form form) {
+        for (Element element : form.getFieldsOrGridOrTabSheet()) {
+            if (element instanceof Grid) {
+                Grid grid = (Grid) element;
+                for (Element element2 : grid.getTextOrInputOrTextArea()) {
+                    if (element2 instanceof Button) {
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return false;
     }
 }

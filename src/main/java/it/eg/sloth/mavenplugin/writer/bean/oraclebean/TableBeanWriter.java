@@ -1,5 +1,6 @@
 package it.eg.sloth.mavenplugin.writer.bean.oraclebean;
 
+import it.eg.sloth.framework.common.base.StringUtil;
 import it.eg.sloth.jaxb.dbschema.Column;
 import it.eg.sloth.jaxb.dbschema.Constant;
 import it.eg.sloth.jaxb.dbschema.Table;
@@ -11,6 +12,7 @@ import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 
 import java.io.*;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,6 +33,9 @@ import java.util.List;
 public class TableBeanWriter {
     private static final String DECODE_BEAN = ".bean.decode";
     private static final String TABLE_BEAN = ".bean.tablebean";
+
+
+    public static String COLUMN = "    new Column ({0}, {1}, {2}, {3}, {4}, Types.{5})";
 
     private Table table;
 
@@ -266,8 +271,18 @@ public class TableBeanWriter {
         int i = 0;
         for (TableColumn dbTableColumn : table.getColumns().getColumn()) {
             testo.append((i++ == 0 ? "\n" : ",\n"));
-            testo.append("    new Column (" + dbTableColumn.getName().toUpperCase() + ", false, false, Types." + OracleUtil.getTypes(dbTableColumn.getType()) + ")");
+            testo.append(
+                    MessageFormat.format(
+                            COLUMN,
+                            dbTableColumn.getName().toUpperCase(),
+                            StringUtil.toJavaStringParameter(dbTableColumn.getDescription()),
+                            dbTableColumn.isPrimaryKey(),
+                            dbTableColumn.isNullable(),
+                            dbTableColumn.getDataPrecision(),
+                            OracleUtil.getTypes(dbTableColumn.getType())
+                    ));
         }
+
         testo.append("\n");
         testo.append("  };\n");
         testo.append("\n");
@@ -457,7 +472,7 @@ public class TableBeanWriter {
                 testo.append("        if (get" + GenUtil.initCap(dbTableColumn.getName()) + "CLobData().getValue() != null) {\n");
                 testo.append("          DataRow row = selectQuery().selectRow(connection);\n");
                 testo.append("          Clob clob = (Clob) row.getObject(" + dbTableColumn.getName().toUpperCase() + ");\n");
-                testo.append("          try (Reader reader = new StringReader(get" +  GenUtil.initCap(dbTableColumn.getName()) + "CLobData().getValue());\n");
+                testo.append("          try (Reader reader = new StringReader(get" + GenUtil.initCap(dbTableColumn.getName()) + "CLobData().getValue());\n");
                 testo.append("            Writer outputStream = clob.setCharacterStream(0)) {\n");
                 testo.append("            IOUtils.copy(reader, outputStream);\n");
                 testo.append("          }\n");
