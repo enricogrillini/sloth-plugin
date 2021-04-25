@@ -6,12 +6,9 @@ import it.eg.sloth.jaxb.dbschema.Constant;
 import it.eg.sloth.jaxb.dbschema.Table;
 import it.eg.sloth.jaxb.dbschema.TableColumn;
 import it.eg.sloth.mavenplugin.common.GenUtil;
-import org.apache.commons.io.IOUtils;
-import org.apache.velocity.Template;
-import org.apache.velocity.VelocityContext;
-import org.apache.velocity.app.VelocityEngine;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,8 +31,7 @@ public class TableBeanWriter {
     private static final String DECODE_BEAN = ".bean.decode";
     private static final String TABLE_BEAN = ".bean.tablebean";
 
-
-    public static String COLUMN = "    new Column ({0}, {1}, {2}, {3}, {4}, Types.{5})";
+    public static final String COLUMN = "    new Column ({0}, {1}, {2}, {3}, {4}, Types.{5})";
 
     private Table table;
 
