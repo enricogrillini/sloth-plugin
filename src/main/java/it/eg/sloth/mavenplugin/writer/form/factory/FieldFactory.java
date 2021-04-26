@@ -235,6 +235,29 @@ public class FieldFactory {
                         .append("      addChild(" + StringUtil.toJavaObjectName(autoComplete.getName()) + ");\n")
                         .append("\n");
 
+            } else if (element instanceof Switch) {
+                Switch field = (Switch) element;
+                stringBuilder
+                        .append("      " + StringUtil.toJavaObjectName(field.getName()) + " = Switch." + ElementFactory.getGenerics(field.getDataType()) + "builder()\n")
+                        .append("        .name(_" + StringUtil.toJavaConstantName(field.getName()) + ")\n")
+                        .append("        .alias(" + GenUtil.stringToJava(field.getAlias()) + ")\n")
+                        .append("        .orderByAlias(" + GenUtil.stringToJava(field.getOrderByAlias()) + ")\n")
+                        .append("        .description(" + GenUtil.stringToJava(field.getDescription()) + ")\n")
+                        .append("        .tooltip(" + GenUtil.stringToJava(field.getTooltip()) + ")\n")
+                        .append("        .dataType(" + (field.getDataType() == null ? "null" : "DataTypes." + field.getDataType()) + ")\n")
+                        .append("        .format(" + GenUtil.stringToJava(field.getFormat()) + ")\n")
+                        .append("        .baseLink(" + GenUtil.stringToJava(field.getBaseLink()) + ")\n")
+                        .append("        .linkField(" + GenUtil.stringToJava(field.getLinkField()) + ")\n")
+                        .append("        .required(" + field.isRequired() + ")\n")
+                        .append("        .readOnly(" + field.isReadOnly() + ")\n")
+                        .append("        .hidden(" + field.isHidden() + ")\n")
+                        .append("        .viewModality(" + decodeViewModality(field.getViewModality()) + ")\n")
+                        .append("        .valChecked(" + (field.getValChecked() == null ? "\"S\"" : " \"" + field.getValChecked() + "\"") + ")\n")
+                        .append("        .valUnChecked(" + (field.getValUnChecked() == null ? "\"N\"" : " \"" + field.getValUnChecked()) + ")\n")
+                        .append("        .build();\n")
+                        .append("      addChild(" + StringUtil.toJavaObjectName(field.getName()) + ");\n")
+                        .append("\n");
+
             } else if (element instanceof CheckBox) {
                 CheckBox checkBox = (CheckBox) element;
                 stringBuilder

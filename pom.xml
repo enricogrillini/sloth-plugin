@@ -1,168 +1,169 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
- <modelVersion>4.0.0</modelVersion>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
 
- <groupId>it.eg.sloth</groupId>
- <artifactId>sloth-maven-plugin</artifactId>
- <version>2.2.0-SNAPSHOT</version>
- <packaging>maven-plugin</packaging>
+    <groupId>it.eg.sloth</groupId>
+    <artifactId>sloth-maven-plugin</artifactId>
+    <version>2.2.0-SNAPSHOT</version>
+    <packaging>maven-plugin</packaging>
 
- <name>Sloth Maven Plugin</name>
+    <name>Sloth Maven Plugin</name>
 
- <prerequisites>
-  <maven>${maven.version}</maven>
- </prerequisites>
+    <prerequisites>
+        <maven>${maven.version}</maven>
+    </prerequisites>
 
- <properties>
-  <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-  <maven.compiler.source>1.8</maven.compiler.source>
-  <maven.compiler.target>1.8</maven.compiler.target>
-  <maven.version>3.5.0</maven.version>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <maven.version>3.5.0</maven.version>
 
-  <lombok.version>1.18.18</lombok.version>
-  <oracle.version>19.7.0.0</oracle.version>
-  <h2.version>1.4.200</h2.version>
-  <postgresql.version>42.2.18</postgresql.version>
- </properties>
+        <lombok.version>1.18.20</lombok.version>
+        <oracle.version>19.7.0.0</oracle.version>
+        <h2.version>1.4.200</h2.version>
+        <postgresql.version>42.2.18</postgresql.version>
+    </properties>
 
- <distributionManagement>
-  <repository>
-   <id>github-sloth-plugin</id>
-   <name>GitHub enricogrillini Apache Maven Packages</name>
-   <url>https://maven.pkg.github.com/enricogrillini/sloth-plugin</url>
-  </repository>
- </distributionManagement>
+    <distributionManagement>
+        <repository>
+            <id>github-sloth-plugin</id>
+            <name>GitHub enricogrillini Apache Maven Packages</name>
+            <url>https://maven.pkg.github.com/enricogrillini/sloth-plugin</url>
+        </repository>
+    </distributionManagement>
 
- <dependencies>
-  <!-- SlothFramework -->
-  <dependency>
-   <groupId>it.eg.sloth</groupId>
-   <artifactId>sloth-framework</artifactId>
-   <version>2.2.0-SNAPSHOT</version>
-   <scope>compile</scope>
-  </dependency>
+    <dependencies>
+        <!-- SlothFramework -->
+        <dependency>
+            <groupId>it.eg.sloth</groupId>
+            <artifactId>sloth-framework</artifactId>
+            <version>2.2.0-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
 
-  <!-- Maven -->
-  <dependency>
-   <groupId>org.apache.maven</groupId>
-   <artifactId>maven-plugin-api</artifactId>
-   <version>${maven.version}</version>
-   <scope>provided</scope>
-  </dependency>
-  <dependency>
-   <groupId>org.apache.maven</groupId>
-   <artifactId>maven-core</artifactId>
-   <version>${maven.version}</version>
-   <scope>provided</scope>
-  </dependency>
-  <dependency>
-   <groupId>org.apache.maven</groupId>
-   <artifactId>maven-artifact</artifactId>
-   <version>${maven.version}</version>
-   <scope>provided</scope>
-  </dependency>
-  <dependency>
-   <groupId>org.apache.maven</groupId>
-   <artifactId>maven-compat</artifactId>
-   <version>${maven.version}</version>
-   <scope>test</scope>
-  </dependency>
-  <dependency>
-   <groupId>org.apache.maven.plugin-tools</groupId>
-   <artifactId>maven-plugin-annotations</artifactId>
-   <version>3.6.0</version>
-   <scope>provided</scope>
-  </dependency>
-  <dependency>
-   <groupId>junit</groupId>
-   <artifactId>junit</artifactId>
-   <version>4.13.1</version>
-   <scope>test</scope>
-  </dependency>
-  <dependency>
-   <groupId>org.apache.maven.plugin-testing</groupId>
-   <artifactId>maven-plugin-testing-harness</artifactId>
-   <version>3.3.0</version>
-   <scope>test</scope>
-  </dependency>
+        <!-- Maven -->
+        <dependency>
+            <groupId>org.apache.maven</groupId>
+            <artifactId>maven-plugin-api</artifactId>
+            <version>${maven.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.maven</groupId>
+            <artifactId>maven-core</artifactId>
+            <version>${maven.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.maven</groupId>
+            <artifactId>maven-artifact</artifactId>
+            <version>${maven.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.maven</groupId>
+            <artifactId>maven-compat</artifactId>
+            <version>${maven.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.maven.plugin-tools</groupId>
+            <artifactId>maven-plugin-annotations</artifactId>
+            <version>3.6.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.13.1</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.maven.plugin-testing</groupId>
+            <artifactId>maven-plugin-testing-harness</artifactId>
+            <version>3.3.0</version>
+            <scope>test</scope>
+        </dependency>
 
-  <!-- Database -->
-  <dependency>
-   <groupId>com.h2database</groupId>
-   <artifactId>h2</artifactId>
-   <version>${h2.version}</version>
-  </dependency>
-  <dependency>
-   <groupId>com.oracle.database.jdbc</groupId>
-   <artifactId>ojdbc8</artifactId>
-   <version>${oracle.version}</version>
-  </dependency>
-  <dependency>
-   <groupId>org.postgresql</groupId>
-   <artifactId>postgresql</artifactId>
-   <version>${postgresql.version}</version>
-  </dependency>
+        <!-- Database -->
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>${h2.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.oracle.database.jdbc</groupId>
+            <artifactId>ojdbc8</artifactId>
+            <version>${oracle.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>${postgresql.version}</version>
+        </dependency>
 
 
-  <!-- https://mvnrepository.com/artifact/org.apache.velocity/velocity-engine-core -->
-  <dependency>
-   <groupId>org.apache.velocity</groupId>
-   <artifactId>velocity-engine-core</artifactId>
-   <version>2.2</version>
-  </dependency>
+        <!-- https://mvnrepository.com/artifact/org.apache.velocity/velocity-engine-core -->
+        <dependency>
+            <groupId>org.apache.velocity</groupId>
+            <artifactId>velocity-engine-core</artifactId>
+            <version>2.2</version>
+        </dependency>
 
-  <!-- Lombok -->
-  <dependency>
-   <groupId>org.projectlombok</groupId>
-   <artifactId>lombok</artifactId>
-   <version>${lombok.version}</version>
-   <scope>provided</scope>
-  </dependency>
+        <!-- Lombok -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>${lombok.version}</version>
+            <scope>provided</scope>
+        </dependency>
 
- </dependencies>
+    </dependencies>
 
- <build>
+    <build>
 
-  <plugins>
-   <plugin>
-    <groupId>org.apache.maven.plugins</groupId>
-    <artifactId>maven-plugin-plugin</artifactId>
-    <version>3.6.0</version>
-    <configuration>
-     <!-- see http://jira.codehaus.org/browse/MNG-5346 -->
-     <skipErrorNoDescriptorsFound>true</skipErrorNoDescriptorsFound>
-    </configuration>
-    <executions>
-     <execution>
-      <id>mojo-descriptor</id>
-      <goals>
-       <goal>descriptor</goal>
-      </goals>
-     </execution>
-    </executions>
-   </plugin>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-plugin-plugin</artifactId>
+                <version>3.6.0</version>
+                <configuration>
+                    <!-- see http://jira.codehaus.org/browse/MNG-5346 -->
+                    <skipErrorNoDescriptorsFound>true</skipErrorNoDescriptorsFound>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>mojo-descriptor</id>
+                        <goals>
+                            <goal>descriptor</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
 
-   <!-- Jaxb generator -->
-   <plugin>
-    <groupId>org.codehaus.mojo</groupId>
-    <artifactId>jaxb2-maven-plugin</artifactId>
-    <version>2.5.0</version>
-    <executions>
-     <execution>
-      <id>config</id>
-      <goals>
-       <goal>xjc</goal>
-      </goals>
-      <configuration>
-       <packageName>it.eg.sloth.jaxb.dbschema</packageName>
-       <sources>
-        <source>src/main/resources/xsd/dbSchema.xsd</source>
-       </sources>
-      </configuration>
-     </execution>
-    </executions>
-   </plugin>
-  </plugins>
- </build>
+            <!-- Jaxb generator -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>jaxb2-maven-plugin</artifactId>
+                <version>2.5.0</version>
+                <executions>
+                    <execution>
+                        <id>config</id>
+                        <goals>
+                            <goal>xjc</goal>
+                        </goals>
+                        <configuration>
+                            <packageName>it.eg.sloth.jaxb.dbschema</packageName>
+                            <sources>
+                                <source>src/main/resources/xsd/dbSchema.xsd</source>
+                            </sources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>
