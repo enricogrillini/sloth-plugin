@@ -147,6 +147,10 @@ public class FormWriter {
             }
 
             writeForm(formProperties, form);
+
+            if (PageType.JSON.equals(form.getPageType())) {
+                log.warn("PageType.JSON deprecato. Non sarà disponibile dalle prossime versioni del framework.");
+            }
             writeController(formProperties, form);
         }
     }
@@ -326,11 +330,10 @@ public class FormWriter {
                         Fields fields = (Fields) element;
 
                         for (Element element2 : fields.getTextOrInputOrTextArea()) {
-                            if (element2 instanceof Button) {
-                                Button button = (Button) element2;
+                            if (element2 instanceof Button || element2 instanceof it.eg.sloth.jaxb.form.File) {
                                 String fieldsClassName = StringUtil.toJavaClassName(fields.getName());
-                                String btnConstantName = StringUtil.toJavaConstantName(button.getName());
-                                String btnObjectName = StringUtil.toJavaObjectName(button.getName());
+                                String btnConstantName = StringUtil.toJavaConstantName(element2.getName());
+                                String btnObjectName = StringUtil.toJavaObjectName(element2.getName());
 
                                 stringBuilder.append("      if (NavigationConst.BUTTON.equals(navigation[0]) && " + formProperties.getFormClassName() + "." + fieldsClassName + "._" + btnConstantName + ".equalsIgnoreCase(navigation[1])) {\n");
                                 stringBuilder.append("        log.info(\"PRESS: " + btnObjectName + "\");\n");
@@ -354,11 +357,10 @@ public class FormWriter {
                         Grid grid = (Grid) element;
 
                         for (Element element2 : grid.getTextOrInputOrTextArea()) {
-                            if (element2 instanceof Button) {
-                                Button button = (Button) element2;
+                            if (element2 instanceof Button || element2 instanceof it.eg.sloth.jaxb.form.File) {
                                 String fieldsClassName = StringUtil.toJavaClassName(grid.getName());
-                                String btnConstantName = StringUtil.toJavaConstantName(button.getName());
-                                String btnObjectName = StringUtil.toJavaObjectName(button.getName());
+                                String btnConstantName = StringUtil.toJavaConstantName(element2.getName());
+                                String btnObjectName = StringUtil.toJavaObjectName(element2.getName());
 
                                 stringBuilder.append("      if (NavigationConst.BUTTON.equals(navigation[0]) && " + formProperties.getFormClassName() + "." + fieldsClassName + "._" + btnConstantName + ".equalsIgnoreCase(navigation[1])) {\n");
                                 stringBuilder.append("        log.info(\"PRESS: " + btnObjectName + "\");\n");
@@ -383,22 +385,17 @@ public class FormWriter {
                     Fields fields = (Fields) element;
 
                     for (Element element2 : fields.getTextOrInputOrTextArea()) {
-                        if (element2 instanceof Button) {
-                            Button button = (Button) element2;
-                            String btnObjectName = StringUtil.toJavaObjectName(button.getName());
+                        if (element2 instanceof Button || element2 instanceof it.eg.sloth.jaxb.form.File) {
+                            String btnObjectName = StringUtil.toJavaObjectName(element2.getName());
 
                             stringBuilder.append("  public abstract void " + btnObjectName + "Pressed() throws Exception;\n");
                         }
                     }
-                }
-            }
-
-            for (Element element : form.getFieldsOrGridOrTabSheet()) {
-                if (element instanceof Grid) {
+                } else if (element instanceof Grid) {
                     Grid grid = (Grid) element;
 
                     for (Element element2 : grid.getTextOrInputOrTextArea()) {
-                        if (element2 instanceof Button) {
+                        if (element2 instanceof Button || element2 instanceof it.eg.sloth.jaxb.form.File) {
                             Button button = (Button) element2;
                             String btnObjectName = StringUtil.toJavaObjectName(button.getName());
 
@@ -421,7 +418,7 @@ public class FormWriter {
             if (element instanceof Fields) {
                 Fields fields = (Fields) element;
                 for (Element element2 : fields.getTextOrInputOrTextArea()) {
-                    if (element2 instanceof Button) {
+                    if (element2 instanceof Button || element2 instanceof it.eg.sloth.jaxb.form.File) {
                         return true;
                     }
                 }
@@ -436,7 +433,7 @@ public class FormWriter {
             if (element instanceof Grid) {
                 Grid grid = (Grid) element;
                 for (Element element2 : grid.getTextOrInputOrTextArea()) {
-                    if (element2 instanceof Button) {
+                    if (element2 instanceof Button || element2 instanceof it.eg.sloth.jaxb.form.File) {
                         return true;
                     }
                 }
