@@ -373,23 +373,23 @@ public class TableBeanWriter {
 
         if (lobColumnList.size() > 0) {
             testo.append("  @Override\n");
-            testo.append("  public void setObject(String name, Object value) {\n");
+            testo.append("  public TransactionalRow setObject(String name, Object value) {\n");
 
             for (TableColumn dbTableColumn : lobColumnList) {
                 if (OracleUtil.isClob(dbTableColumn)) {
                     testo.append("    if (" + dbTableColumn.getName().toUpperCase() + ".equalsIgnoreCase(name) && value instanceof String) {\n");
                     testo.append("      set" + GenUtil.initCap(dbTableColumn.getName()) + "((String) value);\n");
-                    testo.append("      return;\n");
+                    testo.append("      return this;\n");
                     testo.append("    }\n");
                 } else if (OracleUtil.isBlob(dbTableColumn)) {
                     testo.append("    if (" + dbTableColumn.getName().toUpperCase() + ".equalsIgnoreCase(name) && value instanceof byte[]) {\n");
                     testo.append("      set" + GenUtil.initCap(dbTableColumn.getName()) + "((byte[]) value);\n");
-                    testo.append("      return;\n");
+                    testo.append("      return this;\n");
                     testo.append("    }\n");
                 }
             }
 
-            testo.append("    super.setObject(name, value);\n");
+            testo.append("    return super.setObject(name, value);\n");
             testo.append("  }\n");
         }
 
@@ -581,6 +581,7 @@ public class TableBeanWriter {
                 .append("import it.eg.sloth.db.datasource.RowStatus;\n")
                 .append("import it.eg.sloth.db.datasource.row.lob.BLobData;\n")
                 .append("import it.eg.sloth.db.datasource.row.lob.CLobData;\n")
+                .append("import it.eg.sloth.db.datasource.row.TransactionalRow;\n")
                 .append("import it.eg.sloth.db.datasource.row.column.Column;\n")
                 .append("import org.apache.commons.io.IOUtils;\n")
                 .append("import it.eg.sloth.db.manager.DataConnectionManager;\n")
