@@ -14,6 +14,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
 import it.eg.sloth.jaxb.form.*;
+import it.eg.sloth.mavenplugin.writer.form.factory.*;
 import org.apache.commons.io.FileUtils;
 import org.apache.maven.plugin.logging.Log;
 
@@ -22,11 +23,6 @@ import it.eg.sloth.framework.common.base.StringUtil;
 import it.eg.sloth.mavenplugin.common.GenUtil;
 import it.eg.sloth.mavenplugin.common.files.DirectoryFilter;
 import it.eg.sloth.mavenplugin.common.files.ExtensionFilter;
-import it.eg.sloth.mavenplugin.writer.form.factory.ChartFactory;
-import it.eg.sloth.mavenplugin.writer.form.factory.FieldsFactory;
-import it.eg.sloth.mavenplugin.writer.form.factory.GridFactory;
-import it.eg.sloth.mavenplugin.writer.form.factory.SkipperFactory;
-import it.eg.sloth.mavenplugin.writer.form.factory.TabSheetFactory;
 import it.eg.sloth.mavenplugin.writer.form.model.FormProperties;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -178,6 +174,7 @@ public class FormWriter {
                 .append("import it.eg.sloth.form.chart.element.Series;\n")
                 .append("import it.eg.sloth.form.chart.element.Labels;\n")
                 .append("import it.eg.sloth.form.fields.field.impl.*;\n")
+                .append("import it.eg.sloth.form.modal.Modal;\n")
                 .append("import it.eg.sloth.form.skipper.Skipper;\n")
                 .append("import it.eg.sloth.form.tabsheet.Tab;\n")
                 .append("import it.eg.sloth.form.tabsheet.TabSheet;\n")
@@ -195,7 +192,7 @@ public class FormWriter {
                 .append("\n");
 
         // Write variabili
-        writeVariabili(stringBuilder, form.getFieldsOrGridOrTabSheet());
+        writeVariabili(stringBuilder, form.getFieldsOrGridOrModal());
 
         // Write Costruttore
         stringBuilder.append("\n");
@@ -206,20 +203,21 @@ public class FormWriter {
         stringBuilder.append("  public " + formProperties.getFormClassName() + "(String title) {\n");
         stringBuilder.append("    super(title);\n");
 
-        writeAddChild(stringBuilder, form.getFieldsOrGridOrTabSheet());
+        writeAddChild(stringBuilder, form.getFieldsOrGridOrModal());
 
         stringBuilder.append("  }\n");
         stringBuilder.append("\n");
 
         // Getter e Setter
-        writeGetter(stringBuilder, form.getFieldsOrGridOrTabSheet());
+        writeGetter(stringBuilder, form.getFieldsOrGridOrModal());
 
         // SubClass
-        FieldsFactory.write(stringBuilder, form.getFieldsOrGridOrTabSheet());
-        GridFactory.write(stringBuilder, form.getFieldsOrGridOrTabSheet());
-        TabSheetFactory.write(stringBuilder, form.getFieldsOrGridOrTabSheet());
-        SkipperFactory.write(stringBuilder, form.getFieldsOrGridOrTabSheet());
-        ChartFactory.write(stringBuilder, form.getFieldsOrGridOrTabSheet());
+        FieldsFactory.write(stringBuilder, form.getFieldsOrGridOrModal());
+        GridFactory.write(stringBuilder, form.getFieldsOrGridOrModal());
+        ModalFactory.write(stringBuilder, form.getFieldsOrGridOrModal());
+        TabSheetFactory.write(stringBuilder, form.getFieldsOrGridOrModal());
+        SkipperFactory.write(stringBuilder, form.getFieldsOrGridOrModal());
+        ChartFactory.write(stringBuilder, form.getFieldsOrGridOrModal());
 
         stringBuilder.append("\n");
         stringBuilder.append("}\n");
@@ -228,7 +226,7 @@ public class FormWriter {
     }
 
     public void writeController(FormProperties formProperties, Form form) throws IOException {
-        List<Grid> grids = getGrids(form.getFieldsOrGridOrTabSheet());
+        List<Grid> grids = getGrids(form.getFieldsOrGridOrModal());
 
         if (PageType.EDITABLE_GRID.equals(form.getPageType()) && grids.isEmpty()) {
             log.error(formProperties.getFormClassName() + ": impossibile trovare una grid!");
@@ -325,7 +323,7 @@ public class FormWriter {
             if (fieldsContainsButton) {
                 stringBuilder.append("    if (navigation.length == 2) {\n");
 
-                for (Element element : form.getFieldsOrGridOrTabSheet()) {
+                for (Element element : form.getFieldsOrGridOrModal()) {
                     if (element instanceof Fields) {
                         Fields fields = (Fields) element;
 
@@ -352,7 +350,7 @@ public class FormWriter {
             // Grid Button
             if (gridContainsButton) {
                 stringBuilder.append("    if (navigation.length == 3) {\n");
-                for (Element element : form.getFieldsOrGridOrTabSheet()) {
+                for (Element element : form.getFieldsOrGridOrModal()) {
                     if (element instanceof Grid) {
                         Grid grid = (Grid) element;
 
@@ -380,7 +378,7 @@ public class FormWriter {
             stringBuilder.append("  }\n");
             stringBuilder.append("\n");
 
-            for (Element element : form.getFieldsOrGridOrTabSheet()) {
+            for (Element element : form.getFieldsOrGridOrModal()) {
                 if (element instanceof Fields) {
                     Fields fields = (Fields) element;
 
@@ -414,7 +412,7 @@ public class FormWriter {
 
 
     private boolean fieldsContainsButton(Form form) {
-        for (Element element : form.getFieldsOrGridOrTabSheet()) {
+        for (Element element : form.getFieldsOrGridOrModal()) {
             if (element instanceof Fields) {
                 Fields fields = (Fields) element;
                 for (Element element2 : fields.getTextOrInputOrTextArea()) {
@@ -429,7 +427,7 @@ public class FormWriter {
     }
 
     private boolean gridContainsButton(Form form) {
-        for (Element element : form.getFieldsOrGridOrTabSheet()) {
+        for (Element element : form.getFieldsOrGridOrModal()) {
             if (element instanceof Grid) {
                 Grid grid = (Grid) element;
                 for (Element element2 : grid.getTextOrInputOrTextArea()) {
