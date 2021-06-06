@@ -184,6 +184,7 @@ public class FormWriter {
                 .append("import it.eg.sloth.jaxb.form.ButtonType;\n")
                 .append("import it.eg.sloth.jaxb.form.ChartType;\n")
                 .append("import it.eg.sloth.jaxb.form.ConsolidateFunction;\n")
+                .append("import it.eg.sloth.jaxb.form.HtmlFileType;\n")
                 .append("import it.eg.sloth.jaxb.form.LegendPosition;\n")
                 .append("\n")
                 .append("public class " + formProperties.getFormClassName() + " extends Form {\n")

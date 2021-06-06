@@ -392,6 +392,7 @@ public class FieldFactory {
                         .append("        .hidden(" + file.isHidden() + ")\n")
                         .append("        .viewModality(" + decodeViewModality(file.getViewModality()) + ")\n")
                         .append("        .maxSize(" + file.getMaxSize() + ")\n")
+                        .append("        .htmlFileType(" + (file.getHtmlFileType() == null ? "null" : "HtmlFileType." + file.getHtmlFileType())  + ")\n")
                         .append("        .build();\n")
                         .append("      addChild(" + StringUtil.toJavaObjectName(file.getName()) + ");\n")
                         .append("\n");
