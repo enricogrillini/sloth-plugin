@@ -49,9 +49,14 @@ public class FieldsFactory {
         ElementFactory.writeFieldsVariabili(stringBuilder, fields.getTextOrInputOrTextArea());
 
         // Costruttore
-        stringBuilder.append("\n");
-        stringBuilder.append("    public " + className + "() {\n");
-        stringBuilder.append("      super(NAME);\n");
+        String description = fields.getDescription() == null ? "null" : "\"" + fields.getDescription() + "\"";
+        String title = fields.getTitle() == null ? "null" : "\"" + fields.getTitle() + "\"";
+
+        stringBuilder.append("\n")
+                .append("    public " + className + "() {\n")
+                .append("      super(NAME, " + description + ");\n")
+                .append("      setTitle (" + title + ");\n");
+
         FieldFactory.writeAddFields(stringBuilder, fields.getTextOrInputOrTextArea());
         stringBuilder.append("  }\n");
 
