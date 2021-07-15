@@ -1,10 +1,10 @@
 package it.eg.sloth.mavenplugin.writer.form.factory;
 
-import java.util.List;
-
 import it.eg.sloth.framework.common.base.StringUtil;
 import it.eg.sloth.jaxb.form.*;
 import it.eg.sloth.mavenplugin.common.GenUtil;
+
+import java.util.List;
 
 /**
  * Project: sloth-plugin
@@ -28,11 +28,11 @@ public class FieldFactory {
 
     public static String decodeViewModality(ViewModality viewModalityImpl) {
         if (viewModalityImpl == null)
-            return "ViewModality.VIEW_AUTO";
+            return "ViewModality.AUTO";
         else if (viewModalityImpl.equals(ViewModality.VISUALIZZAZIONE))
-            return "ViewModality.VIEW_VISUALIZZAZIONE";
+            return "ViewModality.VIEW";
         else
-            return "ViewModality.VIEW_MODIFICA";
+            return "ViewModality.EDIT";
     }
 
     public static String decodeForceCase(ForceCase forceCase) {
@@ -214,6 +214,27 @@ public class FieldFactory {
                         .append("      addChild(" + StringUtil.toJavaObjectName(comboBox.getName()) + ");\n")
                         .append("\n");
 
+            } else if (element instanceof MultipleAutoComplete) {
+                MultipleAutoComplete multipleAutoComplete = (MultipleAutoComplete) element;
+                stringBuilder
+                        .append("      " + StringUtil.toJavaObjectName(multipleAutoComplete.getName()) + " = MultipleAutoComplete." + ElementFactory.getGenerics(multipleAutoComplete.getDataType()) + "builder()\n")
+                        .append("        .name(_" + StringUtil.toJavaConstantName(multipleAutoComplete.getName()) + ")\n")
+                        .append("        .alias(" + GenUtil.stringToJava(multipleAutoComplete.getAlias()) + ")\n")
+                        .append("        .orderByAlias(" + GenUtil.stringToJava(multipleAutoComplete.getOrderByAlias()) + ")\n")
+                        .append("        .description(" + GenUtil.stringToJava(multipleAutoComplete.getDescription()) + ")\n")
+                        .append("        .tooltip(" + GenUtil.stringToJava(multipleAutoComplete.getTooltip()) + ")\n")
+                        .append("        .dataType(" + (multipleAutoComplete.getDataType() == null ? "null" : "DataTypes." + multipleAutoComplete.getDataType()) + ")\n")
+                        .append("        .format(" + GenUtil.stringToJava(multipleAutoComplete.getFormat()) + ")\n")
+                        .append("        .baseLink(" + GenUtil.stringToJava(multipleAutoComplete.getBaseLink()) + ")\n")
+                        .append("        .linkField(" + GenUtil.stringToJava(multipleAutoComplete.getLinkField()) + ")\n")
+                        .append("        .required(" + multipleAutoComplete.isRequired() + ")\n")
+                        .append("        .readOnly(" + multipleAutoComplete.isReadOnly() + ")\n")
+                        .append("        .hidden(" + multipleAutoComplete.isHidden() + ")\n")
+                        .append("        .viewModality(" + decodeViewModality(multipleAutoComplete.getViewModality()) + ")\n")
+                        .append("        .build();\n")
+                        .append("      addChild(" + StringUtil.toJavaObjectName(multipleAutoComplete.getName()) + ");\n")
+                        .append("\n");
+
             } else if (element instanceof AutoComplete) {
                 AutoComplete autoComplete = (AutoComplete) element;
                 stringBuilder
@@ -392,7 +413,7 @@ public class FieldFactory {
                         .append("        .hidden(" + file.isHidden() + ")\n")
                         .append("        .viewModality(" + decodeViewModality(file.getViewModality()) + ")\n")
                         .append("        .maxSize(" + file.getMaxSize() + ")\n")
-                        .append("        .htmlFileType(" + (file.getHtmlFileType() == null ? "null" : "HtmlFileType." + file.getHtmlFileType())  + ")\n")
+                        .append("        .htmlFileType(" + (file.getHtmlFileType() == null ? "null" : "HtmlFileType." + file.getHtmlFileType()) + ")\n")
                         .append("        .build();\n")
                         .append("      addChild(" + StringUtil.toJavaObjectName(file.getName()) + ");\n")
                         .append("\n");
