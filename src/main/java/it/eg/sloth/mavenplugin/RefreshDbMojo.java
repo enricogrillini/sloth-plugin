@@ -1,14 +1,11 @@
 package it.eg.sloth.mavenplugin;
 
-import com.google.common.io.LineReader;
 import it.eg.sloth.db.manager.DataConnectionManager;
 import it.eg.sloth.jaxb.dbschema.DataBase;
 import it.eg.sloth.jaxb.dbschema.DbToolProject;
 import it.eg.sloth.mavenplugin.writer.bean.BeanWriter;
 import it.eg.sloth.mavenplugin.writer.refreshdb.DbIFace;
 import it.eg.sloth.mavenplugin.writer.refreshdb.oracle.OracleDb;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
