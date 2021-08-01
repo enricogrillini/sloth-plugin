@@ -971,19 +971,20 @@ public class OracleDb extends AbstractDb {
         query.addParameter(Types.VARCHAR, null);
         query.populateDataTable(sqlTriggers);
 
-        for (Row row : sqlTriggers) {
-            if (OT_VIEW.equals(row.getString("BASE_OBJECT_TYPE"))) {
-                View view = viewCache.get(row.getString("TABLE_NAME"));
-
-                Trigger trigger = new Trigger();
-                trigger.setName(row.getString("TRIGGER_NAME"));
-                trigger.setType(row.getString("TRIGGER_TYPE"));
-                trigger.setEvent(row.getString("TRIGGERING_EVENT"));
-                trigger.setSource(GenUtil.cleanDbCode(row.getString("TRIGGER_BODY")));
-
-                view.getTriggers().getTrigger().add(trigger);
-            }
-        }
+        // FIXME
+//        for (Row row : sqlTriggers) {
+//            if (OT_VIEW.equals(row.getString("BASE_OBJECT_TYPE"))) {
+//                View view = viewCache.get(row.getString("TABLE_NAME"));
+//
+//                Trigger trigger = new Trigger();
+//                trigger.setName(row.getString("TRIGGER_NAME"));
+//                trigger.setType(row.getString("TRIGGER_TYPE"));
+//                trigger.setEvent(row.getString("TRIGGERING_EVENT"));
+//                trigger.setSource(GenUtil.cleanDbCode(row.getString("TRIGGER_BODY")));
+//
+//                view.getTriggers().getTrigger().add(trigger);
+//            }
+//        }
 
         return views;
     }

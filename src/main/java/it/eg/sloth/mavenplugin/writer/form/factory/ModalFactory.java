@@ -3,7 +3,6 @@ package it.eg.sloth.mavenplugin.writer.form.factory;
 import it.eg.sloth.framework.common.base.StringUtil;
 import it.eg.sloth.jaxb.form.Element;
 import it.eg.sloth.jaxb.form.Modal;
-import it.eg.sloth.jaxb.form.Skipper;
 import it.eg.sloth.mavenplugin.common.GenUtil;
 
 import java.util.List;

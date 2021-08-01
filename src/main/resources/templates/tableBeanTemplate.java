@@ -9,7 +9,6 @@ import java.sql.SQLException;
 
 /**
  * TableBean per la tabella ${tableName}
- *
  */
 public class ${tableBeanClassName} extends DbTable<${rowBeanClassName}> {
 

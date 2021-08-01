@@ -1,14 +1,11 @@
 package it.eg.sloth.mavenplugin.common;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.StringReader;
-import java.nio.charset.StandardCharsets;
-
+import it.eg.sloth.framework.common.base.StringUtil;
 import org.apache.commons.io.FileUtils;
 
-import it.eg.sloth.framework.common.base.StringUtil;
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 /**
  * Project: sloth-plugin
@@ -80,40 +77,47 @@ public class GenUtil {
     }
 
 
-    public static String cleanDbCode(String string) throws IOException {
-        if (string == null) {
-            return null;
-        }
-
-        StringBuilder stringBuilder = new StringBuilder();
-
-        BufferedReader reader = new BufferedReader(new StringReader(string));
-        String line;
-        while ((line = reader.readLine()) != null) {
-            stringBuilder.append(StringUtil.rtrim(line));
-            stringBuilder.append(NEWLINE);
-        }
-
-        // GG 19-12-2012: rimuovo tutti gli invii a fine stringa (in ambo le possibili forme: \r\n e \n).
-        // NB: preservo l'ULTIMO carattere di invio
-        while ((stringBuilder.length() > 4) &&
-                stringBuilder.substring(stringBuilder.length() - 4).equals("\r\n\r\n")) { //$NON-NLS-1$
-            stringBuilder.delete(stringBuilder.length() - 2, stringBuilder.length());
-        }
-        while ((stringBuilder.length() > 2) &&
-                stringBuilder.substring(stringBuilder.length() - 2).equals("\n\n")) { //$NON-NLS-1$
-            stringBuilder.delete(stringBuilder.length() - 1, stringBuilder.length());
-        }
-
-        return stringBuilder.toString();
-
-    }
+//    public static String cleanDbCode(String string) throws IOException {
+//        if (string == null) {
+//            return null;
+//        }
+//
+//        StringBuilder stringBuilder = new StringBuilder();
+//
+//        BufferedReader reader = new BufferedReader(new StringReader(string));
+//        String line;
+//        while ((line = reader.readLine()) != null) {
+//            stringBuilder.append(StringUtil.rtrim(line));
+//            stringBuilder.append(NEWLINE);
+//        }
+//
+//        // GG 19-12-2012: rimuovo tutti gli invii a fine stringa (in ambo le possibili forme: \r\n e \n).
+//        // NB: preservo l'ULTIMO carattere di invio
+//        while ((stringBuilder.length() > 4) &&
+//                stringBuilder.substring(stringBuilder.length() - 4).equals("\r\n\r\n")) { //$NON-NLS-1$
+//            stringBuilder.delete(stringBuilder.length() - 2, stringBuilder.length());
+//        }
+//        while ((stringBuilder.length() > 2) &&
+//                stringBuilder.substring(stringBuilder.length() - 2).equals("\n\n")) { //$NON-NLS-1$
+//            stringBuilder.delete(stringBuilder.length() - 1, stringBuilder.length());
+//        }
+//
+//        return stringBuilder.toString();
+//    }
 
     public static String stringToJava(String value) {
+        return stringToJava(value, false);
+    }
+
+    public static String stringToJava(String value, boolean intented) {
         if (value == null) {
             return "null";
         } else {
-            return "\"" + StringUtil.replace(value, "\"", "\\\"") + "\"";
+            if (intented) {
+                return "\"" + StringUtil.replace(value, "\"", "\\\"").replace("\n", "\\n\" +\n        \"").replace("\r", "") + "\"";
+            } else {
+                return "\"" + StringUtil.replace(value, "\"", "\\\"").replace("\n", "\\n\" +\n\"").replace("\r", "") + "\"";
+            }
         }
     }
 
