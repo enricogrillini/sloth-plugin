@@ -64,7 +64,9 @@ public class DbUtil {
             return "Types.TIMESTAMP";
         } else if (dataType.startsWith("VARCHAR") || dataType.startsWith("CHAR") || dataType.startsWith("LONG") || dataType.startsWith("TEXT")) {
             return "Types.VARCHAR";
-        } else if (dataType.startsWith("BLOB") || dataType.startsWith("BYTEA")) {
+        } else if (dataType.startsWith("BYTEA")) {
+            return "Types.BINARY";
+        } else if (dataType.startsWith("BLOB")) {
             return "Types.BLOB";
         } else if (dataType.startsWith("CLOB")) {
             return "Types.CLOB";
@@ -121,7 +123,7 @@ public class DbUtil {
         StringBuilder result = new StringBuilder("Insert into " + table.getName() + "\n");
 
         int i = 0;
-        for (TableColumn column : table.getTableColumnCollection()) {
+        for (TableColumn column : table.getPlainColumnCollection()) {
             if (!column.isLob()) {
                 result
                         .append(i++ == 0 ? "      (" : ",\n       ")
@@ -131,12 +133,10 @@ public class DbUtil {
         result.append(")\n");
 
         i = 0;
-        for (TableColumn column : table.getTableColumnCollection()) {
-            if (!column.isLob()) {
-                result
-                        .append(i++ == 0 ? "Values (" : ",\n        ")
-                        .append("?");
-            }
+        for (TableColumn column : table.getPlainColumnCollection()) {
+            result
+                    .append(i++ == 0 ? "Values (" : ",\n        ")
+                    .append("?");
         }
         result.append(")");
         return GenUtil.stringToJava(result.toString(), true);

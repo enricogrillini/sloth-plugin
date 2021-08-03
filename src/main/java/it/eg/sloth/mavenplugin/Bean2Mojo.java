@@ -34,20 +34,10 @@ import java.time.temporal.ChronoUnit;
         threadSafe = true,
         defaultPhase = LifecyclePhase.GENERATE_SOURCES,
         requiresDependencyResolution = ResolutionScope.COMPILE)
-public class Bean2Mojo extends AbstractMojo {
-
-    @Parameter(defaultValue = "${project}", property = "project", required = true, readonly = true)
-    protected MavenProject project;
+public class Bean2Mojo extends SlothMojo {
 
     @Parameter(defaultValue = "${project.basedir}/db/dbSchema.json", property = "dbSchema", required = true)
     private File dbSchema;
-
-    @Parameter(defaultValue = "${project.build.directory}/generated-sources/sloth", property = "outputJavaDirectory", required = true)
-    private File outputJavaDirectory;
-
-    @Parameter(property = "genPackage", required = true)
-    private String genPackage;
-
 
     @Override
     public void execute() throws MojoExecutionException {

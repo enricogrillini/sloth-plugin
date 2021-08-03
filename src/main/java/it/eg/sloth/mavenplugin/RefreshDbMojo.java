@@ -44,20 +44,10 @@ import java.time.temporal.ChronoUnit;
         threadSafe = true,
         defaultPhase = LifecyclePhase.NONE,
         requiresDependencyResolution = ResolutionScope.COMPILE)
-public class RefreshDbMojo extends AbstractMojo {
-
-
-    @Parameter(defaultValue = "${project}", property = "project", required = true, readonly = true)
-    protected MavenProject project;
+public class RefreshDbMojo extends SlothMojo {
 
     @Parameter(defaultValue = "${project.basedir}/db/dbSchema.xml", property = "dbSchema", required = true)
     private File dbSchema;
-
-    @Parameter(defaultValue = "${project.build.directory}/generated-sources/sloth", property = "outputJavaDirectory", required = true)
-    private File outputJavaDirectory;
-
-    @Parameter(property = "genPackage", required = true)
-    private String genPackage;
 
     @Override
     public void execute() throws MojoExecutionException {

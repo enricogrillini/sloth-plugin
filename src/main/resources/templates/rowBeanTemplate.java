@@ -98,11 +98,11 @@ public class ${rowBeanClassName} extends DbRow {
     // Setter/Getter
 #foreach( $tableColumn in $table.plainColumnCollection )
     public $DbUtil.getJavaClass($tableColumn) get${tableColumn.name}() {
-        return get$DbUtil.getJavaClass($tableColumn)($tableColumn.name.toUpperCase());
+        return (${DbUtil.getJavaClass($tableColumn)})getObject($tableColumn.name.toUpperCase());
     }
 
     public $DbUtil.getJavaClass($tableColumn) getOld$tableColumn.name () {
-        return getOld$DbUtil.getJavaClass($tableColumn)($tableColumn.name.toUpperCase());
+        return (${DbUtil.getJavaClass($tableColumn)})getOldObject($tableColumn.name.toUpperCase());
     }
 
     public void set$tableColumn.name ($DbUtil.getJavaClass($tableColumn) $GenUtil.initLow($tableColumn.name)) {
@@ -158,7 +158,7 @@ public class ${rowBeanClassName} extends DbRow {
     private Query selectQuery() {
         Query query = new Query (SQL_SELECT);
 #foreach( $tableColumn in $table.primaryKeyCollection )
-        query.addParameter(${DbUtil.getTypes($tableColumn)}, getOld${tableColumn.name}());
+        query.addParameter(${DbUtil.getTypes($tableColumn)}, get${tableColumn.name}());
 #end
         return query;
     }
@@ -194,7 +194,7 @@ public class ${rowBeanClassName} extends DbRow {
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(getInsert());
             int i = 1;
-#foreach( $tableColumn in $table.tableColumnCollection )
+#foreach( $tableColumn in $table.plainColumnCollection )
             preparedStatement.setObject(i++, get${tableColumn.name}(), ${DbUtil.getTypes($tableColumn)});
 #end
 

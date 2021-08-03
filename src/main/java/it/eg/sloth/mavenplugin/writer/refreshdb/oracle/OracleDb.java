@@ -474,7 +474,7 @@ public class OracleDb extends AbstractDb {
 
                 it.eg.sloth.db.datasource.table.Table sqlConstants = new it.eg.sloth.db.datasource.table.Table();
 
-                query = new Query("select * from " + entityName + " Order by 1");
+                query = new Query("select * from " + entityName + " Order by NLSSORT(" + keyName + ",'NLS_SORT=BINARY')");
                 query.populateDataTable(sqlConstants);
 
                 for (Row row : sqlConstants) {

@@ -34,10 +34,7 @@ import java.time.temporal.ChronoUnit;
         threadSafe = true,
         defaultPhase = LifecyclePhase.GENERATE_SOURCES,
         requiresDependencyResolution = ResolutionScope.COMPILE)
-public class SpringMojo extends AbstractMojo {
-
-    @Parameter(defaultValue = "${project}", property = "project", required = true, readonly = true)
-    protected MavenProject project;
+public class SpringMojo extends SlothMojo {
 
     @Parameter(defaultValue = "${project.basedir}/src/main/java", property = "javaDirectory", required = true)
     private File javaDirectory;
@@ -47,12 +44,6 @@ public class SpringMojo extends AbstractMojo {
 
     @Parameter(property = "controllerPackage", required = true)
     private String controllerPackage;
-
-    @Parameter(defaultValue = "${project.build.directory}/generated-sources/sloth", property = "outputJavaDirectory", required = true)
-    private File outputJavaDirectory;
-
-    @Parameter(property = "genPackage", required = true)
-    private String genPackage;
 
     @Override
     public void execute() throws MojoExecutionException {

@@ -35,21 +35,10 @@ import java.time.temporal.ChronoUnit;
         threadSafe = true,
         defaultPhase = LifecyclePhase.GENERATE_SOURCES,
         requiresDependencyResolution = ResolutionScope.COMPILE)
-public class FormMojo extends AbstractMojo {
-
-    @Parameter(defaultValue = "${project}", property = "project", required = true, readonly = true)
-    protected MavenProject project;
+public class FormMojo extends SlothMojo {
 
     @Parameter(defaultValue = "${project.basedir}/form", property = "formDirectory", required = true)
     private File formDirectory;
-
-    @Parameter(defaultValue = "${project.build.directory}/generated-sources/sloth", property = "outputJavaDirectory", required = true)
-    private File outputJavaDirectory;
-
-    @Parameter(property = "genPackage", required = true)
-    private String genPackage;
-
-
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
