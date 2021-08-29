@@ -2,8 +2,8 @@ package it.eg.sloth.mavenplugin;
 
 import it.eg.sloth.dbmodeler.model.DataBase;
 import it.eg.sloth.mavenplugin.writer.bean2.BeanWriter;
-import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -41,7 +41,6 @@ public class Bean2Mojo extends SlothMojo {
 
     @Override
     public void execute() throws MojoExecutionException {
-        Instant start = Instant.now();
 
         getLog().info("------------------------------------------------------------------------");
         getLog().info("Sloth: Bean2 Experimental");
@@ -52,8 +51,15 @@ public class Bean2Mojo extends SlothMojo {
         getLog().info("------------------------------------------------------------------------");
         getLog().info("Generazione Bean Start");
 
-        if (!outputJavaDirectory.exists() && !this.outputJavaDirectory.mkdirs()) {
-            getLog().error("Could not create source directory!");
+        generateBean(project, getLog(), dbSchema, outputJavaDirectory, genPackage);
+    }
+
+    public static void generateBean(MavenProject project, Log log, File dbSchema, File outputJavaDirectory, String genPackage) throws MojoExecutionException {
+        Instant start = Instant.now();
+        log.info("Generazione Bean Start");
+
+        if (!outputJavaDirectory.exists() && !outputJavaDirectory.mkdirs()) {
+            log.error("Could not create source directory!");
         } else {
             try {
                 project.addCompileSourceRoot(outputJavaDirectory.getAbsolutePath());
@@ -61,16 +67,19 @@ public class Bean2Mojo extends SlothMojo {
                 DataBase dataBase = new DataBase();
                 dataBase.readJson(dbSchema);
 
-
-                getLog().info("  Schema type:" + dataBase.getDbConnection().getDataBaseType());
+                log.info("  Schema type:" + dataBase.getDbConnection().getDataBaseType());
                 BeanWriter beanWriter = BeanWriter.Factory.getBeanWriter(outputJavaDirectory, genPackage, dataBase.getDbConnection().getDataBaseType());
 
                 // Table bean
-                getLog().info("  Table bean");
-                beanWriter.writeTable(dataBase.getSchema().getTableCollection());
+                log.info("  Table bean");
+                beanWriter.writeTables(dataBase.getSchema().getTableCollection());
 
-                // Table bean
-                getLog().info("  Sequence Dao");
+                // View bean
+                log.info("  View bean");
+                beanWriter.writeViews(dataBase.getSchema().getViewCollection());
+
+                // Sequence Dao
+                log.info("  Sequence Dao");
                 beanWriter.writeSequence(dataBase.getSchema().getSequenceCollection());
 
             } catch (Exception e) {
@@ -78,6 +87,7 @@ public class Bean2Mojo extends SlothMojo {
             }
         }
 
-        getLog().info("Generazione Bean End: " + ChronoUnit.MILLIS.between(start, Instant.now()));
+        log.info("Generazione Bean End: " + ChronoUnit.MILLIS.between(start, Instant.now()));
     }
+
 }

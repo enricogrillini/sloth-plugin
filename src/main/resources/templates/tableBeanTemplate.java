@@ -8,7 +8,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 /**
- * TableBean per la tabella ${tableName}
+ * TableBean per la tabella/vista ${tableName}
  */
 public class ${tableBeanClassName} extends DbTable<${rowBeanClassName}> {
 

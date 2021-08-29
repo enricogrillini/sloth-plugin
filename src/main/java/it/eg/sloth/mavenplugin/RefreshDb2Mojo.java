@@ -1,15 +1,20 @@
 package it.eg.sloth.mavenplugin;
 
 import it.eg.sloth.dbmodeler.model.DataBase;
-import org.apache.maven.plugin.AbstractMojo;
+import it.eg.sloth.dbmodeler.model.schema.Schema;
+import it.eg.sloth.dbmodeler.writer.DbSchemaWriter;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
-import org.apache.maven.project.MavenProject;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.PrintWriter;
+import java.io.StringReader;
+import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 
@@ -61,10 +66,44 @@ public class RefreshDb2Mojo extends SlothMojo {
             dataBase.refreshSchema();
             dataBase.writeJson(dbSchema);
 
+            DbSchemaWriter dbSchemaWriter = DbSchemaWriter.Factory.getSchemaWriter(dataBase.getDbConnection().getDataBaseType());
+            Schema schema = dataBase.getSchema();
+
+            StringBuilder stringBuilder = new StringBuilder()
+                    .append(dbSchemaWriter.sqlTables(schema, false, false))
+                    .append(dbSchemaWriter.sqlIndexes(schema, false, false))
+                    .append(dbSchemaWriter.sqlPrimaryKey(schema))
+                    .append(dbSchemaWriter.sqlForeignKey(schema))
+                    .append(dbSchemaWriter.sqlSequences(schema))
+                    .append(dbSchemaWriter.sqlView(schema))
+                    .append(dbSchemaWriter.sqlFunction(schema))
+                    .append(dbSchemaWriter.sqlProcedure(schema));
+
+            // Converto il file temporaneo appena creato in un file con i fine linea coerenti con il Sistema operativo per facilitare i confronti con WinMerge
+            File ddlFile = new File(dbSchema.getParent(), FilenameUtils.getBaseName(dbSchema.getName()) + "-DDL.sql");
+            try (BufferedReader reader = new BufferedReader(new StringReader(stringBuilder.toString()));
+                 PrintWriter writer = new PrintWriter(ddlFile, StandardCharsets.UTF_8.name())) {
+
+                String line = null;
+                while ((line = reader.readLine()) != null) {
+                    writer.println(line);
+                }
+            }
+
+            getLog().info("  Aggiornati:");
+            getLog().info("    Tabelle: " + schema.getTableCollection().size());
+            getLog().info("    Sequence: " + schema.getSequenceCollection().size());
+            getLog().info("    View: " + schema.getViewCollection().size());
+            getLog().info("    Function: " + schema.getFunctionCollection().size());
+            getLog().info("    Procedure: " + schema.getProcedureCollection().size());
+
         } catch (Exception e) {
             throw new MojoExecutionException("Could not generate Java source code!", e);
         }
 
         getLog().info("Aggiornamento schema End: " + ChronoUnit.MILLIS.between(start, Instant.now()));
+
+        // Generazione Bean
+        Bean2Mojo.generateBean(project, getLog(), dbSchema, outputJavaDirectory, genPackage);
     }
 }

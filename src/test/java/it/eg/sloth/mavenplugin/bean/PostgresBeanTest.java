@@ -5,7 +5,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
-import java.sql.Types;
 
 class PostgresBeanTest extends AbstractBeanTest {
 
@@ -16,7 +15,9 @@ class PostgresBeanTest extends AbstractBeanTest {
 
     @Test
     void beanGenTest() throws IOException {
-        getBeanWriter().writeTable(dataBase.getSchema().getTableCollection());
+        getBeanWriter().writeTables(dataBase.getSchema().getTableCollection());
+
+        getBeanWriter().writeViews(dataBase.getSchema().getViewCollection());
 
         getBeanWriter().writeSequence(dataBase.getSchema().getSequenceCollection());
     }

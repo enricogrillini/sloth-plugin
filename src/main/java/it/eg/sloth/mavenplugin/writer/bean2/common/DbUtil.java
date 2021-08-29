@@ -2,6 +2,7 @@ package it.eg.sloth.mavenplugin.writer.bean2.common;
 
 import it.eg.sloth.dbmodeler.model.schema.table.Table;
 import it.eg.sloth.dbmodeler.model.schema.table.TableColumn;
+import it.eg.sloth.dbmodeler.model.schema.view.ViewColumn;
 import it.eg.sloth.framework.common.base.StringUtil;
 import it.eg.sloth.mavenplugin.common.GenUtil;
 
@@ -29,8 +30,8 @@ public class DbUtil {
 
     public static final String COLUMN = "new Column ({0}, {1}, {2}, {3}, {4}, {5})";
 
-    public static String getJavaClass(TableColumn tableColumn) {
-        String dataType = tableColumn.getType().toUpperCase();
+    private static String getJavaClass(String type) {
+        String dataType = type.toUpperCase();
 
         if (dataType.startsWith("NUMBER") || dataType.startsWith("DOUBLE") || dataType.startsWith("FLOAT") || dataType.startsWith("BIT") || dataType.startsWith("BIGINT") || dataType.startsWith("INT") || dataType.startsWith("TINYINT") || dataType.startsWith("UNIQUEIDENTIFIER") || dataType.startsWith("DECIMAL")) {
             return "BigDecimal";
@@ -51,8 +52,16 @@ public class DbUtil {
         }
     }
 
-    public static String getTypes(TableColumn tableColumn) {
-        String dataType = tableColumn.getType().toUpperCase();
+    public static String getJavaClass(ViewColumn tableColumn) {
+        return getJavaClass(tableColumn.getType());
+    }
+
+    public static String getJavaClass(TableColumn tableColumn) {
+        return getJavaClass(tableColumn.getType());
+    }
+
+    private static String getTypes(String type) {
+        String dataType = type.toUpperCase();
 
         if (dataType.equals("NUMBER(38,0)")) {
             return "Types.INTEGER";
@@ -77,6 +86,14 @@ public class DbUtil {
         }
     }
 
+    public static String getTypes(TableColumn tableColumn) {
+        return getTypes(tableColumn.getType());
+    }
+
+    public static String getTypes(ViewColumn viewColumn) {
+        return getTypes(viewColumn.getType());
+    }
+
     public static String genColumn(TableColumn tableColumn) {
         return MessageFormat.format(
                 COLUMN,
@@ -85,7 +102,19 @@ public class DbUtil {
                 tableColumn.isPrimaryKey(),
                 tableColumn.isNullable(),
                 tableColumn.getDataPrecision(),
-                getTypes(tableColumn)
+                getTypes(tableColumn.getType())
+        );
+    }
+
+    public static String genColumn(ViewColumn tableColumn) {
+        return MessageFormat.format(
+                COLUMN,
+                tableColumn.getName().toUpperCase(),
+                StringUtil.toJavaStringParameter(tableColumn.getDescription()),
+                false,
+                true,
+                tableColumn.getDataPrecision(),
+                getTypes(tableColumn.getType())
         );
     }
 
@@ -143,7 +172,7 @@ public class DbUtil {
     }
 
     public static String genDelete(Table table) {
-        StringBuilder result = new StringBuilder("Delete " + table.getName() + "\n");
+        StringBuilder result = new StringBuilder("Delete From " + table.getName() + "\n");
 
         int i = 0;
         for (TableColumn column : table.getPrimaryKeyCollection()) {
