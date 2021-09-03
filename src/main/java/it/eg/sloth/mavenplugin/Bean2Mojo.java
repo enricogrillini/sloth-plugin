@@ -49,7 +49,6 @@ public class Bean2Mojo extends SlothMojo {
         getLog().info("  outputJavaDirectory: " + outputJavaDirectory);
         getLog().info("  genPackage: " + genPackage);
         getLog().info("------------------------------------------------------------------------");
-        getLog().info("Generazione Bean Start");
 
         generateBean(project, getLog(), dbSchema, outputJavaDirectory, genPackage);
     }
@@ -87,7 +86,7 @@ public class Bean2Mojo extends SlothMojo {
             }
         }
 
-        log.info("Generazione Bean End: " + ChronoUnit.MILLIS.between(start, Instant.now()));
+        log.info("Generazione Bean End: " + ChronoUnit.MILLIS.between(start, Instant.now()) + " ms");
     }
 
 }

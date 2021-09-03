@@ -101,7 +101,7 @@ public class RefreshDb2Mojo extends SlothMojo {
             throw new MojoExecutionException("Could not generate Java source code!", e);
         }
 
-        getLog().info("Aggiornamento schema End: " + ChronoUnit.MILLIS.between(start, Instant.now()));
+        getLog().info("Aggiornamento schema End: " + ChronoUnit.MILLIS.between(start, Instant.now()) + " ms");
 
         // Generazione Bean
         Bean2Mojo.generateBean(project, getLog(), dbSchema, outputJavaDirectory, genPackage);
