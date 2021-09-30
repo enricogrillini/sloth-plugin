@@ -22,7 +22,7 @@ public abstract class AbstractBeanTest {
         dataBase = new DataBase();
         dataBase.readJson(ResourceUtil.resourceFile("dbmodeler/" + dataBaseType + "-db.json"));
 
-        beanWriter = BeanWriter.Factory.getBeanWriter(new File(TestFactory.OUTPUT_DIR), "it.itdistribuzione.gilda.gen", dataBase.getDbConnection().getDataBaseType());
+        beanWriter = BeanWriter.Factory.getBeanWriter(new File(TestFactory.OUTPUT_DIR), "it.eg.sloth.dbtool.gen", dataBase.getDbConnection().getDataBaseType());
         TestFactory.createOutputDir();
     }
 

@@ -6,6 +6,7 @@ import it.eg.sloth.db.datasource.row.DbRow;
 import it.eg.sloth.db.datasource.row.TransactionalRow;
 import it.eg.sloth.db.datasource.row.column.Column;
 import it.eg.sloth.db.datasource.row.lob.BLobData;
+import it.eg.sloth.db.datasource.row.lob.CLobData;
 import it.eg.sloth.db.manager.DataConnectionManager;
 import it.eg.sloth.db.query.SelectQueryInterface;
 import it.eg.sloth.db.query.query.Query;
@@ -13,8 +14,13 @@ import it.eg.sloth.framework.common.exception.FrameworkException;
 import lombok.SneakyThrows;
 
 import java.io.IOException;
+import java.io.Reader;
+import java.io.StringReader;
+import java.io.Writer;
 import java.math.BigDecimal;
 import java.sql.*;
+
+import org.apache.commons.io.IOUtils;
 
 /**
  * RowBean per la tabella ${tableName}
@@ -42,6 +48,11 @@ public class ${rowBeanClassName} extends DbRow {
 
     private static String SQL_UPDATE =
         ${DbUtil.genUpdate($table)};
+		
+#foreach( $tableColumn in $table.lobColumnCollection )
+    private static String SQL_UPDATE_${tableColumn.name.toUpperCase()} =
+        ${DbUtil.genUdateLob($table, $tableColumn)};
+#end
 
     public ${rowBeanClassName}() {
         super();
@@ -52,6 +63,12 @@ public class ${rowBeanClassName} extends DbRow {
 #foreach( $tableColumn in $table.blobColumnCollection )
         if (${tableColumn.name.toUpperCase()}.equalsIgnoreCase(name) && value instanceof byte[]) {
             set${tableColumn.name}((byte[]) value);
+            return this;
+        }
+#end
+#foreach( $tableColumn in $table.clobColumnCollection )
+        if (${tableColumn.name.toUpperCase()}.equalsIgnoreCase(name) && value instanceof String) {
+            set${tableColumn.name}((String) value);
             return this;
         }
 #end
@@ -154,7 +171,50 @@ public class ${rowBeanClassName} extends DbRow {
     }
 
 #end
+#foreach( $tableColumn in $table.clobColumnCollection )
+    protected void set${tableColumn.name}CLobData(CLobData cLobData) {
+        super.setObject(${tableColumn.name.toUpperCase()}, cLobData);
+    }
 
+    @SneakyThrows
+    protected CLobData get${tableColumn.name}CLobData() {
+        if (super.getObject(${tableColumn.name.toUpperCase()}) == null) {
+            set${tableColumn.name}CLobData(new CLobData(isAutoloadLob(), null));
+        }
+        return (CLobData) super.getObject(${tableColumn.name.toUpperCase()});
+    }
+
+    public String get${tableColumn.name}(Connection connection) throws SQLException, FrameworkException, IOException {
+        if (get${tableColumn.name}CLobData().getStatus() != CLobData.OFF_LINE) {
+              return get${tableColumn.name}CLobData().getValue();
+        }
+
+        if (this.getStatus() == RowStatus.INSERTED || this.getStatus() == RowStatus.INCONSISTENT) {
+            return null;
+        }
+
+        if (connection == null) {
+            try (Connection newConnection = DataConnectionManager.getInstance().getDataSource().getConnection()) {
+                return get${tableColumn.name}(newConnection);
+            }
+        } else {
+            DataRow row = selectQuery().selectRow(connection);
+            CLobData cLobData = new CLobData(true, (Clob) row.getObject(${tableColumn.name.toUpperCase()}));
+            set${tableColumn.name}CLobData(cLobData);
+
+            return cLobData.getValue();
+        }
+    }
+
+    public String get${tableColumn.name}() throws SQLException, FrameworkException, IOException {
+        return get${tableColumn.name}(null);
+    }
+
+    public void set${tableColumn.name}(String ${GenUtil.initLow($tableColumn.name)}) {
+        get${tableColumn.name}CLobData().setValue(${GenUtil.initLow($tableColumn.name)});
+    }
+
+#end
     private Query selectQuery() {
         Query query = new Query (SQL_SELECT);
 #foreach( $tableColumn in $table.primaryKeyCollection )
@@ -168,13 +228,35 @@ public class ${rowBeanClassName} extends DbRow {
     }
 
     private void updateLob(Connection connection) {
+#foreach( $tableColumn in $table.clobColumnCollection )		
+		try {
+			if (get${tableColumn.name}CLobData().getStatus() == CLobData.CHANGED) {
+				Query query = new Query(SQL_UPDATE_${tableColumn.name.toUpperCase()});
+    #foreach( $tableColumn in $table.primaryKeyCollection )
+				query.addParameter(${DbUtil.getTypes($tableColumn)}, get${tableColumn.name}());
+    #end
+                query.execute(connection);
+
+				if (get${tableColumn.name}CLobData().getValue() != null) {
+					DataRow row = selectQuery().selectRow(connection);
+					Clob clob = (Clob) row.getObject(${tableColumn.name.toUpperCase()});
+					try (Reader reader = new StringReader(get${tableColumn.name}CLobData().getValue());
+						Writer outputStream = clob.setCharacterStream(0)) {
+						IOUtils.copy(reader, outputStream);
+					}
+				}
+			}
+		} catch (Throwable e) {
+			throw new RuntimeException(e);
+		}
+#end
     }
 
     public void update(Connection connection) {
         try {
             int i = 1;
             PreparedStatement preparedStatement = connection.prepareStatement(getUpdate());
-#foreach( $tableColumn in $table.tableColumnCollection )
+#foreach( $tableColumn in $table.plainColumnCollection )
             preparedStatement.setObject(i++, get${tableColumn.name}(), ${DbUtil.getTypes($tableColumn)});
 #end
 #foreach( $tableColumn in $table.primaryKeyCollection )

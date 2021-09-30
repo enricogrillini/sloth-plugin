@@ -10,7 +10,7 @@ import java.text.MessageFormat;
 
 /**
  * Project: sloth-plugin
- * Copyright (C) 2019-2020 Enrico Grillini
+ * Copyright (C) 2019-2021 Enrico Grillini
  * <p>
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
@@ -209,4 +209,22 @@ public class DbUtil {
         return GenUtil.stringToJava(result.toString(), true);
     }
 
+    public static String genUdateLob(Table table, TableColumn column) {
+        StringBuilder result = new StringBuilder("Update " + table.getName() + "\n");
+        if (column.isClob()) {
+            result.append("Set " + column.getName() + " = empty_CLOB()\n");
+        } else if (column.isBlob()) {
+            result.append("Set " + column.getName() + " = empty_BLOB()\n");
+        }
+
+        int i = 0;
+        for (TableColumn tableColumn : table.getPrimaryKeyCollection()) {
+            result
+                    .append(i++ == 0 ? "Where " : " And\n       ")
+                    .append(tableColumn.getName() + " = ?");
+
+        }
+
+        return GenUtil.stringToJava(result.toString(), true);
+    }
 }
