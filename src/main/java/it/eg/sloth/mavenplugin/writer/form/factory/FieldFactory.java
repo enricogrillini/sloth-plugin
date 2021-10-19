@@ -231,6 +231,7 @@ public class FieldFactory {
                         .append("        .readOnly(" + multipleAutoComplete.isReadOnly() + ")\n")
                         .append("        .hidden(" + multipleAutoComplete.isHidden() + ")\n")
                         .append("        .viewModality(" + decodeViewModality(multipleAutoComplete.getViewModality()) + ")\n")
+                        .append("        .freeInput(" + multipleAutoComplete.isFreeInput() + ")\n")
                         .append("        .build();\n")
                         .append("      addChild(" + StringUtil.toJavaObjectName(multipleAutoComplete.getName()) + ");\n")
                         .append("\n");
