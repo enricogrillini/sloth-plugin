@@ -10,8 +10,9 @@ import lombok.Getter;
 import java.io.File;
 import java.io.IOException;
 
-public class AbstractBeanTest {
+public abstract class AbstractBeanTest {
 
+    @Getter
     protected DataBase dataBase;
 
     @Getter
@@ -21,10 +22,8 @@ public class AbstractBeanTest {
         dataBase = new DataBase();
         dataBase.readJson(ResourceUtil.resourceFile("dbmodeler/" + dataBaseType + "-db.json"));
 
-
-        beanWriter = BeanWriter.Factory.getBeanWriter(new File(TestFactory.OUTPUT_DIR), "it.itdistribuzione.gilda.gen", dataBase.getDbConnection().getDataBaseType());
+        beanWriter = BeanWriter.Factory.getBeanWriter(new File(TestFactory.OUTPUT_DIR), "it.eg.sloth.dbtool.gen", dataBase.getDbConnection().getDataBaseType());
         TestFactory.createOutputDir();
-        //TestFactory.createOutputDir("writerData");
     }
 
 

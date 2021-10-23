@@ -9,7 +9,7 @@ import java.nio.charset.StandardCharsets;
 
 /**
  * Project: sloth-plugin
- * Copyright (C) 2019-2020 Enrico Grillini
+ * Copyright (C) 2019-2021 Enrico Grillini
  * <p>
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
@@ -109,11 +109,11 @@ public class GenUtil {
         return stringToJava(value, false);
     }
 
-    public static String stringToJava(String value, boolean intented) {
+    public static String stringToJava(String value, boolean indented) {
         if (value == null) {
             return "null";
         } else {
-            if (intented) {
+            if (indented) {
                 return "\"" + StringUtil.replace(value, "\"", "\\\"").replace("\n", "\\n\" +\n        \"").replace("\r", "") + "\"";
             } else {
                 return "\"" + StringUtil.replace(value, "\"", "\\\"").replace("\n", "\\n\" +\n\"").replace("\r", "") + "\"";

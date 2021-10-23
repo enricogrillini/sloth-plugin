@@ -2,6 +2,7 @@ package it.eg.sloth.mavenplugin.writer.bean2.common;
 
 import it.eg.sloth.dbmodeler.model.schema.table.Table;
 import it.eg.sloth.dbmodeler.model.schema.table.TableColumn;
+import it.eg.sloth.dbmodeler.model.schema.view.ViewColumn;
 import it.eg.sloth.framework.common.base.StringUtil;
 import it.eg.sloth.mavenplugin.common.GenUtil;
 
@@ -9,7 +10,7 @@ import java.text.MessageFormat;
 
 /**
  * Project: sloth-plugin
- * Copyright (C) 2019-2020 Enrico Grillini
+ * Copyright (C) 2019-2021 Enrico Grillini
  * <p>
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
@@ -29,8 +30,8 @@ public class DbUtil {
 
     public static final String COLUMN = "new Column ({0}, {1}, {2}, {3}, {4}, {5})";
 
-    public static String getJavaClass(TableColumn tableColumn) {
-        String dataType = tableColumn.getType().toUpperCase();
+    private static String getJavaClass(String type) {
+        String dataType = type.toUpperCase();
 
         if (dataType.startsWith("NUMBER") || dataType.startsWith("DOUBLE") || dataType.startsWith("FLOAT") || dataType.startsWith("BIT") || dataType.startsWith("BIGINT") || dataType.startsWith("INT") || dataType.startsWith("TINYINT") || dataType.startsWith("UNIQUEIDENTIFIER") || dataType.startsWith("DECIMAL")) {
             return "BigDecimal";
@@ -51,8 +52,16 @@ public class DbUtil {
         }
     }
 
-    public static String getTypes(TableColumn tableColumn) {
-        String dataType = tableColumn.getType().toUpperCase();
+    public static String getJavaClass(ViewColumn tableColumn) {
+        return getJavaClass(tableColumn.getType());
+    }
+
+    public static String getJavaClass(TableColumn tableColumn) {
+        return getJavaClass(tableColumn.getType());
+    }
+
+    private static String getTypes(String type) {
+        String dataType = type.toUpperCase();
 
         if (dataType.equals("NUMBER(38,0)")) {
             return "Types.INTEGER";
@@ -64,7 +73,9 @@ public class DbUtil {
             return "Types.TIMESTAMP";
         } else if (dataType.startsWith("VARCHAR") || dataType.startsWith("CHAR") || dataType.startsWith("LONG") || dataType.startsWith("TEXT")) {
             return "Types.VARCHAR";
-        } else if (dataType.startsWith("BLOB") || dataType.startsWith("BYTEA")) {
+        } else if (dataType.startsWith("BYTEA")) {
+            return "Types.BINARY";
+        } else if (dataType.startsWith("BLOB")) {
             return "Types.BLOB";
         } else if (dataType.startsWith("CLOB")) {
             return "Types.CLOB";
@@ -75,6 +86,14 @@ public class DbUtil {
         }
     }
 
+    public static String getTypes(TableColumn tableColumn) {
+        return getTypes(tableColumn.getType());
+    }
+
+    public static String getTypes(ViewColumn viewColumn) {
+        return getTypes(viewColumn.getType());
+    }
+
     public static String genColumn(TableColumn tableColumn) {
         return MessageFormat.format(
                 COLUMN,
@@ -83,7 +102,19 @@ public class DbUtil {
                 tableColumn.isPrimaryKey(),
                 tableColumn.isNullable(),
                 tableColumn.getDataPrecision(),
-                getTypes(tableColumn)
+                getTypes(tableColumn.getType())
+        );
+    }
+
+    public static String genColumn(ViewColumn tableColumn) {
+        return MessageFormat.format(
+                COLUMN,
+                tableColumn.getName().toUpperCase(),
+                StringUtil.toJavaStringParameter(tableColumn.getDescription()),
+                false,
+                true,
+                tableColumn.getDataPrecision(),
+                getTypes(tableColumn.getType())
         );
     }
 
@@ -121,7 +152,7 @@ public class DbUtil {
         StringBuilder result = new StringBuilder("Insert into " + table.getName() + "\n");
 
         int i = 0;
-        for (TableColumn column : table.getTableColumnCollection()) {
+        for (TableColumn column : table.getPlainColumnCollection()) {
             if (!column.isLob()) {
                 result
                         .append(i++ == 0 ? "      (" : ",\n       ")
@@ -131,19 +162,17 @@ public class DbUtil {
         result.append(")\n");
 
         i = 0;
-        for (TableColumn column : table.getTableColumnCollection()) {
-            if (!column.isLob()) {
-                result
-                        .append(i++ == 0 ? "Values (" : ",\n        ")
-                        .append("?");
-            }
+        for (TableColumn column : table.getPlainColumnCollection()) {
+            result
+                    .append(i++ == 0 ? "Values (" : ",\n        ")
+                    .append("?");
         }
         result.append(")");
         return GenUtil.stringToJava(result.toString(), true);
     }
 
     public static String genDelete(Table table) {
-        StringBuilder result = new StringBuilder("Delete " + table.getName() + "\n");
+        StringBuilder result = new StringBuilder("Delete From " + table.getName() + "\n");
 
         int i = 0;
         for (TableColumn column : table.getPrimaryKeyCollection()) {
@@ -180,4 +209,22 @@ public class DbUtil {
         return GenUtil.stringToJava(result.toString(), true);
     }
 
+    public static String genUdateLob(Table table, TableColumn column) {
+        StringBuilder result = new StringBuilder("Update " + table.getName() + "\n");
+        if (column.isClob()) {
+            result.append("Set " + column.getName() + " = empty_CLOB()\n");
+        } else if (column.isBlob()) {
+            result.append("Set " + column.getName() + " = empty_BLOB()\n");
+        }
+
+        int i = 0;
+        for (TableColumn tableColumn : table.getPrimaryKeyCollection()) {
+            result
+                    .append(i++ == 0 ? "Where " : " And\n       ")
+                    .append(tableColumn.getName() + " = ?");
+
+        }
+
+        return GenUtil.stringToJava(result.toString(), true);
+    }
 }

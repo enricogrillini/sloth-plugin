@@ -20,7 +20,7 @@ import java.util.*;
 
 /**
  * Project: sloth-plugin
- * Copyright (C) 2019-2020 Enrico Grillini
+ * Copyright (C) 2019-2021 Enrico Grillini
  * <p>
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
@@ -474,7 +474,7 @@ public class OracleDb extends AbstractDb {
 
                 it.eg.sloth.db.datasource.table.Table sqlConstants = new it.eg.sloth.db.datasource.table.Table();
 
-                query = new Query("select * from " + entityName + " Order by 1");
+                query = new Query("select * from " + entityName + " Order by NLSSORT(" + keyName + ",'NLS_SORT=BINARY')");
                 query.populateDataTable(sqlConstants);
 
                 for (Row row : sqlConstants) {

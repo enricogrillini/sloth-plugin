@@ -8,7 +8,7 @@ import java.util.List;
 
 /**
  * Project: sloth-plugin
- * Copyright (C) 2019-2020 Enrico Grillini
+ * Copyright (C) 2019-2021 Enrico Grillini
  * <p>
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
@@ -231,6 +231,7 @@ public class FieldFactory {
                         .append("        .readOnly(" + multipleAutoComplete.isReadOnly() + ")\n")
                         .append("        .hidden(" + multipleAutoComplete.isHidden() + ")\n")
                         .append("        .viewModality(" + decodeViewModality(multipleAutoComplete.getViewModality()) + ")\n")
+                        .append("        .freeInput(" + multipleAutoComplete.isFreeInput() + ")\n")
                         .append("        .build();\n")
                         .append("      addChild(" + StringUtil.toJavaObjectName(multipleAutoComplete.getName()) + ");\n")
                         .append("\n");

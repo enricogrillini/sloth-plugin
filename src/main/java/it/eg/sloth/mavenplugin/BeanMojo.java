@@ -15,7 +15,7 @@ import java.time.temporal.ChronoUnit;
 
 /**
  * Project: sloth-plugin
- * Copyright (C) 2019-2020 Enrico Grillini
+ * Copyright (C) 2019-2021 Enrico Grillini
  * <p>
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
@@ -33,20 +33,10 @@ import java.time.temporal.ChronoUnit;
         threadSafe = true,
         defaultPhase = LifecyclePhase.GENERATE_SOURCES,
         requiresDependencyResolution = ResolutionScope.COMPILE)
-public class BeanMojo extends AbstractMojo {
-
-    @Parameter(defaultValue = "${project}", property = "project", required = true, readonly = true)
-    protected MavenProject project;
+public class BeanMojo extends SlothMojo {
 
     @Parameter(defaultValue = "${project.basedir}/db/dbSchema.xml", property = "dbSchema", required = true)
     private File dbSchema;
-
-    @Parameter(defaultValue = "${project.build.directory}/generated-sources/sloth", property = "outputJavaDirectory", required = true)
-    private File outputJavaDirectory;
-
-    @Parameter(property = "genPackage", required = true)
-    private String genPackage;
-
 
     @Override
     public void execute() throws MojoExecutionException {

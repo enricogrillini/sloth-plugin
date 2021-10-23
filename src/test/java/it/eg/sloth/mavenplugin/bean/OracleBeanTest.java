@@ -15,7 +15,9 @@ class OracleBeanTest extends AbstractBeanTest {
 
     @Test
     void beanGenTest() throws IOException {
-        getBeanWriter().writeTable(dataBase.getSchema().getTableCollection());
+        getBeanWriter().writeTables(dataBase.getSchema().getTableCollection());
+
+        getBeanWriter().writeViews(dataBase.getSchema().getViewCollection());
 
         getBeanWriter().writeSequence(dataBase.getSchema().getSequenceCollection());
     }

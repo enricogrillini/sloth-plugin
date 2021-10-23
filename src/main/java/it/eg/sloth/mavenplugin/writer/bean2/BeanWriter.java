@@ -3,6 +3,7 @@ package it.eg.sloth.mavenplugin.writer.bean2;
 import it.eg.sloth.dbmodeler.model.database.DataBaseType;
 import it.eg.sloth.dbmodeler.model.schema.sequence.Sequence;
 import it.eg.sloth.dbmodeler.model.schema.table.Table;
+import it.eg.sloth.dbmodeler.model.schema.view.View;
 import it.eg.sloth.mavenplugin.writer.bean2.h2.H2BeanWriter;
 import it.eg.sloth.mavenplugin.writer.bean2.oracle.OracleBeanWriter;
 import it.eg.sloth.mavenplugin.writer.bean2.postgres.PostgresBeanWriter;
@@ -13,7 +14,9 @@ import java.util.Collection;
 
 public interface BeanWriter {
 
-    void writeTable(Collection<Table> tableCollection) throws IOException;
+    void writeTables(Collection<Table> tableCollection) throws IOException;
+
+    void writeViews(Collection<View> viewCollection) throws IOException;
 
     void writeSequence(Collection<Sequence> sequenceCollection) throws IOException;
 
