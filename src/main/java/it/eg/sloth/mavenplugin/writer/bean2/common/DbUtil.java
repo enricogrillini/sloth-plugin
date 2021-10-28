@@ -70,9 +70,9 @@ public class DbUtil {
     private static String getTypes(String type) {
         String dataType = type.toUpperCase();
 
-        if (dataType.equals("NUMBER(38,0)")) {
+        if (dataType.equals("NUMBER(38,0)") || dataType.startsWith("BIGINT") || dataType.startsWith("INT")) {
             return "Types.INTEGER";
-        } else if (dataType.startsWith("NUMBER") || dataType.startsWith("DOUBLE") || dataType.startsWith("FLOAT") || dataType.startsWith("BIT") || dataType.startsWith("BIGINT") || dataType.startsWith("INT") || dataType.startsWith("TINYINT") || dataType.startsWith("UNIQUEIDENTIFIER") || dataType.startsWith("DECIMAL")) {
+        } else if (dataType.startsWith("NUMBER") || dataType.startsWith("DOUBLE") || dataType.startsWith("FLOAT") || dataType.startsWith("BIT") || dataType.startsWith("TINYINT") || dataType.startsWith("UNIQUEIDENTIFIER") || dataType.startsWith("DECIMAL")) {
             return "Types.DECIMAL";
         } else if (dataType.startsWith("DATE")) {
             return "Types.DATE";
@@ -237,6 +237,19 @@ public class DbUtil {
         }
 
         return GenUtil.stringToJava(result.toString(), true);
+    }
+
+    public static String genArgumentParamList(StoredProcedure procedure) {
+        StringBuilder result = new StringBuilder();
+
+        for (int i = 0; i < procedure.getArguments().size(); i++) {
+            if (i != 0) {
+                result.append(", ");
+            }
+            result.append("?");
+        }
+
+        return result.toString();
     }
 
     public static String genArgumentList(StoredProcedure procedure, boolean connection, boolean type) {

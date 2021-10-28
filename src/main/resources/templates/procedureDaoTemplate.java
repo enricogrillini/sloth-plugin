@@ -12,7 +12,7 @@ import it.eg.sloth.framework.common.exception.FrameworkException;
 public class ProceduresDao {
     // Costanti
 #foreach( $procedure in $procedureCollection )
-    public static final String ${procedure.name.toUpperCase()} = "call ${procedure.name}())";
+    private static final String ${procedure.name.toUpperCase()} = "call ${procedure.name}(${DbUtil.genArgumentParamList($procedure)})";
 #end
 
 #foreach( $procedure in $procedureCollection )
