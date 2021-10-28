@@ -1,5 +1,8 @@
 package it.eg.sloth.mavenplugin.writer.bean2.common;
 
+import it.eg.sloth.dbmodeler.model.schema.code.Argument;
+import it.eg.sloth.dbmodeler.model.schema.code.Procedure;
+import it.eg.sloth.dbmodeler.model.schema.code.StoredProcedure;
 import it.eg.sloth.dbmodeler.model.schema.table.Table;
 import it.eg.sloth.dbmodeler.model.schema.table.TableColumn;
 import it.eg.sloth.dbmodeler.model.schema.view.ViewColumn;
@@ -60,6 +63,10 @@ public class DbUtil {
         return getJavaClass(tableColumn.getType());
     }
 
+    public static String getJavaClass(Argument argument) {
+        return getJavaClass(argument.getType());
+    }
+
     private static String getTypes(String type) {
         String dataType = type.toUpperCase();
 
@@ -92,6 +99,10 @@ public class DbUtil {
 
     public static String getTypes(ViewColumn viewColumn) {
         return getTypes(viewColumn.getType());
+    }
+
+    public static String getTypes(Argument argument) {
+        return getTypes(argument.getType());
     }
 
     public static String genColumn(TableColumn tableColumn) {
@@ -226,5 +237,30 @@ public class DbUtil {
         }
 
         return GenUtil.stringToJava(result.toString(), true);
+    }
+
+    public static String genArgumentList(StoredProcedure procedure, boolean connection, boolean type) {
+        StringBuilder result = new StringBuilder();
+
+        if (connection) {
+            if (type) {
+                result.append("Connection connection");
+            } else {
+                result.append("connection");
+            }
+        }
+
+        for (Argument argument : procedure.getArguments()) {
+            if (result.length() != 0) {
+                result.append(", ");
+            }
+
+            if (type) {
+                result.append(getJavaClass(argument) + " ");
+            }
+            result.append(GenUtil.initLow(argument.getName()));
+        }
+
+        return result.toString();
     }
 }

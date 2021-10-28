@@ -1,6 +1,8 @@
 package it.eg.sloth.mavenplugin.writer.bean2;
 
 import it.eg.sloth.dbmodeler.model.database.DataBaseType;
+import it.eg.sloth.dbmodeler.model.schema.code.Function;
+import it.eg.sloth.dbmodeler.model.schema.code.Procedure;
 import it.eg.sloth.dbmodeler.model.schema.sequence.Sequence;
 import it.eg.sloth.dbmodeler.model.schema.table.Table;
 import it.eg.sloth.dbmodeler.model.schema.view.View;
@@ -19,6 +21,10 @@ public interface BeanWriter {
     void writeViews(Collection<View> viewCollection) throws IOException;
 
     void writeSequence(Collection<Sequence> sequenceCollection) throws IOException;
+
+    void writeFunction(Collection<Function> functionCollection) throws IOException;
+
+    void writeProcedure(Collection<Procedure> procedureCollection) throws IOException;
 
     class Factory {
         private Factory() {

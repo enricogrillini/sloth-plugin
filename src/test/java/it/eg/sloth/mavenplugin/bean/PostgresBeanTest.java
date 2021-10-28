@@ -20,6 +20,10 @@ class PostgresBeanTest extends AbstractBeanTest {
         getBeanWriter().writeViews(dataBase.getSchema().getViewCollection());
 
         getBeanWriter().writeSequence(dataBase.getSchema().getSequenceCollection());
+
+        getBeanWriter().writeFunction(dataBase.getSchema().getFunctionCollection());
+
+        getBeanWriter().writeProcedure(dataBase.getSchema().getProcedureCollection());
     }
 
 }

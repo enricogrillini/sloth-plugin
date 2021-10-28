@@ -1,6 +1,8 @@
 package it.eg.sloth.mavenplugin.writer.bean2;
 
 import it.eg.sloth.dbmodeler.model.database.DataBaseType;
+import it.eg.sloth.dbmodeler.model.schema.code.Function;
+import it.eg.sloth.dbmodeler.model.schema.code.Procedure;
 import it.eg.sloth.dbmodeler.model.schema.sequence.Sequence;
 import it.eg.sloth.dbmodeler.model.schema.table.Table;
 import it.eg.sloth.dbmodeler.model.schema.view.View;
@@ -26,6 +28,8 @@ public class AbstractBeanWriter implements BeanWriter {
     private static final String ROW_BEAN_TEMPLATE = "/templates/rowBeanTemplate-{0}.java";
     private static final String DECODE_MAP_TEMPLATE = "/templates/decodeMapTemplate.java";
     private static final String SEQUENCE_DAO_TEMPLATE = "/templates/sequenceDaoTemplate-{0}.java";
+    private static final String FUNCTION_DAO_TEMPLATE = "/templates/functionDaoTemplate.java";
+    private static final String PROCEDURE_DAO_TEMPLATE = "/templates/procedureDaoTemplate.java";
 
     private static final String DECODE_MAP = ".bean.decodemap";
     private static final String TABLE_BEAN = ".bean.tablebean";
@@ -41,6 +45,8 @@ public class AbstractBeanWriter implements BeanWriter {
     Template rowBeanTemplateForView;
     Template decodeMapTemplate;
     Template sequenceDaoTemplate;
+    Template functionDaoTemplate;
+    Template procedureDaoTemplate;
 
     @Getter
     DataBaseType dataBaseType;
@@ -60,6 +66,8 @@ public class AbstractBeanWriter implements BeanWriter {
         rowBeanTemplateForView = velocityEngine.getTemplate(MessageFormat.format(ROW_BEAN_TEMPLATE, "VIEW"));
         decodeMapTemplate = velocityEngine.getTemplate(DECODE_MAP_TEMPLATE);
         sequenceDaoTemplate = velocityEngine.getTemplate(MessageFormat.format(SEQUENCE_DAO_TEMPLATE, dataBaseType));
+        functionDaoTemplate = velocityEngine.getTemplate(FUNCTION_DAO_TEMPLATE);
+        procedureDaoTemplate = velocityEngine.getTemplate(PROCEDURE_DAO_TEMPLATE);
     }
 
     public void writeTables(Collection<Table> tableCollection) throws IOException {
@@ -180,13 +188,11 @@ public class AbstractBeanWriter implements BeanWriter {
     public void writeSequence(Collection<Sequence> sequenceCollection) throws IOException {
         // SequenceDao properties
         String sequencesDaoClassName = "SequencesDao";
-        String sequencesDaoFullClassName = genPackage + DAO + "." + sequencesDaoClassName;
         String sequencesDaoPackageName = genPackage + DAO;
         File sequencesDaoClassFile = GenUtil.getClassFile(outputJavaDirectory, sequencesDaoPackageName, sequencesDaoClassName);
 
         VelocityContext velocityContext = new VelocityContext();
         velocityContext.put("sequencesDaoPackageName", sequencesDaoPackageName);
-
         velocityContext.put("sequenceCollection", sequenceCollection);
 
         // SequenceDao
@@ -194,8 +200,44 @@ public class AbstractBeanWriter implements BeanWriter {
         try (FileWriter fileWriter = new FileWriter(sequencesDaoClassFile)) {
             sequenceDaoTemplate.merge(velocityContext, fileWriter);
         }
+    }
 
+    public void writeFunction(Collection<Function> functionCollection) throws IOException {
+        // FunctionDao properties
+        String functionsDaoClassName = "FunctionsDao";
+        String functionsDaoPackageName = genPackage + DAO;
+        File functionsDaoClassFile = GenUtil.getClassFile(outputJavaDirectory, functionsDaoPackageName, functionsDaoClassName);
 
+        VelocityContext velocityContext = new VelocityContext();
+        velocityContext.put("functionsDaoPackageName", functionsDaoPackageName);
+        velocityContext.put("functionCollection", functionCollection);
+        velocityContext.put("DbUtil", DbUtil.class);
+        velocityContext.put("GenUtil", GenUtil.class);
+
+        // FunctionsDao
+        FileUtils.forceMkdir(functionsDaoClassFile.getParentFile());
+        try (FileWriter fileWriter = new FileWriter(functionsDaoClassFile)) {
+            functionDaoTemplate.merge(velocityContext, fileWriter);
+        }
+    }
+
+    public void writeProcedure(Collection<Procedure> procedureCollection) throws IOException {
+        // ProcedureDao properties
+        String proceduresDaoClassName = "ProceduresDao";
+        String proceduresDaoPackageName = genPackage + DAO;
+        File proceduresDaoClassFile = GenUtil.getClassFile(outputJavaDirectory, proceduresDaoPackageName, proceduresDaoClassName);
+
+        VelocityContext velocityContext = new VelocityContext();
+        velocityContext.put("proceduresDaoPackageName", proceduresDaoPackageName);
+        velocityContext.put("procedureCollection", procedureCollection);
+        velocityContext.put("DbUtil", DbUtil.class);
+        velocityContext.put("GenUtil", GenUtil.class);
+
+        // SequenceDao
+        FileUtils.forceMkdir(proceduresDaoClassFile.getParentFile());
+        try (FileWriter fileWriter = new FileWriter(proceduresDaoClassFile)) {
+            procedureDaoTemplate.merge(velocityContext, fileWriter);
+        }
     }
 
 }
