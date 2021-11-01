@@ -1,6 +1,7 @@
 package it.eg.sloth.mavenplugin.writer.bean2.common;
 
 import it.eg.sloth.dbmodeler.model.schema.code.Argument;
+import it.eg.sloth.dbmodeler.model.schema.code.Function;
 import it.eg.sloth.dbmodeler.model.schema.code.Procedure;
 import it.eg.sloth.dbmodeler.model.schema.code.StoredProcedure;
 import it.eg.sloth.dbmodeler.model.schema.table.Table;
@@ -48,8 +49,8 @@ public class DbUtil {
             return "byte[]";
         } else if (dataType.startsWith("CLOB")) {
             return "String";
-        } else if (dataType.startsWith("PL/SQL BOOLEAN")) {
-            return "boolean";
+        } else if (dataType.startsWith("PL/SQL BOOLEAN") || dataType.startsWith("BOOL")) {
+            return "Boolean";
         } else {
             return null;
         }
@@ -65,6 +66,10 @@ public class DbUtil {
 
     public static String getJavaClass(Argument argument) {
         return getJavaClass(argument.getType());
+    }
+
+    public static String getJavaClass(Function function) {
+        return getJavaClass(function.getReturnType());
     }
 
     private static String getTypes(String type) {
@@ -88,6 +93,8 @@ public class DbUtil {
             return "Types.CLOB";
         } else if (dataType.startsWith("PL/SQL BOOLEAN")) {
             return "Types.VARCHAR";
+        } else if (dataType.startsWith("BOOL")) {
+            return "Types.BOOLEAN";
         } else {
             return null;
         }
@@ -103,6 +110,10 @@ public class DbUtil {
 
     public static String getTypes(Argument argument) {
         return getTypes(argument.getType());
+    }
+
+    public static String getTypes(Function function) {
+        return getTypes(function.getReturnType());
     }
 
     public static String genColumn(TableColumn tableColumn) {
