@@ -77,7 +77,8 @@ public class RefreshDb2Mojo extends SlothMojo {
                     .append(dbSchemaWriter.sqlSequences(schema))
                     .append(dbSchemaWriter.sqlView(schema))
                     .append(dbSchemaWriter.sqlFunction(schema))
-                    .append(dbSchemaWriter.sqlProcedure(schema));
+                    .append(dbSchemaWriter.sqlProcedure(schema))
+                    .append(dbSchemaWriter.sqlPackage(schema));
 
             // Converto il file temporaneo appena creato in un file con i fine linea coerenti con il Sistema operativo per facilitare i confronti con WinMerge
             File ddlFile = new File(dbSchema.getParent(), FilenameUtils.getBaseName(dbSchema.getName()) + "-DDL.sql");
@@ -96,6 +97,7 @@ public class RefreshDb2Mojo extends SlothMojo {
             getLog().info("    View: " + schema.getViewCollection().size());
             getLog().info("    Function: " + schema.getFunctionCollection().size());
             getLog().info("    Procedure: " + schema.getProcedureCollection().size());
+            getLog().info("    Package: " + schema.getPackageCollection().size());
 
         } catch (Exception e) {
             throw new MojoExecutionException("Could not generate Java source code!", e);
