@@ -89,6 +89,10 @@ public class Bean2Mojo extends SlothMojo {
                 log.info("  Procedure Dao");
                 beanWriter.writeProcedure(dataBase.getSchema().getProcedureCollection());
 
+                // Package Dao
+                log.info("  Procedure Dao");
+                beanWriter.writePackages(dataBase.getSchema().getPackageCollection());
+
             } catch (Exception e) {
                 throw new MojoExecutionException("Could not generate Java source code!", e);
             }

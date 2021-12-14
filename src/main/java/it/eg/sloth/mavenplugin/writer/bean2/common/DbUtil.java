@@ -2,11 +2,11 @@ package it.eg.sloth.mavenplugin.writer.bean2.common;
 
 import it.eg.sloth.dbmodeler.model.schema.code.Argument;
 import it.eg.sloth.dbmodeler.model.schema.code.Function;
-import it.eg.sloth.dbmodeler.model.schema.code.Procedure;
-import it.eg.sloth.dbmodeler.model.schema.code.StoredProcedure;
+import it.eg.sloth.dbmodeler.model.schema.code.Method;
 import it.eg.sloth.dbmodeler.model.schema.table.Table;
 import it.eg.sloth.dbmodeler.model.schema.table.TableColumn;
 import it.eg.sloth.dbmodeler.model.schema.view.ViewColumn;
+import it.eg.sloth.framework.common.base.BaseFunction;
 import it.eg.sloth.framework.common.base.StringUtil;
 import it.eg.sloth.mavenplugin.common.GenUtil;
 
@@ -34,6 +34,22 @@ public class DbUtil {
 
     public static final String COLUMN = "new Column ({0}, {1}, {2}, {3}, {4}, {5})";
 
+    private static final String STATEMENT_FUNCTION_BOOL = "'{' ? = call lib.booleanToChar({0}({1})) '}'";
+    private static final String STATEMENT_FUNCTION = "'{' ? = call {0}({1}) '}'";
+    private static final String STATEMENT_PROCEDURE = "'{' call {0}({1}) '}'";
+
+    private static final String ORACLE_BOOLEAN = "PL/SQL BOOLEAN";
+
+    public static boolean isOracleBoolean(String dataType) {
+        if (dataType == null)
+            return false;
+
+        if (dataType.indexOf(ORACLE_BOOLEAN) == 0)
+            return true;
+        else
+            return false;
+    }
+
     private static String getJavaClass(String type) {
         String dataType = type.toUpperCase();
 
@@ -49,7 +65,7 @@ public class DbUtil {
             return "byte[]";
         } else if (dataType.startsWith("CLOB")) {
             return "String";
-        } else if (dataType.startsWith("PL/SQL BOOLEAN") || dataType.startsWith("BOOL")) {
+        } else if (dataType.startsWith(ORACLE_BOOLEAN) || dataType.startsWith("BOOL")) {
             return "Boolean";
         } else {
             return null;
@@ -91,7 +107,7 @@ public class DbUtil {
             return "Types.BLOB";
         } else if (dataType.startsWith("CLOB")) {
             return "Types.CLOB";
-        } else if (dataType.startsWith("PL/SQL BOOLEAN")) {
+        } else if (dataType.startsWith(ORACLE_BOOLEAN)) {
             return "Types.VARCHAR";
         } else if (dataType.startsWith("BOOL")) {
             return "Types.BOOLEAN";
@@ -250,7 +266,19 @@ public class DbUtil {
         return GenUtil.stringToJava(result.toString(), true);
     }
 
-    public static String genArgumentParamList(StoredProcedure procedure) {
+    public static String genStatement(String packageName, Method dbMethod) {
+        String prefix = BaseFunction.isBlank(packageName) ? StringUtil.EMPTY : packageName + ".";
+        if (dbMethod instanceof Function) {
+            if (isOracleBoolean(((Function) dbMethod).getReturnType()))
+                return MessageFormat.format(STATEMENT_FUNCTION_BOOL, prefix + dbMethod.getName(), genArgumentParamList(dbMethod));
+            else
+                return MessageFormat.format(STATEMENT_FUNCTION, prefix + dbMethod.getName(), genArgumentParamList(dbMethod));
+        } else {
+            return MessageFormat.format(STATEMENT_PROCEDURE, prefix + dbMethod.getName(), genArgumentParamList(dbMethod));
+        }
+    }
+
+    public static String genArgumentParamList(Method procedure) {
         StringBuilder result = new StringBuilder();
 
         for (int i = 0; i < procedure.getArguments().size(); i++) {
@@ -263,7 +291,7 @@ public class DbUtil {
         return result.toString();
     }
 
-    public static String genArgumentList(StoredProcedure procedure, boolean connection, boolean type) {
+    public static String genArgumentList(Method procedure, boolean connection, boolean type) {
         StringBuilder result = new StringBuilder();
 
         if (connection) {

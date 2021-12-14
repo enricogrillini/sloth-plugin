@@ -75,6 +75,7 @@ public class ${rowBeanClassName} extends DbRow {
         return super.setObject(name, value);
        }
 
+#if ( $table.getPrimaryKeyCollection().size() > 0)
     public ${rowBeanClassName}(${DbUtil.genPrimaryKeyList($table, true)}) throws SQLException, IOException, FrameworkException {
         this(null, ${DbUtil.genPrimaryKeyList($table, false)});
     }
@@ -86,6 +87,7 @@ public class ${rowBeanClassName} extends DbRow {
 #end
         select(connection);
     }
+#end
 
     @Override
     public Column[] getColumns() {

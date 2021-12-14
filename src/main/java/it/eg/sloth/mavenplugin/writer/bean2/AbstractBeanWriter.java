@@ -2,6 +2,7 @@ package it.eg.sloth.mavenplugin.writer.bean2;
 
 import it.eg.sloth.dbmodeler.model.database.DataBaseType;
 import it.eg.sloth.dbmodeler.model.schema.code.Function;
+import it.eg.sloth.dbmodeler.model.schema.code.Package;
 import it.eg.sloth.dbmodeler.model.schema.code.Procedure;
 import it.eg.sloth.dbmodeler.model.schema.sequence.Sequence;
 import it.eg.sloth.dbmodeler.model.schema.table.Table;
@@ -21,7 +22,22 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.Collection;
+import java.util.stream.Collectors;
 
+/**
+ * Project: sloth-plugin
+ * Copyright (C) 2019-2021 Enrico Grillini
+ * <p>
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * <p>
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+ * <p>
+ * You should have received a copy of the GNU General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * @author Enrico Grillini
+ */
 public class AbstractBeanWriter implements BeanWriter {
 
     private static final String TABLE_BEAN_TEMPLATE = "/templates/tableBeanTemplate.java";
@@ -30,6 +46,7 @@ public class AbstractBeanWriter implements BeanWriter {
     private static final String SEQUENCE_DAO_TEMPLATE = "/templates/sequenceDaoTemplate-{0}.java";
     private static final String FUNCTION_DAO_TEMPLATE = "/templates/functionDaoTemplate.java";
     private static final String PROCEDURE_DAO_TEMPLATE = "/templates/procedureDaoTemplate.java";
+    private static final String PACKAGE_DAO_TEMPLATE = "/templates/packageDaoTemplate.java";
 
     private static final String DECODE_MAP = ".bean.decodemap";
     private static final String TABLE_BEAN = ".bean.tablebean";
@@ -47,6 +64,7 @@ public class AbstractBeanWriter implements BeanWriter {
     Template sequenceDaoTemplate;
     Template functionDaoTemplate;
     Template procedureDaoTemplate;
+    Template packageDaoTemplate;
 
     @Getter
     DataBaseType dataBaseType;
@@ -68,6 +86,7 @@ public class AbstractBeanWriter implements BeanWriter {
         sequenceDaoTemplate = velocityEngine.getTemplate(MessageFormat.format(SEQUENCE_DAO_TEMPLATE, dataBaseType));
         functionDaoTemplate = velocityEngine.getTemplate(FUNCTION_DAO_TEMPLATE);
         procedureDaoTemplate = velocityEngine.getTemplate(PROCEDURE_DAO_TEMPLATE);
+        packageDaoTemplate = velocityEngine.getTemplate(PACKAGE_DAO_TEMPLATE);
     }
 
     public void writeTables(Collection<Table> tableCollection) throws IOException {
@@ -238,6 +257,49 @@ public class AbstractBeanWriter implements BeanWriter {
         try (FileWriter fileWriter = new FileWriter(proceduresDaoClassFile)) {
             procedureDaoTemplate.merge(velocityContext, fileWriter);
         }
+    }
+
+    public void writePackages(Collection<Package> packageCollection) throws IOException {
+        for (Package dbObject : packageCollection) {
+            writePackage(dbObject);
+        }
+    }
+
+    public void writePackage(Package dbObject) throws IOException {
+        // TableBean properties
+        String packageDaoClassName = GenUtil.initCap(dbObject.getName()) + "PackageDao";
+        String packageDaoPackageName = genPackage + DAO;
+        File packageDaoClassFile = GenUtil.getClassFile(outputJavaDirectory, packageDaoPackageName, packageDaoClassName);
+
+
+        VelocityContext velocityContext = new VelocityContext();
+        velocityContext.put("packageDaoClassName", packageDaoClassName);
+        velocityContext.put("packageDaoPackageName", packageDaoPackageName);
+
+        velocityContext.put("packageName", dbObject.getName());
+
+        // Procedure
+        Collection<Procedure> procedureCollection = dbObject.getProcedureCollection().stream()
+                .filter(p -> p.isJavaPortable())
+                .collect(Collectors.toList());
+
+        velocityContext.put("procedureCollection", procedureCollection);
+
+        // Function
+        Collection<Function> functionCollection = dbObject.getFunctionCollection().stream()
+                .filter(f -> f.isJavaPortable())
+                .collect(Collectors.toList());
+        velocityContext.put("functionCollection", functionCollection);
+
+        velocityContext.put("DbUtil", DbUtil.class);
+        velocityContext.put("GenUtil", GenUtil.class);
+
+        // Write class - Table Bean
+        FileUtils.forceMkdir(packageDaoClassFile.getParentFile());
+        try (FileWriter fileWriter = new FileWriter(packageDaoClassFile)) {
+            packageDaoTemplate.merge(velocityContext, fileWriter);
+        }
+
     }
 
 }

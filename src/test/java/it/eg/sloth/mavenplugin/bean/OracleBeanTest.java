@@ -24,6 +24,8 @@ class OracleBeanTest extends AbstractBeanTest {
         getBeanWriter().writeFunction(dataBase.getSchema().getFunctionCollection());
 
         getBeanWriter().writeProcedure(dataBase.getSchema().getProcedureCollection());
+
+        getBeanWriter().writePackages(dataBase.getSchema().getPackageCollection());
     }
 
 }
