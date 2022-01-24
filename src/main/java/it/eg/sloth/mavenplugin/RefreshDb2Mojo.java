@@ -76,9 +76,9 @@ public class RefreshDb2Mojo extends SlothMojo {
                     .append(dbSchemaWriter.sqlForeignKeys(schema))
                     .append(dbSchemaWriter.sqlSequences(schema))
                     .append(dbSchemaWriter.sqlView(schema))
-                    .append(dbSchemaWriter.sqlFunction(schema))
-                    .append(dbSchemaWriter.sqlProcedure(schema))
-                    .append(dbSchemaWriter.sqlPackage(schema));
+                    .append(dbSchemaWriter.sqlFunctions(schema))
+                    .append(dbSchemaWriter.sqlProcedures(schema))
+                    .append(dbSchemaWriter.sqlPackages(schema));
 
             // Converto il file temporaneo appena creato in un file con i fine linea coerenti con il Sistema operativo per facilitare i confronti con WinMerge
             File ddlFile = new File(dbSchema.getParent(), FilenameUtils.getBaseName(dbSchema.getName()) + "-DDL.sql");
