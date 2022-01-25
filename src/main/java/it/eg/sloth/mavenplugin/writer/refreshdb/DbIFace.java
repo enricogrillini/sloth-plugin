@@ -22,18 +22,11 @@ import java.sql.SQLException;
  * You should have received a copy of the GNU General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @author Enrico Grillini
- *
  */
 public interface DbIFace {
 
-    public String getOwner();
+    String getOwner();
 
-    public Tables loadTables(String tableName) throws SQLException, IOException, FrameworkException;
-
-    public Views loadViews() throws SQLException, IOException, FrameworkException;
-
-    public Packages loadPackages() throws SQLException, IOException, FrameworkException;
-
-    public Sequences loadSequences() throws SQLException, IOException, FrameworkException;
+    Tables loadTables(String tableName) throws SQLException, IOException, FrameworkException;
 
 }

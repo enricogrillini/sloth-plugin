@@ -78,9 +78,9 @@ public class BeanMojo extends SlothMojo {
 //                    getLog().info("  Table bean");
 //                    beanWriter.writeTables(dataBase.getSchema().getTableCollection());
 //
-//                    // View bean
-//                    getLog().info("  View bean");
-//                    beanWriter.writeViews(dataBase.getSchema().getViewCollection());
+                    // View bean
+                    getLog().info("  View bean");
+                    beanWriter.writeViews(dataBase.getSchema().getViewCollection());
 
                     // Sequence Dao
                     getLog().info("  Sequence Dao");

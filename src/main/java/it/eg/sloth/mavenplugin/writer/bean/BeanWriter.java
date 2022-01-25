@@ -1,21 +1,20 @@
 package it.eg.sloth.mavenplugin.writer.bean;
 
 
-import it.eg.sloth.jaxb.dbschema.*;
-import it.eg.sloth.jaxb.dbschema.Package;
-import it.eg.sloth.mavenplugin.writer.bean.oraclebean.*;
+import it.eg.sloth.jaxb.dbschema.DbToolProject;
+import it.eg.sloth.jaxb.dbschema.Table;
+import it.eg.sloth.mavenplugin.writer.bean.oraclebean.TableBeanWriter;
+import it.eg.sloth.mavenplugin.writer.bean.oraclebean.VelocityTableBeanWriter;
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 
 /**
  * Project: sloth-plugin
@@ -30,7 +29,6 @@ import java.nio.charset.StandardCharsets;
  * You should have received a copy of the GNU General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @author Enrico Grillini
- *
  */
 public class BeanWriter {
 
@@ -56,12 +54,6 @@ public class BeanWriter {
         DbToolProject dbToolProject = null;
         try (InputStream inStream = new FileInputStream(dbSchemaXml)) {
             dbToolProject = (DbToolProject) jaxbUnmarshaller.unmarshal(inStream);
-        }
-
-        log.info("  View bean");
-        for (View view : dbToolProject.getDataBase().getViews().getView()) {
-            ViewBeanWriter writer = new ViewBeanWriter(outputJavaDirectory, genPackage, view);
-            writer.write();
         }
 
         log.info("  Table bean");

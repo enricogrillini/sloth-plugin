@@ -101,15 +101,6 @@ public class RefreshDbMojo extends SlothMojo {
             getLog().info("  loadTables");
             dbToolProject.getDataBase().setTables(dbIFace.loadTables(null));
 
-            getLog().info("  loadViews");
-            dbToolProject.getDataBase().setViews(dbIFace.loadViews());
-
-            getLog().info("  loadPackages");
-            dbToolProject.getDataBase().setPackages(dbIFace.loadPackages());
-
-            getLog().info("  loadSequences");
-            dbToolProject.getDataBase().setSequences(dbIFace.loadSequences());
-
             Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
             jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
             jaxbMarshaller.setProperty(Marshaller.JAXB_ENCODING, StandardCharsets.UTF_8.name());
