@@ -58,12 +58,6 @@ public class BeanWriter {
             dbToolProject = (DbToolProject) jaxbUnmarshaller.unmarshal(inStream);
         }
 
-        log.info("  Package bean");
-        for (Package dbPackage : dbToolProject.getDataBase().getPackages().getPackage()) {
-            PackageBeanWriter writer = new PackageBeanWriter(outputJavaDirectory, genPackage, dbPackage);
-            writer.write();
-        }
-
         log.info("  View bean");
         for (View view : dbToolProject.getDataBase().getViews().getView()) {
             ViewBeanWriter writer = new ViewBeanWriter(outputJavaDirectory, genPackage, view);
@@ -78,11 +72,6 @@ public class BeanWriter {
 
             velocityTableBeanWriter.write(table);
         }
-
-        log.info("  Sequence Dao");
-        SequenceDaoWriter writer = new SequenceDaoWriter(outputJavaDirectory, genPackage, dbToolProject.getDataBase().getSequences());
-        writer.write();
-
 
     }
 

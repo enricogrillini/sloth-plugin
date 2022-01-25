@@ -90,7 +90,7 @@ public class Bean2Mojo extends SlothMojo {
                 beanWriter.writeProcedure(dataBase.getSchema().getProcedureCollection());
 
                 // Package Dao
-                log.info("  Procedure Dao");
+                log.info("  Package Dao");
                 beanWriter.writePackages(dataBase.getSchema().getPackageCollection());
 
             } catch (Exception e) {

@@ -1,11 +1,14 @@
 package it.eg.sloth.mavenplugin;
 
 import it.eg.sloth.db.manager.DataConnectionManager;
+import it.eg.sloth.dbmodeler.model.schema.Schema;
+import it.eg.sloth.dbmodeler.writer.DbSchemaWriter;
 import it.eg.sloth.jaxb.dbschema.DataBase;
 import it.eg.sloth.jaxb.dbschema.DbToolProject;
 import it.eg.sloth.mavenplugin.writer.bean.BeanWriter;
 import it.eg.sloth.mavenplugin.writer.refreshdb.DbIFace;
 import it.eg.sloth.mavenplugin.writer.refreshdb.oracle.OracleDb;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
@@ -49,8 +52,17 @@ public class RefreshDbMojo extends SlothMojo {
     @Parameter(defaultValue = "${project.basedir}/db/dbSchema.xml", property = "dbSchema", required = true)
     private File dbSchema;
 
+    @Parameter(defaultValue = "${project.basedir}/db/dbSchema.json", property = "dbSchema2", required = true)
+    private File dbSchema2;
+
     @Override
     public void execute() throws MojoExecutionException {
+        execute1();
+        execute2();
+    }
+
+
+    public void execute1() throws MojoExecutionException {
         Instant start = Instant.now();
 
         ////////////////
@@ -141,5 +153,71 @@ public class RefreshDbMojo extends SlothMojo {
         }
 
         getLog().info("Aggiornamento schema End: " + ChronoUnit.MILLIS.between(start, Instant.now()));
+    }
+
+
+    public void execute2() throws MojoExecutionException {
+        Instant start = Instant.now();
+
+        ////////////////
+        // REFRESH DB //
+        ////////////////
+        getLog().info("------------------------------------------------------------------------");
+        getLog().info("Sloth: goal refreshdb2");
+        getLog().info("  project: " + project);
+        getLog().info("  dbSchema: " + dbSchema2);
+        getLog().info("  outputJavaDirectory: " + outputJavaDirectory);
+        getLog().info("  genPackage: " + genPackage);
+        getLog().info("------------------------------------------------------------------------");
+        getLog().info("Aggiornamento schema Start");
+
+        try {
+            it.eg.sloth.dbmodeler.model.DataBase dataBase = new it.eg.sloth.dbmodeler.model.DataBase();
+            dataBase.readJson(dbSchema2);
+            getLog().info("  Schema type:" + dataBase.getDbConnection().getDataBaseType());
+            dataBase.refreshSchema();
+            dataBase.writeJson(dbSchema2);
+
+            DbSchemaWriter dbSchemaWriter = DbSchemaWriter.Factory.getSchemaWriter(dataBase.getDbConnection().getDataBaseType());
+            Schema schema = dataBase.getSchema();
+
+            StringBuilder stringBuilder = new StringBuilder()
+                    .append(dbSchemaWriter.sqlTables(schema, false, false))
+                    .append(dbSchemaWriter.sqlIndexes(schema, false, false))
+                    .append(dbSchemaWriter.sqlPrimaryKeys(schema))
+                    .append(dbSchemaWriter.sqlForeignKeys(schema))
+                    .append(dbSchemaWriter.sqlSequences(schema))
+                    .append(dbSchemaWriter.sqlView(schema))
+                    .append(dbSchemaWriter.sqlFunctions(schema))
+                    .append(dbSchemaWriter.sqlProcedures(schema))
+                    .append(dbSchemaWriter.sqlPackages(schema));
+
+            // Converto il file temporaneo appena creato in un file con i fine linea coerenti con il Sistema operativo per facilitare i confronti con WinMerge
+            File ddlFile = new File(dbSchema2.getParent(), FilenameUtils.getBaseName(dbSchema2.getName()) + "-DDL.sql");
+            try (BufferedReader reader = new BufferedReader(new StringReader(stringBuilder.toString()));
+                 PrintWriter writer = new PrintWriter(ddlFile, StandardCharsets.UTF_8.name())) {
+
+                String line = null;
+                while ((line = reader.readLine()) != null) {
+                    writer.println(line);
+                }
+            }
+
+            getLog().info("  Aggiornati:");
+            getLog().info("    Tabelle: " + schema.getTableCollection().size());
+            getLog().info("    Sequence: " + schema.getSequenceCollection().size());
+            getLog().info("    View: " + schema.getViewCollection().size());
+            getLog().info("    Function: " + schema.getFunctionCollection().size());
+            getLog().info("    Procedure: " + schema.getProcedureCollection().size());
+            getLog().info("    Package: " + schema.getPackageCollection().size());
+
+        } catch (Exception e) {
+            throw new MojoExecutionException("Could not generate Java source code!", e);
+        }
+
+        getLog().info("Aggiornamento schema End: " + ChronoUnit.MILLIS.between(start, Instant.now()) + " ms");
+
+        // Generazione Bean
+        Bean2Mojo.generateBean(project, getLog(), dbSchema2, outputJavaDirectory, genPackage);
     }
 }

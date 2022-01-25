@@ -51,7 +51,7 @@ public class RefreshDb2Mojo extends SlothMojo {
         // REFRESH DB //
         ////////////////
         getLog().info("------------------------------------------------------------------------");
-        getLog().info("Sloth: goal refreshdb2 Experimental");
+        getLog().info("Sloth: goal refreshdb2");
         getLog().info("  project: " + project);
         getLog().info("  dbSchema: " + dbSchema);
         getLog().info("  outputJavaDirectory: " + outputJavaDirectory);
