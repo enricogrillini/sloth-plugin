@@ -648,8 +648,8 @@ public class TableBeanWriter {
     }
 
     public void write() throws IOException {
-        // Row Bean
-        GenUtil.writeFile(rowBeanClassFile, getRowBean().toString());
+//        // Row Bean
+//        GenUtil.writeFile(rowBeanClassFile, getRowBean().toString());
 
         // Decode Bean
         if (table.getName().toUpperCase().contains("DEC_")) {

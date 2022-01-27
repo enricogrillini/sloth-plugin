@@ -74,10 +74,10 @@ public class BeanMojo extends SlothMojo {
                     getLog().info("  Schema type:" + dataBase.getDbConnection().getDataBaseType());
                     it.eg.sloth.mavenplugin.writer.bean2.BeanWriter beanWriter = it.eg.sloth.mavenplugin.writer.bean2.BeanWriter.Factory.getBeanWriter(outputJavaDirectory, genPackage, dataBase.getDbConnection().getDataBaseType());
 
-//                    // Table bean
-//                    getLog().info("  Table bean");
-//                    beanWriter.writeTables(dataBase.getSchema().getTableCollection());
-//
+                    // Table bean
+                    getLog().info("  Table bean");
+                    beanWriter.writeTables(dataBase.getSchema().getTableCollection());
+
                     // View bean
                     getLog().info("  View bean");
                     beanWriter.writeViews(dataBase.getSchema().getViewCollection());
