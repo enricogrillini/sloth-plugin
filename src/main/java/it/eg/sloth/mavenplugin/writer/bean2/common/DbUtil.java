@@ -44,10 +44,7 @@ public class DbUtil {
         if (dataType == null)
             return false;
 
-        if (dataType.indexOf(ORACLE_BOOLEAN) == 0)
-            return true;
-        else
-            return false;
+        return dataType.indexOf(ORACLE_BOOLEAN) == 0;
     }
 
     private static String getJavaClass(String type) {

@@ -1,13 +1,12 @@
 package it.eg.sloth.mavenplugin.writer.form.factory;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
 import it.eg.sloth.framework.common.base.BaseFunction;
 import it.eg.sloth.framework.common.base.StringUtil;
 import it.eg.sloth.jaxb.form.Element;
 import it.eg.sloth.jaxb.form.SimpleChart;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Project: sloth-plugin
@@ -22,7 +21,6 @@ import it.eg.sloth.jaxb.form.SimpleChart;
  * You should have received a copy of the GNU General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @author Enrico Grillini
- *
  */
 public class ChartFactory {
 
@@ -30,7 +28,7 @@ public class ChartFactory {
         // nothing
     }
 
-    public static void write(StringBuilder stringBuilder, List<Element> elements) throws IOException {
+    public static void write(StringBuilder stringBuilder, List<Element> elements) {
         for (Element element : elements) {
             if (element instanceof SimpleChart) {
                 write(stringBuilder, (SimpleChart) element);
@@ -67,6 +65,10 @@ public class ChartFactory {
                 (simpleChart.getChartType() == null ? null : "ChartType." + simpleChart.getChartType()) + ", " +
                 title + "," +
                 (simpleChart.getLegendPosition() == null ? null : "LegendPosition." + simpleChart.getLegendPosition()) + ");\n");
+
+        stringBuilder.append("      setStacked (" + simpleChart.isStacked() + ");\n")
+                .append("      setFilled (" + simpleChart.isFilled() + ");\n");
+
 
         FieldFactory.writeAddFields(stringBuilder, elementList);
         stringBuilder.append("  }\n");
