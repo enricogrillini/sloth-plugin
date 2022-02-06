@@ -44,11 +44,9 @@ public class SpringControllerWriter {
             "import org.springframework.web.bind.annotation.RequestMapping;\n" +
             "import org.springframework.web.servlet.ModelAndView;\n" +
             "import org.springframework.stereotype.Controller;\n" +
-            "import springfox.documentation.annotations.ApiIgnore;\n" +
             "import {1}.*;\n" +
             "\n" +
             "@Controller\n" +
-            "@ApiIgnore\n" +
             "public class {2} '{'\n" +
             "\n";
 
