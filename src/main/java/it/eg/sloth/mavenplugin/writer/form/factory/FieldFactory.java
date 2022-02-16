@@ -400,6 +400,24 @@ public class FieldFactory {
                         .append("      addChild(" + StringUtil.toJavaObjectName(button.getName()) + ");\n")
                         .append("\n");
 
+            } else if (element instanceof MultipleFile) {
+                MultipleFile multipleFile = (MultipleFile) element;
+
+                stringBuilder
+                        .append("      " + StringUtil.toJavaObjectName(multipleFile.getName()) + " = MultipleFile.builder()\n")
+                        .append("        .name(_" + StringUtil.toJavaConstantName(multipleFile.getName()) + ")\n")
+                        .append("        .alias(" + GenUtil.stringToJava(multipleFile.getAlias()) + ")\n")
+                        .append("        .description(" + GenUtil.stringToJava(multipleFile.getDescription()) + ")\n")
+                        .append("        .tooltip(" + GenUtil.stringToJava(multipleFile.getTooltip()) + ")\n")
+                        .append("        .required(" + multipleFile.isRequired() + ")\n")
+                        .append("        .readOnly(" + multipleFile.isReadOnly() + ")\n")
+                        .append("        .hidden(" + multipleFile.isHidden() + ")\n")
+                        .append("        .viewModality(" + decodeViewModality(multipleFile.getViewModality()) + ")\n")
+                        .append("        .maxSize(" + multipleFile.getMaxSize() + ")\n")
+                        .append("        .build();\n")
+                        .append("      addChild(" + StringUtil.toJavaObjectName(multipleFile.getName()) + ");\n")
+                        .append("\n");
+
             } else if (element instanceof File) {
                 File file = (File) element;
 

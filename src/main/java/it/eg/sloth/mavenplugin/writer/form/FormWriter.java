@@ -329,7 +329,7 @@ public class FormWriter {
                         Fields fields = (Fields) element;
 
                         for (Element element2 : fields.getTextOrInputOrTextArea()) {
-                            if (element2 instanceof Button || element2 instanceof it.eg.sloth.jaxb.form.File) {
+                            if (element2 instanceof Button || element2 instanceof it.eg.sloth.jaxb.form.File && !(element2 instanceof it.eg.sloth.jaxb.form.MultipleFile)) {
                                 String fieldsClassName = StringUtil.toJavaClassName(fields.getName());
                                 String btnConstantName = StringUtil.toJavaConstantName(element2.getName());
                                 String btnObjectName = StringUtil.toJavaObjectName(element2.getName());
@@ -337,6 +337,38 @@ public class FormWriter {
                                 stringBuilder.append("      if (NavigationConst.BUTTON.equals(navigation[0]) && " + formProperties.getFormClassName() + "." + fieldsClassName + "._" + btnConstantName + ".equalsIgnoreCase(navigation[1])) {\n");
                                 stringBuilder.append("        log.info(\"PRESS: " + btnObjectName + "\");\n");
                                 stringBuilder.append("        " + btnObjectName + "Pressed();\n");
+                                stringBuilder.append("        return true;\n");
+                                stringBuilder.append("      }\n");
+                            }
+                        }
+                    }
+                }
+
+                stringBuilder.append("    }\n");
+                stringBuilder.append("\n");
+
+
+                // Multiple File
+                stringBuilder.append("    if (navigation.length == 3) {\n");
+                for (Element element : form.getFieldsOrGridOrModal()) {
+                    if (element instanceof Fields) {
+                        Fields fields = (Fields) element;
+
+                        for (Element element2 : fields.getTextOrInputOrTextArea()) {
+                            if (element2 instanceof it.eg.sloth.jaxb.form.MultipleFile) {
+                                String fieldsClassName = StringUtil.toJavaClassName(fields.getName());
+                                String btnConstantName = StringUtil.toJavaConstantName(element2.getName());
+                                String btnObjectName = StringUtil.toJavaObjectName(element2.getName());
+
+                                stringBuilder.append("      if (NavigationConst.BUTTON.equals(navigation[0]) && (" + formProperties.getFormClassName() + "." + fieldsClassName + "._" + btnConstantName + " + \"Download\").equalsIgnoreCase(navigation[1])) {\n");
+                                stringBuilder.append("        log.info(\"PRESS: " + btnObjectName + "Download\");\n");
+                                stringBuilder.append("        " + btnObjectName + "DownloadPressed(new Integer(navigation[2]));\n");
+                                stringBuilder.append("        return true;\n");
+                                stringBuilder.append("      }\n");
+
+                                stringBuilder.append("      if (NavigationConst.BUTTON.equals(navigation[0]) && (" + formProperties.getFormClassName() + "." + fieldsClassName + "._" + btnConstantName + " + \"Delete\").equalsIgnoreCase(navigation[1])) {\n");
+                                stringBuilder.append("        log.info(\"PRESS: " + btnObjectName + "Delete\");\n");
+                                stringBuilder.append("        " + btnObjectName + "DeletePressed(new Integer(navigation[2]));\n");
                                 stringBuilder.append("        return true;\n");
                                 stringBuilder.append("      }\n");
                             }
@@ -384,10 +416,17 @@ public class FormWriter {
                     Fields fields = (Fields) element;
 
                     for (Element element2 : fields.getTextOrInputOrTextArea()) {
-                        if (element2 instanceof Button || element2 instanceof it.eg.sloth.jaxb.form.File) {
+                        if (element2 instanceof Button || element2 instanceof it.eg.sloth.jaxb.form.File && !(element2 instanceof it.eg.sloth.jaxb.form.MultipleFile)) {
                             String btnObjectName = StringUtil.toJavaObjectName(element2.getName());
 
                             stringBuilder.append("  public abstract void " + btnObjectName + "Pressed() throws Exception;\n");
+                        }
+
+                        if (element2 instanceof it.eg.sloth.jaxb.form.MultipleFile) {
+                            String btnObjectName = StringUtil.toJavaObjectName(element2.getName());
+
+                            stringBuilder.append("  public abstract void " + btnObjectName + "DownloadPressed(int row) throws Exception;\n");
+                            stringBuilder.append("  public abstract void " + btnObjectName + "DeletePressed(int row) throws Exception;\n");
                         }
                     }
                 } else if (element instanceof Grid) {
