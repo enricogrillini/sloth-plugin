@@ -13,7 +13,10 @@ import it.eg.sloth.db.query.query.Query;
 import it.eg.sloth.framework.common.exception.FrameworkException;
 import lombok.SneakyThrows;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.Reader;
 import java.io.StringReader;
 import java.io.Writer;
@@ -230,6 +233,30 @@ public class ${rowBeanClassName} extends DbRow {
     }
 
     private void updateLob(Connection connection) {
+
+#foreach( $tableColumn in $table.blobColumnCollection )		
+		try {
+			if (get${tableColumn.name}BLobData().getStatus() == BLobData.CHANGED) {
+				Query query = new Query(SQL_UPDATE_${tableColumn.name.toUpperCase()});
+    #foreach( $tableColumn in $table.primaryKeyCollection )
+				query.addParameter(${DbUtil.getTypes($tableColumn)}, get${tableColumn.name}());
+    #end
+                query.execute(connection);
+
+				if (get${tableColumn.name}BLobData().getValue() != null) {
+					DataRow row = selectQuery().selectRow(connection);
+					Blob blob = (Blob) row.getObject(${tableColumn.name.toUpperCase()});
+					try (InputStream inputStream = new ByteArrayInputStream(get${tableColumn.name}BLobData().getValue());
+            OutputStream outputStream = blob.setBinaryStream(0)) {
+						IOUtils.copy(inputStream, outputStream);
+					}
+				}
+			}
+		} catch (Throwable e) {
+			throw new RuntimeException(e);
+		}
+#end
+
 #foreach( $tableColumn in $table.clobColumnCollection )		
 		try {
 			if (get${tableColumn.name}CLobData().getStatus() == CLobData.CHANGED) {
