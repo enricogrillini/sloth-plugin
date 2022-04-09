@@ -75,7 +75,7 @@ public class RefreshDb2Mojo extends SlothMojo {
                     .append(dbSchemaWriter.sqlPrimaryKeys(schema))
                     .append(dbSchemaWriter.sqlForeignKeys(schema))
                     .append(dbSchemaWriter.sqlSequences(schema))
-                    .append(dbSchemaWriter.sqlView(schema))
+                    .append(dbSchemaWriter.sqlViews(schema))
                     .append(dbSchemaWriter.sqlFunctions(schema))
                     .append(dbSchemaWriter.sqlProcedures(schema))
                     .append(dbSchemaWriter.sqlPackages(schema));
