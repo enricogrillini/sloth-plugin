@@ -77,12 +77,6 @@
             <version>5.8.0-M1</version>
             <scope>test</scope>
         </dependency>
-        <!--        <dependency>-->
-        <!--            <groupId>org.apache.maven.plugin-testing</groupId>-->
-        <!--            <artifactId>maven-plugin-testing-harness</artifactId>-->
-        <!--            <version>3.3.0</version>-->
-        <!--            <scope>test</scope>-->
-        <!--        </dependency>-->
 
         <!-- Velocity -->
         <dependency>
