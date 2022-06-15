@@ -50,8 +50,10 @@ public class ChartFactory {
         stringBuilder.append("\n");
 
         // Costanti e variabili
-        List<Element> elementList = new ArrayList<>(simpleChart.getSeries());
+        List<Element> elementList = new ArrayList<>();
         elementList.add(simpleChart.getLabels());
+        elementList.addAll(simpleChart.getSeries());
+
         ElementFactory.writeFieldsCostanti(stringBuilder, elementList);
         ElementFactory.writeFieldsCostanti2(stringBuilder, elementList);
         ElementFactory.writeFieldsVariabili(stringBuilder, elementList);
