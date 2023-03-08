@@ -395,6 +395,7 @@ public class FieldFactory {
                         .append("        .disabled(" + GenUtil.booleanToJava(button.isDisabled()) + ")\n")
                         .append("        .buttonType(" + (button.getType() == null ? "null" : "ButtonType." + button.getType()) + ")\n")
                         .append("        .imgHtml(" + GenUtil.stringToJava(button.getImgHtml()) + ")\n")
+                        .append("        .loading(" + GenUtil.booleanToJava(button.isLoading()) + ")\n")
                         .append("        .confirmMessage(" + GenUtil.stringToJava(button.getConfirmMessage()) + ")\n")
                         .append("        .build();\n")
                         .append("      addChild(" + StringUtil.toJavaObjectName(button.getName()) + ");\n")
