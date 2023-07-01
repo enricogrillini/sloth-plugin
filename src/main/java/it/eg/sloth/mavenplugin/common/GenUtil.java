@@ -76,35 +76,6 @@ public class GenUtil {
         FileUtils.writeStringToFile(file, string, StandardCharsets.UTF_8);
     }
 
-
-//    public static String cleanDbCode(String string) throws IOException {
-//        if (string == null) {
-//            return null;
-//        }
-//
-//        StringBuilder stringBuilder = new StringBuilder();
-//
-//        BufferedReader reader = new BufferedReader(new StringReader(string));
-//        String line;
-//        while ((line = reader.readLine()) != null) {
-//            stringBuilder.append(StringUtil.rtrim(line));
-//            stringBuilder.append(NEWLINE);
-//        }
-//
-//        // GG 19-12-2012: rimuovo tutti gli invii a fine stringa (in ambo le possibili forme: \r\n e \n).
-//        // NB: preservo l'ULTIMO carattere di invio
-//        while ((stringBuilder.length() > 4) &&
-//                stringBuilder.substring(stringBuilder.length() - 4).equals("\r\n\r\n")) { //$NON-NLS-1$
-//            stringBuilder.delete(stringBuilder.length() - 2, stringBuilder.length());
-//        }
-//        while ((stringBuilder.length() > 2) &&
-//                stringBuilder.substring(stringBuilder.length() - 2).equals("\n\n")) { //$NON-NLS-1$
-//            stringBuilder.delete(stringBuilder.length() - 1, stringBuilder.length());
-//        }
-//
-//        return stringBuilder.toString();
-//    }
-
     public static String stringToJava(String value) {
         return stringToJava(value, false);
     }
