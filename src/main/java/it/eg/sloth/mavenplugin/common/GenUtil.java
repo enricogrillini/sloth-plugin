@@ -5,6 +5,7 @@ import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 
 /**
@@ -89,6 +90,14 @@ public class GenUtil {
             } else {
                 return "\"" + StringUtil.replace(value, "\"", "\\\"").replace("\n", "\\n\" +\n\"").replace("\r", "") + "\"";
             }
+        }
+    }
+
+    public static String intToJava(BigInteger value) {
+        if (value == null) {
+            return "null";
+        } else {
+            return "" + value.intValue();
         }
     }
 

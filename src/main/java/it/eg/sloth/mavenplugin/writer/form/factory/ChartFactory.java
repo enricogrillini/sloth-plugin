@@ -4,6 +4,7 @@ import it.eg.sloth.framework.common.base.BaseFunction;
 import it.eg.sloth.framework.common.base.StringUtil;
 import it.eg.sloth.jaxb.form.Element;
 import it.eg.sloth.jaxb.form.SimpleChart;
+import it.eg.sloth.mavenplugin.common.GenUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,9 +69,11 @@ public class ChartFactory {
                 title + "," +
                 (simpleChart.getLegendPosition() == null ? null : "LegendPosition." + simpleChart.getLegendPosition()) + ");\n");
 
-        stringBuilder.append("      setStacked (" + simpleChart.isStacked() + ");\n")
-                .append("      setFilled (" + simpleChart.isFilled() + ");\n");
-
+        stringBuilder
+                .append("      setStacked (" + simpleChart.isStacked() + ");\n")
+                .append("      setFilled (" + simpleChart.isFilled() + ");\n")
+                .append("      setLimitTo (" + GenUtil.intToJava(simpleChart.getLimitTo()) + ");\n")
+                .append("      setLimitDescription (" + GenUtil.stringToJava(simpleChart.getLimitDescription()) + ");\n");
 
         FieldFactory.writeAddFields(stringBuilder, elementList);
         stringBuilder.append("  }\n");
