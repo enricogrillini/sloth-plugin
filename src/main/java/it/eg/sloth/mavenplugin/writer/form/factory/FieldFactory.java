@@ -367,6 +367,23 @@ public class FieldFactory {
                         .append("      addChild(" + StringUtil.toJavaObjectName(semaphore.getName()) + ");\n")
                         .append("\n");
 
+            } else if (element instanceof DropDownButton) {
+                DropDownButton dropDownButton = (DropDownButton) element;
+                stringBuilder
+                        .append("      " + StringUtil.toJavaObjectName(dropDownButton.getName()) + " = DropDownButton.builder()\n")
+                        .append("        .name(_" + StringUtil.toJavaConstantName(dropDownButton.getName()) + ")\n")
+                        .append("        .description(" + GenUtil.stringToJava(dropDownButton.getDescription()) + ")\n")
+                        .append("        .tooltip(" + GenUtil.stringToJava(dropDownButton.getTooltip()) + ")\n")
+                        .append("        .hidden(" + GenUtil.booleanToJava(dropDownButton.isHidden()) + ")\n")
+                        .append("        .disabled(" + GenUtil.booleanToJava(dropDownButton.isDisabled()) + ")\n")
+                        .append("        .buttonType(" + (dropDownButton.getType() == null ? "null" : "ButtonType." + dropDownButton.getType()) + ")\n")
+                        .append("        .imgHtml(" + GenUtil.stringToJava(dropDownButton.getImgHtml()) + ")\n")
+                        .append("        .href(" + GenUtil.stringToJava(dropDownButton.getHref()) + ")\n")
+                        .append("        .target(" + GenUtil.stringToJava(dropDownButton.getTarget()) + ")\n")
+                        .append("        .build();\n")
+                        .append("      addChild(" + StringUtil.toJavaObjectName(dropDownButton.getName()) + ");\n")
+                        .append("\n");
+
             } else if (element instanceof Link) {
                 Link link = (Link) element;
                 stringBuilder

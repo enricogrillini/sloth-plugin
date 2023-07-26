@@ -329,7 +329,7 @@ public class FormWriter {
                         Fields fields = (Fields) element;
 
                         for (Element element2 : fields.getTextOrInputOrTextArea()) {
-                            if (element2 instanceof Button || element2 instanceof it.eg.sloth.jaxb.form.File && !(element2 instanceof it.eg.sloth.jaxb.form.MultipleFile)) {
+                            if (element2 instanceof Button || element2 instanceof DropDownButton || element2 instanceof it.eg.sloth.jaxb.form.File && !(element2 instanceof it.eg.sloth.jaxb.form.MultipleFile)) {
                                 String fieldsClassName = StringUtil.toJavaClassName(fields.getName());
                                 String btnConstantName = StringUtil.toJavaConstantName(element2.getName());
                                 String btnObjectName = StringUtil.toJavaObjectName(element2.getName());
@@ -388,7 +388,7 @@ public class FormWriter {
                         Grid grid = (Grid) element;
 
                         for (Element element2 : grid.getTextOrInputOrTextArea()) {
-                            if (element2 instanceof Button || element2 instanceof it.eg.sloth.jaxb.form.File) {
+                            if (element2 instanceof Button || element2 instanceof DropDownButton || element2 instanceof it.eg.sloth.jaxb.form.File) {
                                 String fieldsClassName = StringUtil.toJavaClassName(grid.getName());
                                 String btnConstantName = StringUtil.toJavaConstantName(element2.getName());
                                 String btnObjectName = StringUtil.toJavaObjectName(element2.getName());
@@ -416,7 +416,7 @@ public class FormWriter {
                     Fields fields = (Fields) element;
 
                     for (Element element2 : fields.getTextOrInputOrTextArea()) {
-                        if (element2 instanceof Button || element2 instanceof it.eg.sloth.jaxb.form.File && !(element2 instanceof it.eg.sloth.jaxb.form.MultipleFile)) {
+                        if (element2 instanceof Button || element2 instanceof DropDownButton || element2 instanceof it.eg.sloth.jaxb.form.File && !(element2 instanceof it.eg.sloth.jaxb.form.MultipleFile)) {
                             String btnObjectName = StringUtil.toJavaObjectName(element2.getName());
 
                             stringBuilder.append("  public abstract void " + btnObjectName + "Pressed() throws Exception;\n");
@@ -433,7 +433,7 @@ public class FormWriter {
                     Grid grid = (Grid) element;
 
                     for (Element element2 : grid.getTextOrInputOrTextArea()) {
-                        if (element2 instanceof Button || element2 instanceof it.eg.sloth.jaxb.form.File) {
+                        if (element2 instanceof Button || element2 instanceof DropDownButton || element2 instanceof it.eg.sloth.jaxb.form.File) {
                             Button button = (Button) element2;
                             String btnObjectName = StringUtil.toJavaObjectName(button.getName());
 
@@ -456,7 +456,7 @@ public class FormWriter {
             if (element instanceof Fields) {
                 Fields fields = (Fields) element;
                 for (Element element2 : fields.getTextOrInputOrTextArea()) {
-                    if (element2 instanceof Button || element2 instanceof it.eg.sloth.jaxb.form.File) {
+                    if (element2 instanceof Button || element2 instanceof DropDownButton || element2 instanceof it.eg.sloth.jaxb.form.File) {
                         return true;
                     }
                 }
@@ -471,7 +471,7 @@ public class FormWriter {
             if (element instanceof Grid) {
                 Grid grid = (Grid) element;
                 for (Element element2 : grid.getTextOrInputOrTextArea()) {
-                    if (element2 instanceof Button || element2 instanceof it.eg.sloth.jaxb.form.File) {
+                    if (element2 instanceof Button || element2 instanceof DropDownButton || element2 instanceof it.eg.sloth.jaxb.form.File) {
                         return true;
                     }
                 }

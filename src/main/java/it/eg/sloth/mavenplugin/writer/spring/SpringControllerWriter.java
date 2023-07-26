@@ -119,7 +119,7 @@ public class SpringControllerWriter {
         // Controller
         log.info("  Controller");
 
-        // Costruisco una mappa che aggregi i controller per package di appartenenza
+        // Costruisco una mappa che aggreghi i controller per package di appartenenza
         Map<String, List<ControllerProperties>> controllers = new HashMap<>();
         for (ControllerProperties properties : controllerPropertiesList) {
             if (!controllers.containsKey(properties.getNewOutputClassName())) {
