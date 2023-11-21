@@ -13,6 +13,7 @@ import lombok.Getter;
 import org.apache.commons.io.FileUtils;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
+import org.apache.velocity.app.Velocity;
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.runtime.RuntimeConstants;
 import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
@@ -87,6 +88,8 @@ public class AbstractBeanWriter implements BeanWriter {
         functionDaoTemplate = velocityEngine.getTemplate(FUNCTION_DAO_TEMPLATE);
         procedureDaoTemplate = velocityEngine.getTemplate(PROCEDURE_DAO_TEMPLATE);
         packageDaoTemplate = velocityEngine.getTemplate(PACKAGE_DAO_TEMPLATE);
+
+
     }
 
     public void writeTables(Collection<Table> tableCollection) throws IOException {
