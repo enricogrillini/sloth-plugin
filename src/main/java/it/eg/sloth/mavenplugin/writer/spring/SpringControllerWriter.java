@@ -38,8 +38,8 @@ public class SpringControllerWriter {
     private static final String START_CONTROLLER = "" +
             "package {0};\n" +
             "\n" +
-            "import javax.servlet.http.HttpServletRequest;\n" +
-            "import javax.servlet.http.HttpServletResponse;\n" +
+            "import jakarta.servlet.http.HttpServletRequest;\n" +
+            "import jakarta.servlet.http.HttpServletResponse;\n" +
             "\n" +
             "import org.springframework.web.bind.annotation.RequestMapping;\n" +
             "import org.springframework.web.servlet.ModelAndView;\n" +
