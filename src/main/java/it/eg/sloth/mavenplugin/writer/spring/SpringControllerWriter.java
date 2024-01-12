@@ -35,27 +35,28 @@ import java.util.*;
  */
 public class SpringControllerWriter {
 
-    private static final String START_CONTROLLER = "" +
-            "package {0};\n" +
-            "\n" +
-            "import jakarta.servlet.http.HttpServletRequest;\n" +
-            "import jakarta.servlet.http.HttpServletResponse;\n" +
-            "\n" +
-            "import org.springframework.web.bind.annotation.RequestMapping;\n" +
-            "import org.springframework.web.servlet.ModelAndView;\n" +
-            "import org.springframework.stereotype.Controller;\n" +
-            "import {1}.*;\n" +
-            "\n" +
-            "@Controller\n" +
-            "public class {2} '{'\n" +
-            "\n";
+    private static final String START_CONTROLLER = """
+            package {0};
+            
+            import jakarta.servlet.http.HttpServletRequest;
+            import jakarta.servlet.http.HttpServletResponse;
+            
+            import org.springframework.web.bind.annotation.RequestMapping;
+            import org.springframework.web.servlet.ModelAndView;
+            import org.springframework.stereotype.Controller;
+            import {1}.*;
+            
+            @Controller
+            public class {2} '{'
+            """;
 
-    private static final String BODY_CONTROLLER = "" +
-            "  @RequestMapping(\"/html/{0}.html\")\n" +
-            "  public ModelAndView handle{0}(HttpServletRequest arg0, HttpServletResponse arg1) throws Exception '{'\n" +
-            "    return new {0}().handleRequest(arg0, arg1);\n" +
-            "  '}'\n" +
-            "\n";
+    private static final String BODY_CONTROLLER =
+            """ 
+              @RequestMapping("/html/{0}.html")
+              public ModelAndView handle{0}(HttpServletRequest arg0, HttpServletResponse arg1) throws Exception '{'
+                return new {0}().handleRequest(arg0, arg1);
+              '}'
+            """;
 
     private static final String END_CONTROLLER = "}\n";
 

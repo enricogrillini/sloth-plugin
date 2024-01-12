@@ -273,6 +273,7 @@ public class FormWriter {
                 .append("import it.eg.sloth.webdesktop.controller.page.ReportGridPage;\n")
                 .append("import it.eg.sloth.webdesktop.controller.page.MasterDetailPage;\n")
                 .append("import it.eg.sloth.webdesktop.controller.page.SimplePage;\n")
+                .append("import it.eg.sloth.webdesktop.controller.page.SimpleSearchPage;\n")
                 .append("import it.eg.sloth.webdesktop.controller.page.EditableMasterDetailPage;\n")
                 .append("import it.eg.sloth.webdesktop.controller.webpage.WebSimplePage;\n")
                 .append("import it.eg.sloth.webdesktop.controller.page.EditablePage;\n")
