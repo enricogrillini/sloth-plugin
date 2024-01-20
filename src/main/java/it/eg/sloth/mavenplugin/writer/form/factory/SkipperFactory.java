@@ -19,7 +19,6 @@ import it.eg.sloth.jaxb.form.Skipper;
  * You should have received a copy of the GNU General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @author Enrico Grillini
- *
  */
 public class SkipperFactory {
 
@@ -35,7 +34,7 @@ public class SkipperFactory {
         }
     }
 
-    public static void write(StringBuilder stringBuilder, Skipper skipper) {
+    private static void write(StringBuilder stringBuilder, Skipper skipper) {
         String className = StringUtil.toJavaClassName(skipper.getName());
 
         stringBuilder.append("  public class " + className + " extends Skipper {\n");
