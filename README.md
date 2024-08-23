@@ -42,6 +42,15 @@ Parametri:
    - Default: `db/dbSchema.xml`
    - File in cui sono salvate le specifiche DB
 
-## Changelog
-### Versione 2.0.0
- - refreshdb - Aggiornato dbSchema.xsd per gestione connessione DB
+## Installazione su git hub
+```shell
+
+# Check update
+mvn versions:display-dependency-updates
+
+# Deploy 
+git checkout master
+gti pull
+mvn deploy
+git checkout develop
+```
