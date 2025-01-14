@@ -301,7 +301,7 @@ public class FormWriter {
                     String tableName = grids.get(0).getTable().substring(0, 1).toUpperCase() + grids.get(0).getTable().substring(1).toLowerCase();
 
                     stringBuilder.append("  public " + tableName + "RowBean getRowBean() {\n");
-                    stringBuilder.append("    return getGrid().getDataSource().getRow();\n");
+                    stringBuilder.append("    return getGrid().getDataSource() == null ? null : getGrid().getDataSource().getRow();\n");
                     stringBuilder.append("  }\n");
                     stringBuilder.append("\n");
                 }
